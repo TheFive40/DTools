@@ -1,5 +1,6 @@
 package org.delaware.commands;
 
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
@@ -7,9 +8,7 @@ import org.delaware.tools.commands.BaseCommand;
 import org.delaware.tools.commands.Command;
 import org.delaware.tools.commands.CommandArgs;
 import org.delaware.tools.model.Character;
-
 import java.io.IOException;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -60,7 +59,8 @@ public class SelectCharacterCommand extends BaseCommand {
                     Character characterPlayer = new Character(currentName, player.getUniqueId().toString(),
                             General.getCon(player), General.getDex(player),
                             General.getStr(player), General.getWil(player), General.getMnd(player),
-                            General.getSpi(player), General.getPlayerTps(player));
+                            General.getSpi(player), General.getPlayerTps(player), General.getPlayerRace(player),
+                            General.getPlayerClass(player));
                     characters.remove(e);
                     characterPlayer.setInUse(false);
                     characters.add(characterPlayer);
@@ -74,7 +74,7 @@ public class SelectCharacterCommand extends BaseCommand {
 
             }
             if (selectCharacter != null && isOwner.get() && isPrimaryOwner.get()) {
-                player.sendMessage(CC.translate("STR: " + General.getStr(player)));
+                ConsoleCommandSender consoleCommandSender = player.getServer().getConsoleSender();
                 player.setDisplayName(finalName);
                 player.setCustomName(finalName);
                 player.setCustomNameVisible(true);
@@ -84,8 +84,11 @@ public class SelectCharacterCommand extends BaseCommand {
                 General.setWIL(player, selectCharacter.getWil());
                 General.setMND(player, selectCharacter.getMnd());
                 General.setSPI(player, selectCharacter.getSpi());
+                General.setPlayerClass(player, selectCharacter.getDbcClass());
+                General.setPlayerRace(player,selectCharacter.getRace());
                 General.getAndRemoveTps(player, General.getPlayerTps(player));
                 General.setPlayerTps(player, selectCharacter.getTps());
+                player.getServer().dispatchCommand(consoleCommandSender,"nick " + player.getName() + " " + selectCharacter.getName());
                 player.sendMessage(CC.translate("&c¡Personaje actualizado a " + finalName + " correctamente!"));
             }
             if (!isPrimaryOwner.get() || !isOwner.get()) {

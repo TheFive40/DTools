@@ -3,8 +3,6 @@ import me.dpohvar.powernbt.PowerNBT;
 import me.dpohvar.powernbt.api.NBTCompound;
 import me.dpohvar.powernbt.api.NBTManager;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.PoweredMinecart;
-
 public class General {
     public static final int MAX_TPS = 2000000000;
     public static int bonusSTAT;
@@ -19,6 +17,8 @@ public class General {
     public static final String MND = "jrmcIntI";
 
     public static final String SPI = "jrmcCncI";
+
+    public static final String CLASS = "jrmcClass";
 
     public static int getPlayerTps(Player player) {
         return PowerNBT.getApi().readForgeData(player).getCompound("PlayerPersisted").getInt("jrmcTpint");
@@ -89,6 +89,13 @@ public class General {
         forgeData.put(DEX, dex);
         NBTManager.getInstance().writeForgeData(player, forgeData);
     }
+
+    public static void startNew(Player player){
+        NBTCompound playerPersisted = PowerNBT.getApi().readForgeData(player).getCompound("PlayerPersisted");
+        playerPersisted.clear();
+        playerPersisted.put(STR, 10);
+        NBTManager.getInstance().writeForgeData(player,playerPersisted);
+    }
     public static void setCON(Player player, int con){
         NBTCompound forgeData = NBTManager.getInstance().readForgeData(player);
         NBTCompound playerPersisted = (NBTCompound) forgeData.get("PlayerPersisted");
@@ -116,5 +123,91 @@ public class General {
         playerPersisted.put(SPI,spi);
         forgeData.put(SPI, spi);
         NBTManager.getInstance().writeForgeData(player, forgeData);
+    }
+    public static Race getPlayerRace(Player player) {
+        int raceNumber = PowerNBT.getApi().readForgeData(player).getCompound("PlayerPersisted").getInt("jrmcRace");
+        Race playerRace = null;
+
+        if (raceNumber == 0) {
+            playerRace = Race.HUMANO;
+        } else if (raceNumber == 1) {
+            playerRace = Race.SAIYAJIN;
+        } else if (raceNumber == 2) {
+            playerRace = Race.SEMI_SAIYAN;
+        } else if (raceNumber == 3) {
+            playerRace = Race.NAMEKIANO;
+        } else if (raceNumber == 4) {
+            playerRace = Race.ARCOSIANO;
+        } else if (raceNumber == 5) {
+            playerRace = Race.MAJIN;
+        }
+
+        return playerRace;
+    }
+    public static void setPlayerRace(Player player, Race race){
+        NBTCompound forgeData = NBTManager.getInstance().readForgeData(player);
+        NBTCompound playerPersisted = (NBTCompound) forgeData.get("PlayerPersisted");
+        switch(race){
+            case HUMANO:
+                playerPersisted.put("jrmcRace",0);
+                forgeData.put("jrmcRace",0);
+                NBTManager.getInstance().writeForgeData(player,forgeData);
+                break;
+            case SAIYAJIN:
+                playerPersisted.put("jrmcRace",1);
+                forgeData.put("jrmcRace",1);
+                NBTManager.getInstance().writeForgeData(player,forgeData);
+                break;
+            case SEMI_SAIYAN:
+                playerPersisted.put("jrmcRace",2);
+                forgeData.put("jrmcRace",2);
+                NBTManager.getInstance().writeForgeData(player,forgeData);
+                break;
+            case NAMEKIANO:
+                playerPersisted.put("jrmcRace",3);
+                forgeData.put("jrmcRace",3);
+                NBTManager.getInstance().writeForgeData(player,forgeData);
+                break;
+            case ARCOSIANO:
+                playerPersisted.put("jrmcRace",4);
+                forgeData.put("jrmcRace",4);
+                NBTManager.getInstance().writeForgeData(player,forgeData);
+                break;
+            case MAJIN:
+                playerPersisted.put("jrmcRace",5);
+                forgeData.put("jrmcRace",5);
+                NBTManager.getInstance().writeForgeData(player,forgeData);
+                break;
+
+        }
+    }
+    public static void setPlayerClass(Player player, DBCClass dbcClass){
+        NBTCompound forgeData = NBTManager.getInstance().readForgeData(player);
+        NBTCompound PlayerPersisted = (NBTCompound) forgeData.get("PlayerPersisted");
+        if(dbcClass == DBCClass.WARRIOR){
+            forgeData.put(CLASS, 2);
+            PlayerPersisted.put(CLASS,2);
+
+        }else if (dbcClass == DBCClass.MARTIAL_ARTIST){
+            forgeData.put(CLASS, 0);
+            PlayerPersisted.put(CLASS,0);
+
+        }else{
+            forgeData.put(CLASS, 1);
+            PlayerPersisted.put(CLASS,1);
+        }
+        NBTManager.getInstance().writeForgeData(player, forgeData);
+    }
+    public static DBCClass getPlayerClass(Player player){
+        DBCClass dbcClass = null;
+        int classPlayer = NBTManager.getInstance().readForgeData(player).getInt(CLASS);
+        if(classPlayer == 2){
+            dbcClass = DBCClass.WARRIOR;
+        }else if (classPlayer == 0){
+            dbcClass = DBCClass.MARTIAL_ARTIST;
+        }else{
+            dbcClass = DBCClass.SPIRITUALISTIC;
+        }
+        return dbcClass;
     }
 }
