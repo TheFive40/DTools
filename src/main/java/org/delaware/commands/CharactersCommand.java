@@ -1,6 +1,7 @@
 package org.delaware.commands;
 
 import fr.minuskube.inv.ClickableItem;
+import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
@@ -13,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.delaware.listeners.PlayerJoin;
 import org.delaware.tools.CC;
 import org.delaware.tools.commands.BaseCommand;
 import org.delaware.tools.commands.Command;
@@ -34,11 +36,12 @@ public class CharactersCommand extends BaseCommand {
     private HashSet<String> displayNames = new HashSet<>();
 
     @Command(name = "characters", aliases = {"personajes", "characters"}, description = "Despliega el menu de tus personajes"
-            , usage = "&cPrueba utilizando &7/personajes")
+            , usage = "&cPrueba utilizando &7/personajes", permission = "characters.menu")
     @Override
     public void onCommand(CommandArgs command) throws IOException {
-        final SmartInventory INVENTORY = SmartInventory.builder().title(CC.translate("&cSelector de Personajes"))
-                .id("characters").size(3, 9).type(InventoryType.CHEST)
+
+         SmartInventory INVENTORY = PlayerJoin.inventorysPlayers.get(command.getPlayer().getName()).title(CC.translate("&cSelector de Personajes"))
+                .id(command.getPlayer().getName()).size(3, 9).type(InventoryType.CHEST)
                 .provider(new InventoryProvider() {
                     @Override
                     public void init(Player player, InventoryContents inventoryContents) {
@@ -71,7 +74,7 @@ public class CharactersCommand extends BaseCommand {
                                         displayNames.add(woolMeta.getDisplayName());
                                     }
                                     wool.setItemMeta(woolMeta);
-                                    position.addAndGet(2);
+                                    position.getAndAdd(2);
                                     inventoryContents.set(1, position.get(), ClickableItem.of(wool, new Consumer<InventoryClickEvent>() {
                                         @Override
                                         public void accept(InventoryClickEvent inventoryClickEvent) {
@@ -119,7 +122,7 @@ public class CharactersCommand extends BaseCommand {
                                             player.closeInventory();
                                         }
                                     }));
-                                    
+
                                 }
 
                             }
@@ -145,7 +148,7 @@ public class CharactersCommand extends BaseCommand {
         return status.toString();
     }
     public String getDisplayName(String DisplayName){
-        int indexInit = DisplayName.indexOf('6')+1;
+        int indexInit = DisplayName.indexOf('&')+2;
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = indexInit;i<DisplayName.length();i++){
             stringBuilder.append(DisplayName.charAt(i));

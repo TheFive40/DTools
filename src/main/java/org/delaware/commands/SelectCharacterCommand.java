@@ -1,5 +1,6 @@
 package org.delaware.commands;
 
+import fr.minuskube.inv.SmartInventory;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.delaware.tools.CC;
@@ -15,9 +16,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SelectCharacterCommand extends BaseCommand {
     public static ConcurrentHashMap<String, CopyOnWriteArrayList<Character>> characterHashMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, SmartInventory> playersInventory = new ConcurrentHashMap<>();
     private Character selectCharacter = null;
 
-    @Command(name = "selectCharacter", aliases = "selectCharacter")
+    @Command(name = "selectCharacter", aliases = "selectCharacter", permission = "character.select")
     @Override
     public void onCommand(CommandArgs command) throws IOException {
         Player player = command.getPlayer();
@@ -27,7 +29,7 @@ public class SelectCharacterCommand extends BaseCommand {
         }
         String currentName = command.getArgs(0);
         String name = command.getArgs(1);
-        ;
+
         AtomicBoolean isPrimaryOwner = new AtomicBoolean(false);
         if (characterHashMap.containsKey(player.getName())) {
             CopyOnWriteArrayList<Character> characters = characterHashMap.get(player.getName());
@@ -61,6 +63,7 @@ public class SelectCharacterCommand extends BaseCommand {
                             General.getStr(player), General.getWil(player), General.getMnd(player),
                             General.getSpi(player), General.getPlayerTps(player), General.getPlayerRace(player),
                             General.getPlayerClass(player));
+                    General.readAllNBT(player,currentName,false);
                     characters.remove(e);
                     characterPlayer.setInUse(false);
                     characters.add(characterPlayer);
@@ -78,7 +81,7 @@ public class SelectCharacterCommand extends BaseCommand {
                 player.setDisplayName(finalName);
                 player.setCustomName(finalName);
                 player.setCustomNameVisible(true);
-                General.setSTR(player, selectCharacter.getStr());
+                /*General.setSTR(player, selectCharacter.getStr());
                 General.setDEX(player, selectCharacter.getDex());
                 General.setCON(player, selectCharacter.getCon());
                 General.setWIL(player, selectCharacter.getWil());
@@ -87,7 +90,8 @@ public class SelectCharacterCommand extends BaseCommand {
                 General.setPlayerClass(player, selectCharacter.getDbcClass());
                 General.setPlayerRace(player,selectCharacter.getRace());
                 General.getAndRemoveTps(player, General.getPlayerTps(player));
-                General.setPlayerTps(player, selectCharacter.getTps());
+                General.setPlayerTps(player, selectCharacter.getTps());*/
+                General.readAllNBT(player,finalName,true);
                 player.getServer().dispatchCommand(consoleCommandSender,"nick " + player.getName() + " " + selectCharacter.getName());
                 player.sendMessage(CC.translate("&c¡Personaje actualizado a " + finalName + " correctamente!"));
             }

@@ -3,6 +3,11 @@ import me.dpohvar.powernbt.PowerNBT;
 import me.dpohvar.powernbt.api.NBTCompound;
 import me.dpohvar.powernbt.api.NBTManager;
 import org.bukkit.entity.Player;
+import org.delaware.commands.CreateCharacterCommand;
+import org.delaware.commands.SelectCharacterCommand;
+
+import java.util.concurrent.ConcurrentHashMap;
+
 public class General {
     public static final int MAX_TPS = 2000000000;
     public static int bonusSTAT;
@@ -88,6 +93,24 @@ public class General {
         playerPersisted.put(DEX,dex);
         forgeData.put(DEX, dex);
         NBTManager.getInstance().writeForgeData(player, forgeData);
+    }
+    public static void readAllNBT(Player player, String name, boolean filter){
+        ConcurrentHashMap<String, Object> playerpersisted = new ConcurrentHashMap<>();
+        NBTCompound forgeData = NBTManager.getInstance().readForgeData(player);
+        NBTCompound playerPersisted = (NBTCompound) forgeData.get("PlayerPersisted");
+        if(!filter){
+            playerPersisted.forEach((k,v)->{
+                playerpersisted.put(k,v);
+                CreateCharacterCommand.accounts.put(name,playerpersisted);
+                CreateCharacterCommand.playerData.put(player.getName(),CreateCharacterCommand.accounts);
+            });
+        }
+        if(filter && CreateCharacterCommand.accounts.containsKey(name)){
+            playerPersisted.clear();
+            forgeData.putAll(CreateCharacterCommand.accounts.get(name));
+            playerPersisted.putAll(CreateCharacterCommand.accounts.get(name));
+            NBTManager.getInstance().writeForgeData(player,forgeData);
+        }
     }
 
     public static void startNew(Player player){

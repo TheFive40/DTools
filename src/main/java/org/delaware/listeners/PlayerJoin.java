@@ -1,4 +1,5 @@
 package org.delaware.listeners;
+import fr.minuskube.inv.SmartInventory;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,12 +9,17 @@ import org.delaware.Main;
 import org.delaware.commands.SelectCharacterCommand;
 import org.delaware.tools.CC;
 import org.delaware.tools.model.Character;
+
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerJoin implements Listener {
+    public static ConcurrentHashMap<String, SmartInventory.Builder> inventorysPlayers = new ConcurrentHashMap<>();
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent playerJoinEvent) {
         Player player = playerJoinEvent.getPlayer();
+        SmartInventory.Builder builder =  SmartInventory.builder();
+        inventorysPlayers.put(player.getName(),builder);
         playerJoinEvent.setJoinMessage(CC.translate("&8[&a+&8] &a" + playerJoinEvent.getPlayer().getName()));
         ConsoleCommandSender consoleCommandSender = Main.instance.getServer().getConsoleSender();
         if(SelectCharacterCommand.characterHashMap.containsKey(player.getName())){
@@ -23,6 +29,7 @@ public class PlayerJoin implements Listener {
                     player.getServer().dispatchCommand(consoleCommandSender,"nick " + player.getName() + " " +e.getName());
                 }
             });
+
         }
     }
 }
