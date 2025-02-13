@@ -1,8 +1,7 @@
 package org.delaware.tools;
-import guava10.com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.event.Listener;
 import org.delaware.Main;
-
 import java.io.IOException;
 import java.net.URL;
 import java.security.CodeSource;

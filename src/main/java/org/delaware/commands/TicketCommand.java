@@ -1,101 +1,94 @@
 package org.delaware.commands;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.delaware.Main;
 import org.delaware.tools.CC;
+import org.delaware.tools.General;
 import org.delaware.tools.commands.BaseCommand;
-import org.delaware.tools.commands.Command;
 import org.delaware.tools.commands.CommandArgs;
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
+import org.delaware.tools.model.entities.Ticket;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.LinkedList;
 
-import static org.delaware.commands.TicketRemoveCommand.ticketsOnClose;
-
+@Getter
+@Setter
 public class TicketCommand extends BaseCommand {
-    public static ConcurrentHashMap<Integer, CopyOnWriteArrayList<String>> tickets = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<String, CopyOnWriteArrayList<Integer>> playerOpenTicket = new ConcurrentHashMap<>();
+    public static LinkedList<Ticket> tickets = new LinkedList<> ( );
 
-    @Command(name = "ticket", aliases = "ticket", description = "&a¡Resuelve tus dudas con el equipo del staff usando el sistema de tickets!")
     @Override
-    public void onCommand(CommandArgs command) throws IOException {
-        Player player = command.getPlayer();
-        if (!(command.getArgs().length < 2)) {
-            if (command.getArgs(0).equalsIgnoreCase("open")) {
-                CopyOnWriteArrayList<String> messages = new CopyOnWriteArrayList<>();
-                StringBuilder message = new StringBuilder();
-                if(playerOpenTicket.containsKey(player.getName())){
-                    if (playerOpenTicket.get(player.getName()).size() == 10) {
-                        player.sendMessage(CC.translate("&cNo puedes seguir abriendo mas tickets debes esperar a que se cierre uno"));
-                        return;
+    public void onCommand ( CommandArgs command ) throws IOException {
+        Player player = command.getPlayer ( );
+        if (command.getArgs ( ).length > 0) {
+            String alias = command.getArgs ( 0 );
+            long ticketId;
+            Ticket ticket;
+            switch (alias) {
+                case "open":
+                    String username = player.getName ( );
+                    ticket = new Ticket ( );
+                    ticket.setIdTicket ( (long) tickets.size ( ) );
+                    ticket.setUsername ( username );
+                    ticket.setReason ( General.joinText ( command.getArgs ( ), 1 ) );
+                    tickets.add ( ticket );
+                    player.sendMessage ( CC.translate ( "&a¡Nuevo ticket a la espera de ser atendido! &cid: " + ticket.getIdTicket ( ) ) );
+                    break;
+                case "close":
+                    ticketId = Long.parseLong ( command.getArgs ( 1 ) );
+                    ticket = Ticket.getTicketById ( ticketId );
+                    player.sendMessage ( CC.translate ( "&c¡El staff " + ticket.getStaff ( ) ) + " ha cerrado tu ticket!" );
+                    tickets.remove ( ticket );
+                    break;
+                case "response":
+                    Ticket.getTicketById ( command.getArgs ( 1 ) ).message ( command, player.getName ( ) );
+                case "r":
+                    break;
+                case "l":
+                case "list":
+                    if (command.getArgs ( ).length >= 2) {
+                        int page = 1;
+                        try {
+                            page = Integer.parseInt ( command.getArgs ( 1 ) );
+                        } catch (NumberFormatException ignored) {
+                        }
+                        String text = getTicketPage ( page );
+                        player.sendMessage ( CC.translate ( text ) );
                     }
-                }
-                for (int i = 1; i < command.getArgs().length; i++) {
-                    message.append(command.getArgs(i) + " ");
-                }
-                CopyOnWriteArrayList<Integer> ticketsOpen = null;
-                messages.add(message.toString());
-                int code = tickets.size();
-                if (!playerOpenTicket.containsKey(command.getPlayer().getName())) {
-                    ticketsOpen = new CopyOnWriteArrayList<>();
-                    ticketsOpen.add(code);
-                } else {
-                    ticketsOpen = playerOpenTicket.get(command.getPlayer().getName());
-                    ticketsOpen.add(code);
-                }
-                playerOpenTicket.put(command.getPlayer().getName(), ticketsOpen);
-                tickets.put(code, messages);
-                command.getPlayer().sendMessage(CC.translate("&cTicket &aN-" + code + " &cabierto correctamente" +
-                        " espera a la respuesta de un STAFF"));
-              for(Player player1 : Main.instance.getServer().getOnlinePlayers()){
-                  PermissionUser permissionsEx = PermissionsEx.getUser(player1.getName());
-                  if(permissionsEx.inGroup("ayudante") || permissionsEx.inGroup("admin")
-                  || permissionsEx.inGroup("manager") || permissionsEx.inGroup("moderador")
-                  || permissionsEx.inGroup("ayudantebeta") || permissionsEx.inGroup("programador")){
-                      player1.sendMessage(CC.translate("&7» &cTicket N-" + code + " &7disponible para ser atendido "));
-                  }
-              }
-            } else if (command.getArgs(0).equalsIgnoreCase("close")) {
-                CopyOnWriteArrayList<Integer> tickets = playerOpenTicket.get(player.getName());
-                int code = Integer.parseInt(command.getArgs(1));
-                if (TicketClaimCommand.ticketClaimed.containsKey(code)) {
-                    player.sendMessage(CC.translate("&c¡Tu ticket ya fue reclamado por un staff!"));
-                    return;
-                }
-                for (Integer ticket : tickets) {
-                    if (ticket.intValue() == code) {
-                        tickets.remove(ticket);
-                        tickets.remove(ticket);
+                    break;
+                case "help":
+                    break;
+                case "claimed":
+                case "claims":
+                    break;
+                case "claim":
+                    ticket = Ticket.getTicketById ( command.getArgs ( 1 ) );
+                    ticket.setStaff ( player.getName ( ) );
+                    Player player1 = Main.instance.getServer ( ).getPlayer ( ticket.getUsername ( ) );
+                    if (player1 != null && player1.isOnline ( )) {
+                        player1.sendMessage ( CC.translate ( "&a¡El staff " + player1.getName ( ) + " ha reclamado tu ticket!" ) );
+                        player.sendMessage ( CC.translate ( "&a¡Haz reclamado el ticket ID " + command.getArgs ( 1 ) + "!" ) );
                     }
-                }
-                ticketsOnClose.add(code);
-                playerOpenTicket.put(player.getName(), tickets);
-                player.sendMessage(CC.translate("&a&l➤ &3&lTICKETS &9Ticket &cN-" + code + " &9ha sido cerrado"));
+                    tickets.set ( tickets.indexOf ( new Ticket ( Long.parseLong ( command.getArgs ( 1 ) ) ) ),
+                            ticket );
+                    break;
             }
-        } else if (command.getArgs().length == 1) {
-            if(command.getArgs(0).equalsIgnoreCase("waiting")){
-                CopyOnWriteArrayList<Integer> codes = playerOpenTicket.get(player.getName());
-                player.sendMessage(CC.translate("&8&l---------------------------------------------"));
-                for (int i = 0; i < codes.size(); i++) {
-                    player.sendMessage(CC.translate("&7» &cTicket N-" + codes.get(i) + " &7en espera de ser atendido por un staff"));
-                }
-                player.sendMessage(CC.translate("&8&l---------------------------------------------"));
-            }else{
-                player.sendMessage(CC.translate("&8&l---------------------------------------------"));
-                player.sendMessage(CC.translate("&3Prueba utilizando &3/ticket open &7<arguments>"));
-                player.sendMessage(CC.translate("&3Prueba utilizando &3/ticket close &7<code>"));
-                player.sendMessage(CC.translate("&3Prueba utilizando &3/ticket waiting"));
-                player.sendMessage(CC.translate("&8&l---------------------------------------------"));
-            }
-        } else {
-            player.sendMessage(CC.translate("&8&l---------------------------------------------"));
-            player.sendMessage(CC.translate("&3Prueba utilizando &3/ticket open &7<arguments>"));
-            player.sendMessage(CC.translate("&3Prueba utilizando &3/ticket close &7<code>"));
-            player.sendMessage(CC.translate("&3Prueba utilizando &3/ticket waiting"));
-            player.sendMessage(CC.translate("&8&l---------------------------------------------"));
         }
+    }
+
+    protected String getTicketPage ( int page ) {
+        String message = "------------------------------------------";
+        int messageWidth = message.length ( );
+        int spacesToAdd = (60 - messageWidth) / 2;
+        String centeredMessage01 = new String ( new char[spacesToAdd] ).replace ( "\0", " " );
+        String centered = centeredMessage01 + centeredMessage01 + centeredMessage01 + centeredMessage01;
+        StringBuilder text = new StringBuilder ( );
+        text.append ( "&6&m" ).append ( message ).append ( "\n" );
+        tickets.stream ( ).limit ( page * 7L ).forEach ( e -> {
+            text.append ( "&cTicket N-&a" ).append ( e.getIdTicket ( ) ).append ( " &4" )
+                    .append ( e.getReason ( ) ).append ( "\n" );
+        } );
+        text.append ( "&6&m" ).append ( message ).append ( "\n" );
+        text.append ( "&7Page: " ).append ( page ).append ( "/" ).append ( tickets.size ( ) / page );
+        return text.toString ( );
     }
 }

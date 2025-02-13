@@ -10,8 +10,8 @@ import java.io.IOException;
 
 
 public class TrollCommand extends BaseCommand {
-    @Command(name = "troll", usage = "&cPrueba utilizando &7/troll <player> <message>", aliases = "troll",
-            description = "&6¡Molesta a otros usuarios usando este divertido comando!")
+    @Command(name = "molestar", usage = "&cPrueba utilizando &7/molestar <player> <message>", aliases = "molestar",
+            description = "&6¡Molesta a otros usuarios usando este divertido comando!", permission = "dtools.command.molestar")
 
     @Override
     public void onCommand(CommandArgs command) throws IOException {
