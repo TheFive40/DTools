@@ -61,6 +61,7 @@ public class PlayerInteract implements Listener {
             npc.setHealth ( idbcPlayer.getBody ( ) );
             return;
         }
+        //TPS SYSTEM
         if (event.getAction ( ) == Action.RIGHT_CLICK_AIR && player.getItemInHand ( ) != null) {
             ItemStack itemInHand = player.getItemInHand ( );
             TP tp = findTP ( itemInHand );
@@ -75,6 +76,7 @@ public class PlayerInteract implements Listener {
             player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
             player.setItemInHand ( null );
         }
+        //TPS SYSTEM
     }
 
     public static void setPlayerData ( Player player, DBItem dbItem, boolean deathNPC ) {
