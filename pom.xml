@@ -24,11 +24,7 @@
             <artifactId>lombok</artifactId>
             <version>1.18.34</version>
         </dependency>
-        <dependency>
-            <groupId>fr.minuskube.inv</groupId>
-            <artifactId>smart-invs</artifactId>
-            <version>1.2.7</version>
-        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -39,6 +35,27 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-libs</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>add-library</goal>
+                        </goals>
+                        <configuration>
+                            <libraries>
+                                <library>
+                                    <file>${project.basedir}/libs/*.jar</file>
+                                </library>
+                            </libraries>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

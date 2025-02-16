@@ -1,8 +1,29 @@
 package org.delaware.events;
 
+import JinRyuu.JRMCore.JRMCEnAttacks;
+import JinRyuu.JRMCore.JRMCoreH;
+import JinRyuu.JRMCore.JRMCoreHJBRA;
+import kamkeel.addon.DBCAddon;
+import kamkeel.npcdbc.api.npc.IDBCStats;
+import kamkeel.npcdbc.client.model.part.DBCLeftArms;
+import kamkeel.npcdbc.constants.DBCAttribute;
+import kamkeel.npcdbc.constants.DBCClass;
+import kamkeel.npcdbc.constants.DBCDamageSource;
+import kamkeel.npcdbc.constants.DBCForm;
+import kamkeel.npcdbc.data.dbcdata.DBCData;
+import kamkeel.npcdbc.data.dbcdata.DBCDataBonus;
+import kamkeel.npcdbc.data.dbcdata.DBCDataStats;
+import kamkeel.npcdbc.data.dbcdata.DBCDataUniversal;
+import kamkeel.npcdbc.mixins.late.impl.dbc.MixinJRMCoreH;
+import kamkeel.npcdbc.scripted.DBCAPI;
+import kamkeel.npcdbc.scripted.DBCEventHooks;
+import kamkeel.npcdbc.scripted.DBCPlayerEvent;
+import kamkeel.npcdbc.util.DBCUtils;
+import lombok.NonNull;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
+import net.minecraft.entity.player.EntityPlayer;
 import noppes.npcs.api.entity.ICustomNpc;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
@@ -18,6 +39,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.Main;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
+import org.delaware.tools.Stat;
 import org.delaware.tools.model.entities.Attribute;
 import org.delaware.tools.model.entities.DBItem;
 import org.delaware.tools.model.entities.TP;
@@ -69,12 +91,18 @@ public class PlayerInteract implements Listener {
             if (tp == null) return;
             int amount = itemInHand.getAmount ( );
             int reward = tp.getValue ( ) * amount;
-               Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
-                   + reward );
+            Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
+                    + reward );
+
+
             player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
             player.setItemInHand ( null );
         }
         //TPS SYSTEM
+    }
+
+    public static void attributeBonus( @NonNull String stat, @NonNull String value, IDBCPlayer player) {
+        JRMCoreH.setString(value, (EntityPlayer) player, "jrmcAttrBonus" + stat);
     }
 
     public static void setPlayerData ( Player player, DBItem dbItem, boolean deathNPC ) {
@@ -83,15 +111,15 @@ public class PlayerInteract implements Listener {
         float cost = dbItem.getAttribute ( ).getCost ( );
         Attribute attribute = dbItem.getAttribute ( );
         String statBonus = General.STATS_MAP.get ( attribute.getStatBonus ( ) );
-        String statFromBonus = General.STATS_MAP.get ( attribute.getStatFromBonus () );
+        String statFromBonus = General.STATS_MAP.get ( attribute.getStatFromBonus ( ) );
         String statCost = General.STATS_MAP.get ( attribute.getStatCost ( ) );
         if (attribute.getStatBonus ( ).equalsIgnoreCase ( "TPS" )) {
             int currentTP = dbcPlayer.getTP ( );
             if (deathNPC && playersTPS.containsKey ( player.getName ( ) )) {
                 int oldTP = playersTPS.get ( player.getName ( ) );
                 int tp = currentTP - oldTP;
-               Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
-                        + attribute.getBonus () * tp );
+                Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
+                        + attribute.getBonus ( ) * tp );
                 player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
                 return;
             }
@@ -118,10 +146,10 @@ public class PlayerInteract implements Listener {
             player.sendMessage ( CC.translate ( "&8[&6Warning&8] &aYou are now holding: &6" + dbItem.getName ( ) + "&a. Effects applied!" ) );
             return;
         }
-        if (!attribute.getStatCost ( ).equalsIgnoreCase ( "TPS" ) && !attribute.getStatBonus ( ).equalsIgnoreCase ( "TPS" ) && !deathNPC ) {
+        if (!attribute.getStatCost ( ).equalsIgnoreCase ( "TPS" ) && !attribute.getStatBonus ( ).equalsIgnoreCase ( "TPS" ) && !deathNPC) {
             int currentStatBonus = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( (statFromBonus == null) ? statBonus : statFromBonus );
             int currentStatCost = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( statCost );
-            int currentStatToBonus = dbcPlayer.getNbt ().getCompound ( "PlayerPersisted" ).getInteger ( statBonus );
+            int currentStatToBonus = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( statBonus );
             bonus = bonus * currentStatBonus;
             cost = cost * currentStatCost;
             playerBonus.put ( player.getName ( ), bonus );
