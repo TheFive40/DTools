@@ -1,5 +1,6 @@
 package org.delaware.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -152,7 +153,10 @@ public class TPSCommand extends BaseCommand {
         if (itemStack == null || itemStack.getItemMeta ( ) == null) {
             return null;
         }
-
+        if (tps == null || tps.isEmpty()) {
+            Bukkit.getLogger().warning("Error: La lista de TPs está vacía o no ha sido inicializada.");
+            return null;
+        }
         int itemId = itemStack.getType ( ).getId ( );
         String itemDisplayName = itemStack.getItemMeta ( ).getDisplayName ( );
         List<String> itemLore = itemStack.getItemMeta ( ).getLore ( );
