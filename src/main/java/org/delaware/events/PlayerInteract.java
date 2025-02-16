@@ -6,6 +6,7 @@ import net.luckperms.api.model.user.User;
 import noppes.npcs.api.entity.ICustomNpc;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -67,11 +68,8 @@ public class PlayerInteract implements Listener {
             if (tp == null) return;
             int amount = itemInHand.getAmount ( );
             int reward = tp.getValue ( ) * amount;
-            DecimalFormat formatter = new DecimalFormat ( "#,###" );
-            String formattedReward = formatter.format ( reward );
-            IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
-            idbcPlayer.setTP ( idbcPlayer.getTP ( ) + reward );
-            idbcPlayer.sendMessage ( CC.translate ( "&8[&b+&8]&b " + formattedReward  ) );
+               Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
+                   + reward );
             player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
             player.setItemInHand ( null );
         }
@@ -83,16 +81,15 @@ public class PlayerInteract implements Listener {
         float cost = dbItem.getAttribute ( ).getCost ( );
         Attribute attribute = dbItem.getAttribute ( );
         String statBonus = General.STATS_MAP.get ( attribute.getStatBonus ( ) );
+        String statFromBonus = General.STATS_MAP.get ( attribute.getStatFromBonus () );
         String statCost = General.STATS_MAP.get ( attribute.getStatCost ( ) );
         if (attribute.getStatBonus ( ).equalsIgnoreCase ( "TPS" )) {
             int currentTP = dbcPlayer.getTP ( );
             if (deathNPC && playersTPS.containsKey ( player.getName ( ) )) {
                 int oldTP = playersTPS.get ( player.getName ( ) );
                 int tp = currentTP - oldTP;
-                DecimalFormat formatter = new DecimalFormat ( "#,###" );
-                String formattedReward = formatter.format ( (attribute.getBonus ( ) * (dbcPlayer.getTP ( ) - playersTPS.get ( player.getName ( ) ))) );
-                dbcPlayer.setTP ( (int) (currentTP + (attribute.getBonus ( ) * tp)) );
-                dbcPlayer.sendMessage ( CC.translate ( "&3[&a+&3] " + formattedReward ) );
+               Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
+                        + attribute.getBonus () * tp );
                 player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
                 return;
             }
@@ -116,20 +113,21 @@ public class PlayerInteract implements Listener {
             bonus = bonus * currentStatBonus;
             playerBonus.put ( player.getName ( ), bonus );
             dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statBonus, (int) (bonus + currentStatBonus) );
-            player.sendMessage ( CC.translate ( "&8[&bDBFuture&8] &aYou are now holding: &6" + dbItem.getName ( ) + "&a. Effects applied!" ) );
+            player.sendMessage ( CC.translate ( "&8[&6Warning&8] &aYou are now holding: &6" + dbItem.getName ( ) + "&a. Effects applied!" ) );
             return;
         }
-        if (!attribute.getStatCost ( ).equalsIgnoreCase ( "TPS" ) && !attribute.getStatBonus ( ).equalsIgnoreCase ( "TPS" ) && !deathNPC) {
-            int currentStatBonus = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( statBonus );
+        if (!attribute.getStatCost ( ).equalsIgnoreCase ( "TPS" ) && !attribute.getStatBonus ( ).equalsIgnoreCase ( "TPS" ) && !deathNPC ) {
+            int currentStatBonus = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( (statFromBonus == null) ? statBonus : statFromBonus );
             int currentStatCost = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( statCost );
+            int currentStatToBonus = dbcPlayer.getNbt ().getCompound ( "PlayerPersisted" ).getInteger ( statBonus );
             bonus = bonus * currentStatBonus;
             cost = cost * currentStatCost;
             playerBonus.put ( player.getName ( ), bonus );
             playerCost.put ( player.getName ( ), cost );
-            dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statBonus, (int) (bonus + currentStatBonus) );
+            dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statBonus, (int) (bonus + currentStatToBonus) );
             dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statCost, (int) (currentStatCost - cost) );
             players.add ( player.getName ( ) );
-            player.sendMessage ( CC.translate ( "&8[&bDBFuture&8] &aYou are now holding: &6" + dbItem.getName ( ) + "&a. Effects applied!" ) );
+            player.sendMessage ( CC.translate ( "&8[&6Warning&8] &aYou are now holding: &6" + dbItem.getName ( ) + "&a. Effects applied!" ) );
         }
 
     }

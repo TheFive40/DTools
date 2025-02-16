@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import static org.delaware.Main.playersTPS;
 import static org.delaware.commands.DBItemsCommand.isDBItem;
 import static org.delaware.events.PlayerInteract.armorCompleted;
 
@@ -22,7 +21,6 @@ public class PlayerJoinEvent implements Listener {
         }
         IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( event.getPlayer ( ).getName ( ) )
                 .getDBCPlayer ( );
-        
         armorCompleted.put ( event.getPlayer ( ).getName ( ), armorCount );
     }
 }

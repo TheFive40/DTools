@@ -13,6 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Attribute implements Serializable {
     private String statBonus = " ";
+    private String statFromBonus;
     private String statCost = " ";
     private float bonus;
     private float cost;

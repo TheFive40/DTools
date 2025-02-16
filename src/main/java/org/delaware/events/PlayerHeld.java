@@ -13,14 +13,12 @@ import org.delaware.tools.General;
 import org.delaware.tools.model.entities.Attribute;
 import org.delaware.tools.model.entities.DBItem;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import static org.delaware.Main.playersTPS;
 import static org.delaware.commands.DBItemsCommand.isDBItem;
 import static org.delaware.commands.DBItemsCommand.wrapDBItem;
-import static org.delaware.events.PlayerInteract.*;
-import static org.delaware.events.PlayerInteract.tasks;
+import static org.delaware.events.PlayerInteract.playerBonus;
+import static org.delaware.events.PlayerInteract.playerCost;
 
 public class PlayerHeld implements Listener {
     public static ArrayList<String> players = new ArrayList<> ( );
@@ -30,8 +28,6 @@ public class PlayerHeld implements Listener {
         Player player = event.getPlayer ( );
         ItemStack newItem = player.getInventory ( ).getItem ( event.getNewSlot ( ) );
         ItemStack previousItem = player.getInventory ( ).getItem ( event.getPreviousSlot ( ) );
-        int tp = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getTP ( );
-        playersTPS.put ( event.getPlayer ( ).getName ( ), tp );
         DBItem dbItem = (newItem != null) ? wrapDBItem ( newItem ) : null;
         DBItem dbItemPrevious = (previousItem != null) ? wrapDBItem ( previousItem ) : null;
         if (previousItem != null && dbItemPrevious != null) {
@@ -67,7 +63,7 @@ public class PlayerHeld implements Listener {
             currentStatCost = (int) (currentStatCost + cost);
             dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statCost, currentStatCost );
             player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
-            player.sendMessage ( CC.translate ( "&8[&bDBFuture&8] &eYou removed: &6" + dbItem.getName ( ) + "&e. Effects are no longer active. " ) );
+            player.sendMessage ( CC.translate ( "&8[&6Warning&8] &eYou removed: &6" + dbItem.getName ( ) + "&e. Effects are no longer active. " ) );
             players.remove ( player.getName ( ) );
             return;
         } else if (attribute.getStatCost ( ).equalsIgnoreCase ( "TPS" )) {
@@ -75,13 +71,15 @@ public class PlayerHeld implements Listener {
             bonus = playerBonus.get ( player.getName ( ) );
             currentStatBonus = (int) (currentStatBonus + bonus);
             dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statBonus, currentStatBonus );
-            player.sendMessage ( CC.translate ( "&8[&bDBFuture&8] &eYou removed: &6" + dbItem.getName ( ) + "&e. Effects are no longer active. " ) );
+            player.sendMessage ( CC.translate ( "&8[&6Warning&8] &eYou removed: &6" + dbItem.getName ( ) + "&e. Effects are no longer active. " ) );
             players.remove ( player.getName ( ) );
             return;
         }
         int currentStatBonus = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( statBonus );
         bonus = playerBonus.get ( player.getName ( ) );
+
         currentStatBonus = (int) (currentStatBonus - bonus);
+        if (currentStatBonus % 2 != 0) currentStatBonus = currentStatBonus + 1;
         int currentStatCost = dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).getInteger ( statCost );
         cost = playerCost.get ( player.getName ( ) );
         currentStatCost = (int) (currentStatCost + cost);
@@ -89,9 +87,9 @@ public class PlayerHeld implements Listener {
         dbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( statCost, currentStatCost );
         players.remove ( player.getName ( ) );
         if (dbItem.getType ( ) != null && (dbItem.getType ( ).equalsIgnoreCase ( "SWORD" ) || dbItem.getType ( ).equalsIgnoreCase ( "ITEM" )))
-            player.sendMessage ( CC.translate ( "&8[&bDBFuture&8] &eYou stopped holding: &6" + dbItem.getName ( ) + "&e. Effects removed!" ) );
+            player.sendMessage ( CC.translate ( "&8[&6Warning&8] &eYou stopped holding: &6" + dbItem.getName ( ) + "&e. Effects removed!" ) );
         else
-            player.sendMessage ( CC.translate ( "&8[&bDBFuture&8] &eYou removed: &6" + dbItem.getName ( ) + "&e. Effects are no longer active. " ) );
+            player.sendMessage ( CC.translate ( "&8[&6Warning&8] &eYou removed: &6" + dbItem.getName ( ) + "&e. Effects are no longer active. " ) );
 
     }
 

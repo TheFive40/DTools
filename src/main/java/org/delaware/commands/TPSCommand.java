@@ -76,8 +76,12 @@ public class TPSCommand extends BaseCommand {
                         return;
                     }
                     StringBuilder display = new StringBuilder ( );
-                    for (int i = 2; i < command.length ( ); i++)
-                        display.append ( CC.translate ( command.getArgs ( i ) ) ).append ( " " );
+                    if (command.length ( ) == 3) {
+                        display.append ( CC.translate ( command.getArgs ( 2 ) ) );
+                    }else{
+                        for (int i = 2; i < command.length ( ); i++)
+                            display.append ( CC.translate ( command.getArgs ( i ) ) ).append ( " " );
+                    }
                     tp = tps.get ( tpValue );
                     tp.setDisplayName ( CC.translate ( display.toString ( ) ) );
                     player.setItemInHand ( wrapItemStack ( tp ) );
@@ -98,7 +102,7 @@ public class TPSCommand extends BaseCommand {
                 case "lore":
                     int index = 0;
                     try {
-                        index = Integer.parseInt ( command.getArgs ( 0 ) );
+                        index = Integer.parseInt ( command.getArgs ( 1 ) );
                     } catch (NumberFormatException exception) {
                         player.sendMessage ( CC.translate ( "&8[&4&lError&8] &4&l➤ &cInvalid line number! Please enter a valid number." ) );
                         return;
@@ -106,9 +110,17 @@ public class TPSCommand extends BaseCommand {
                     tp = findTP ( player.getItemInHand ( ) );
                     if (tp != null) {
                         lore = tp.getLore ( );
+                        boolean bucle = true;
                         StringBuilder loreText = new StringBuilder ( );
-                        for (int i = 1; i < command.length ( ); i++) {
-                            loreText.append ( command.getArgs ( i ) ).append ( " " );
+                        if (command.getArgs ( 2 ).equalsIgnoreCase ( " " ) || command.getArgs ( 2 ).equalsIgnoreCase ( "" )
+                                || command.getArgs ( 2 ).equalsIgnoreCase ( "_" )) {
+                            loreText.append ( " " );
+                            bucle = false;
+                        }
+                        if (bucle) {
+                            for (int i = 2; i < command.length ( ); i++) {
+                                loreText.append ( command.getArgs ( i ) ).append ( " " );
+                            }
                         }
                         if (index >= 0 && index < lore.size ( )) {
                             lore.set ( index, CC.translate ( loreText.toString ( ) ) );
@@ -153,8 +165,7 @@ public class TPSCommand extends BaseCommand {
         if (itemStack == null || itemStack.getItemMeta ( ) == null) {
             return null;
         }
-        if (tps == null || tps.isEmpty()) {
-            Bukkit.getLogger().warning("Error: La lista de TPs está vacía o no ha sido inicializada.");
+        if (tps == null || tps.isEmpty ( )) {
             return null;
         }
         int itemId = itemStack.getType ( ).getId ( );

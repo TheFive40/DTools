@@ -26,7 +26,7 @@ public class DBItemsCommand extends BaseCommand {
 
     public static ConcurrentHashMap<String, DBItem> itemsRegistry = new ConcurrentHashMap<> ( );
 
-    @Command(aliases = "dbitem", name = "dbitem")
+    @Command(aliases = "dbitem", name = "dbitem", permission = "delawareStats.dbitem")
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         Player player = command.getPlayer ( );
@@ -48,9 +48,9 @@ public class DBItemsCommand extends BaseCommand {
                     ItemMeta meta = item.getItemMeta ( );
                     meta.setDisplayName ( CC.translate ( name.toString ( ) ) );
                     item.setItemMeta ( meta );
-                    player.sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aSuccess: &7The item's name has been changed to &6" + dbItem.getName ( ) + "&7." ) );
+                    player.sendMessage ( CC.translate ( "&8[&6Warning&8] &aSuccess: &7The item's name has been changed to &6" + dbItem.getName ( ) + "&7." ) );
                 } catch (NullPointerException exception) {
-                    player.sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7The item could not be processed because it is null or invalid. Please check and try again." ) );
+                    player.sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7The item could not be processed because it is null or invalid. Please check and try again." ) );
                     return;
                 }
 
@@ -62,7 +62,7 @@ public class DBItemsCommand extends BaseCommand {
                 String arg0 = command.getArgs ( 0 );
                 if (arg0.equalsIgnoreCase ( "list" )) {
                     if (itemsRegistry.isEmpty ( )) {
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7No items have been registered yet." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7No items have been registered yet." ) );
                         return;
                     }
 
@@ -74,7 +74,7 @@ public class DBItemsCommand extends BaseCommand {
                     }
                     command.getSender ( ).sendMessage ( CC.translate ( "&a&l&m---------------------------------------------" ) );
                 } else if (arg0.equalsIgnoreCase ( "help" )) {
-                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &eAvailable Commands for &6dbitem&e:" ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &eAvailable Commands for &6dbitem&e:" ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&a&l&m---------------------------------------------" ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem give <item> &7- Gives an item with a specific booster." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem list &7- Lists all registered items with boosters." ) );
@@ -82,6 +82,7 @@ public class DBItemsCommand extends BaseCommand {
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem author &7- Shows information about the creator of the booster system." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem register <name> &7- Registers a new item with the specified name." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem set bonus <id> <Attribute> <bonus> &7- Sets a specific bonus for an item's attribute." ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem set bonus <id> <stat to bonus> <stat from bonus> <percentage> &7- Sets a specific bonus for an item's attribute." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem set cost <id> <Attribute> <cost> &7- Sets the cost of a specific attribute for an item." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem set name <id> <displayName> &7- Sets the visible name of an item." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem set type <id> <itemType> &7- Sets the type of the item (e.g., Armor, Sword, Consumable)." ) );
@@ -90,8 +91,8 @@ public class DBItemsCommand extends BaseCommand {
                     command.getSender ( ).sendMessage ( CC.translate ( "&6/dbitem set armor <chestplate> <leggings> <boots> &7- Sets the armor pieces for an item." ) );
                     command.getSender ( ).sendMessage ( CC.translate ( "&a&l&m---------------------------------------------" ) );
                 } else if (arg0.equalsIgnoreCase ( "author" )) {
-                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &eThis booster system was created by &6TheFive &e(or &6DelawareX&e)." ) );
-                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &7Thank you for using our system!" ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &eThis booster system was created by &6TheFive &e(or &6DelawareX&e)." ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &7Thank you for using our system!" ) );
                 }
                 break;
             case 2:
@@ -120,22 +121,22 @@ public class DBItemsCommand extends BaseCommand {
                         player.sendMessage ( CC.translate ( "&aThe item &6" + dbItemId + " &ahas been successfully registered." ) );
                         return;
                     }
-                    player.sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7You must hold an item in your hand to register it!" ) );
+                    player.sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7You must hold an item in your hand to register it!" ) );
                 } else if (arg0.equalsIgnoreCase ( "remove" )) {
                     if (command.length ( ) < 2) {
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7You must specify an item ID to remove." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7You must specify an item ID to remove." ) );
                         return;
                     }
 
                     String itemId = command.getArgs ( 1 );
                     if (itemsRegistry.containsKey ( itemId )) {
                         itemsRegistry.remove ( itemId );
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe item &6" + itemId + " &ahas been successfully removed." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe item &6" + itemId + " &ahas been successfully removed." ) );
                     } else {
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7No item found with the ID &6" + itemId + "&7." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7No item found with the ID &6" + itemId + "&7." ) );
                     }
                 } else if (arg0.equalsIgnoreCase ( "commit" )) {
-                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &eCommitting changes..." ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &eCommitting changes..." ) );
                     String id = command.getArgs ( 1 );
                     DBItem dbItem = itemsRegistry.get ( id );
                     if (dbItem != null) {
@@ -164,10 +165,10 @@ public class DBItemsCommand extends BaseCommand {
                         lore.add ( "" );
                         lore.add ( CC.translate ( "&d&lLEGENDARY" ) );
                         dbItem.setLore ( lore );
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe lore for item &6" + dbItem.getName ( ) + " &ahas been successfully committed." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe lore for item &6" + dbItem.getName ( ) + " &ahas been successfully committed." ) );
                         itemsRegistry.put ( id, dbItem );
                     } else {
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7No item found with the ID &6" + id + "&7." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7No item found with the ID &6" + id + "&7." ) );
                     }
                 }
                 break;
@@ -177,17 +178,17 @@ public class DBItemsCommand extends BaseCommand {
                     String id = command.getArgs ( 2 );
                     DBItem dbItem = itemsRegistry.get ( id );
                     if (dbItem == null) {
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7No item found with the ID &6" + id + "&7." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7No item found with the ID &6" + id + "&7." ) );
                         return;
                     }
                     String type = command.getArgs ( 3 ).toUpperCase ( );
                     if (!type.equals ( "ARMOR" ) && !type.equals ( "SWORD" ) && !type.equals ( "CONSUMABLE" )) {
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7Invalid type. Valid types are: &6Armor, Sword, Consumable." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7Invalid type. Valid types are: &6Armor, Sword, Consumable." ) );
                         return;
                     }
                     dbItem.setType ( type );
                     itemsRegistry.put ( id, dbItem );
-                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe type for item &6" + dbItem.getName ( ) + " &ahas been set to &6" + type + "&a." ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe type for item &6" + dbItem.getName ( ) + " &ahas been set to &6" + type + "&a." ) );
                     return;
                 }
                 break;
@@ -201,10 +202,10 @@ public class DBItemsCommand extends BaseCommand {
                     DBItem leggings = itemsRegistry.get ( id_leggins );
                     DBItem boots = itemsRegistry.get ( id_boots );
                     armors.add ( new ArrayList<> ( Arrays.asList ( chestplate, leggings, boots ) ) );
-                    command.getSender().sendMessage(CC.translate(
-                            "&8[&6&lDBNetwork&8] &aThe armor pieces have been set: &6Chestplate: &e"
-                                    + chestplate.getName () + "&6, Leggings: &e" + leggings.getName () + "&6, Boots: &e" + boots.getName () + "&a."
-                    ));
+                    command.getSender ( ).sendMessage ( CC.translate (
+                            "&8[&6Warning&8] &aThe armor pieces have been set: &6Chestplate: &e"
+                                    + chestplate.getName ( ) + "&6, Leggings: &e" + leggings.getName ( ) + "&6, Boots: &e" + boots.getName ( ) + "&a."
+                    ) );
                     player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
                     return;
                 }
@@ -213,20 +214,20 @@ public class DBItemsCommand extends BaseCommand {
                 try {
                     bonus = Double.parseDouble ( command.getArgs ( 4 ) );
                 } catch (NumberFormatException exception) {
-                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7The value &6'" + command.getArgs ( 3 ) + "' &7is not a valid number." ) );
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7The value &6'" + command.getArgs ( 3 ) + "' &7is not a valid number." ) );
                     return;
                 }
                 if (arg1.equalsIgnoreCase ( "bonus" )) {
                     if (General.STATS_MAP.containsKey ( attribute )) {
                         DBItem item = itemsRegistry.get ( command.getArgs ( 2 ).toUpperCase ( ) );
                         if (item == null) {
-                            command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7The item is null or not properly registered. Please check and try again." ) );
+                            command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7The item is null or not properly registered. Please check and try again." ) );
                             return;
                         }
                         Attribute attributeStat = item.getAttribute ( );
                         attributeStat.setStatBonus ( attribute );
                         attributeStat.setBonus ( (float) bonus );
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
                         item.setAttribute ( attributeStat );
                         itemsRegistry.put ( item.getIdentifier ( ), item );
                     } else {
@@ -234,7 +235,7 @@ public class DBItemsCommand extends BaseCommand {
                         Attribute attributeStat = item.getAttribute ( );
                         attributeStat.setStatBonus ( attribute );
                         attributeStat.setBonus ( (float) bonus );
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
                         item.setAttribute ( attributeStat );
                         itemsRegistry.put ( item.getIdentifier ( ), item );
                     }
@@ -244,13 +245,13 @@ public class DBItemsCommand extends BaseCommand {
                     if (General.STATS_MAP.containsKey ( attribute )) {
                         DBItem item = itemsRegistry.get ( command.getArgs ( 2 ).toUpperCase ( ) );
                         if (item == null) {
-                            command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &cError: &7The item is null or not properly registered. Please check and try again." ) );
+                            command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7The item is null or not properly registered. Please check and try again." ) );
                             return;
                         }
                         Attribute attributeStat = item.getAttribute ( );
                         attributeStat.setStatCost ( attribute );
                         attributeStat.setCost ( (float) bonus );
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "% &afor the item in your hand." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "% &afor the item in your hand." ) );
                         item.setAttribute ( attributeStat );
                         itemsRegistry.put ( item.getIdentifier ( ), item );
                     } else {
@@ -258,11 +259,37 @@ public class DBItemsCommand extends BaseCommand {
                         Attribute attributeStat = item.getAttribute ( );
                         attributeStat.setStatCost ( attribute );
                         attributeStat.setCost ( (float) bonus );
-                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6&lDBNetwork&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
                         item.setAttribute ( attributeStat );
                         itemsRegistry.put ( item.getIdentifier ( ), item );
                     }
 
+                }
+                break;
+            case 6:
+                arg1 = command.getArgs ( 1 );
+                try {
+                    bonus = Double.parseDouble ( command.getArgs ( 5 ) );
+                } catch (NumberFormatException exception) {
+                    command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7The value &6'" + command.getArgs ( 3 ) + "' &7is not a valid number." ) );
+                    return;
+                }
+                if (arg1.equalsIgnoreCase ( "bonus" )) {
+                    attribute = command.getArgs ( 4 ).toUpperCase ( );
+                    if (General.STATS_MAP.containsKey ( attribute )) {
+                        DBItem item = itemsRegistry.get ( command.getArgs ( 2 ).toUpperCase ( ) );
+                        if (item == null) {
+                            command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &cError: &7The item is null or not properly registered. Please check and try again." ) );
+                            return;
+                        }
+                        Attribute attributeStat = item.getAttribute ( );
+                        attributeStat.setStatBonus ( command.getArgs ( 3 ).toUpperCase () );
+                        attributeStat.setStatFromBonus ( attribute );
+                        attributeStat.setBonus ( (float) bonus );
+                        command.getSender ( ).sendMessage ( CC.translate ( "&8[&6Warning&8] &aThe attribute &6" + attribute + " &ahas been set to &6" + (bonus * 100) + "%. &afor the item in your hand." ) );
+                        item.setAttribute ( attributeStat );
+                        itemsRegistry.put ( item.getIdentifier ( ), item );
+                    }
                 }
                 break;
             default:
