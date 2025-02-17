@@ -29,6 +29,10 @@ public class BonusAttributes {
     public void clearBonus(String stat) {
         player.clearBonusAttribute(stat);
     }
+    //Removes an specific bonus
+    public void clearBonus(String stat, String bonusID) {
+        player.removeBonusAttribute(stat, bonusID);
+    }
     //Clears all applied bonuses
     public void clearAllBonuses() {
         nbt.remove("jrmcAttrBonusstr");
