@@ -3,6 +3,7 @@ package org.delaware.tools.Boosters;
 import noppes.npcs.api.INbt;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class BonusAttributes {
@@ -17,6 +18,14 @@ public class BonusAttributes {
         addBonus(stat, bonusID, operation, value, true);
     }
     public void addBonus(String stat, String bonusID, String operation, double value, boolean endOfLine) {
+        if(hasSpecificBonus(stat, bonusID)) {
+            if(nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(value))) {
+                return;
+            }else {
+                player.setBonusAttribute(stat, bonusID, operation, value);
+                return;
+            }
+        }
         player.addBonusAttribute(stat, bonusID, operation, value, endOfLine);
     }
     //Clears all the bonuses applied to the specified stat
