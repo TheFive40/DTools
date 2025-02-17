@@ -18,12 +18,10 @@ public class BonusAttributes {
     }
     public void addBonus(String stat, String bonusID, String operation, double value, boolean endOfLine) {
         if(hasSpecificBonus(stat, bonusID)) {
-            if(nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(value))) {
-                return;
-            }else {
+            if (!nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(value))) {
                 player.setBonusAttribute(stat, bonusID, operation, value);
-                return;
             }
+            return;
         }
         player.addBonusAttribute(stat, bonusID, operation, value, endOfLine);
     }
