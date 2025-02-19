@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
 import org.delaware.tools.ClassesRegistration;
+import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.General;
 import org.delaware.tools.commands.CommandFramework;
 import org.delaware.tools.model.entities.DBItem;
@@ -65,6 +66,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable () {
         instance = this;
+        General.getBukkitRunnable().runTaskTimer(instance, 20, (20 * 5));
         classesRegistration.loadCommands ( "org.delaware.commands" );
         classesRegistration.loadListeners ( "org.delaware.events" );
         System.out.println ( "Plugin successfully enabled" );
@@ -76,6 +78,9 @@ public class Main extends JavaPlugin {
 
         loadGifts();
 
+        //Spacey
+        loadCustomItems(dataDir);
+        //Spacey
 
         try {
             Type typeTps = new TypeToken<ConcurrentHashMap<Integer, TP>> ( ) {
@@ -92,6 +97,7 @@ public class Main extends JavaPlugin {
             }.getType ( );
             Type typeArmors = new TypeToken<ArrayList<ArrayList<DBItem>>> ( ) {
             }.getType ( );
+
 
             FileReader readerTps = new FileReader ( new File ( dataDir, "tps.json" ) );
             FileReader readerPlayers = new FileReader ( new File ( dataDir, "players.json" ) );
@@ -192,6 +198,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable () {
         System.out.println ( "Plugin successfully deactivated" );
+        General.getBukkitRunnable().cancel();
         writeData ();
         Gson gson = new GsonBuilder ( ).setPrettyPrinting ( ).create ( );
         String jsonTps = gson.toJson ( tps );
@@ -204,6 +211,11 @@ public class Main extends JavaPlugin {
 
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
+
+        //Spacey
+        disableCustomItems(dataDir);
+        //Spacey
+
         if (!dataDir.exists ( )) {
             dataDir.mkdirs ( );
         }
@@ -311,4 +323,28 @@ public class Main extends JavaPlugin {
     public ClassesRegistration getClassesRegistration () {
         return classesRegistration;
     }
+    //Spacey
+    private void loadCustomItems(File dataDir) {
+        try {
+            FileReader readerCustomItems = new FileReader ( new File ( dataDir, "CustomItems.json" ) );
+            Type typeItems = new TypeToken<HashMap<String, ItemStack>>(){}.getType();
+            Gson gson = new Gson();
+            CustomItems.items = gson.fromJson(readerCustomItems, typeItems);
+            readerCustomItems.close();
+        }catch(IOException | JsonSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void disableCustomItems(File dataDir) {
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String jsonCustomItems = gson.toJson(CustomItems.items);
+            FileWriter writerCustomItems = new FileWriter ( new File ( dataDir, "CustomItems.json" ) );
+            writerCustomItems.write(jsonCustomItems);
+            writerCustomItems.close();
+        }catch(IOException | JsonSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    //Spacey
 }
