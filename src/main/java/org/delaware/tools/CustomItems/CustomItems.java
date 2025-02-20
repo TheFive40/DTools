@@ -3,10 +3,10 @@ package org.delaware.tools.CustomItems;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.delaware.tools.CC;
 
 import java.util.HashMap;
@@ -26,9 +26,6 @@ public class CustomItems {
     @Getter @Setter private Map<Enchantment, Integer> enchantments;
     @Getter @Setter private String nbtData;
 
-    public ItemStack toItemStack() {
-        return null;
-    }
     public CustomItems(ItemStack item) {
         this.displayName = item.getItemMeta().getDisplayName();
         this.lore = item.getItemMeta().getLore();
@@ -43,9 +40,21 @@ public class CustomItems {
             this.nbtData = null;
         }
     }
+    public ItemStack toItemStack() {
+        ItemStack itemStack = new ItemStack(itemID);
+        itemStack.setAmount(amount);
+        itemStack.setDurability(durability);
+        itemStack.addEnchantments(enchantments);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
     public void addCustomItem(String key) {
         items.put(key.toUpperCase().trim(), this);
     }
+    //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
         try {
             return items.get(key.toUpperCase().trim());
@@ -57,4 +66,11 @@ public class CustomItems {
     public static Set<String> getAllCustomItems() {
         return items.keySet();
     }
+    public static boolean contains(String key) {
+        return items.containsKey(key);
+    }
+    public static void removeItem(String key) {
+        items.remove(key);
+    }
+    //STATIC METHODS
 }
