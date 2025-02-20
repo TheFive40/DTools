@@ -24,7 +24,6 @@ public class CustomItemsCommands extends BaseCommand {
         String action = args[0];
         switch(action.toLowerCase().trim()) {
             case "add":
-                //player.sendMessage(String.valueOf(player.getItemInHand().getType()));
                 if(player.getItemInHand().getType().equals(Material.AIR)) {
                     player.sendMessage(CC.translate("&cYou must be holding an item!"));
                     return;
@@ -32,10 +31,10 @@ public class CustomItemsCommands extends BaseCommand {
                 CustomItems custom = new CustomItems(player.getItemInHand());
                 custom.addCustomItem("test");
                 break;
-            case "get":
+            case "list":
                 if(CustomItems.getAllCustomItems().isEmpty()) return;
                 for(String item : CustomItems.getAllCustomItems()) {
-                    player.sendMessage(item);
+                    player.sendMessage(CC.translate("&a" + item));
                 }
                 break;
         }
