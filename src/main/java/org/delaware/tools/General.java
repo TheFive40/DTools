@@ -99,17 +99,4 @@ public class General {
             return false;
         }
     }
-    @Getter
-    static BukkitRunnable bukkitRunnable = new BukkitRunnable() {
-        @Override
-        public void run() {
-            for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-                if(player.getInventory().getChestplate() == null && player.getInventory().getLeggings() == null && player.getInventory().getBoots() == null) {
-                    player.sendMessage("no armor");
-                    continue;
-                }
-                player.sendMessage("armor");
-            }
-        }
-    };
 }

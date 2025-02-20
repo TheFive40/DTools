@@ -16,6 +16,7 @@ import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
 import org.delaware.tools.ClassesRegistration;
 import org.delaware.tools.CustomItems.CustomItems;
+import org.delaware.tools.CustomItems.CustomItemsRunnable;
 import org.delaware.tools.General;
 import org.delaware.tools.commands.CommandFramework;
 import org.delaware.tools.model.entities.DBItem;
@@ -324,7 +325,7 @@ public class Main extends JavaPlugin {
     }
     //Spacey
     private void loadCustomItems(File dataDir) {
-        General.getBukkitRunnable().runTaskTimer(instance, 20, (20 * 5));
+        CustomItemsRunnable.getBukkitRunnable().runTaskTimer(instance, 20, (20 * 5));
         try {
             FileReader readerCustomItems = new FileReader ( new File ( dataDir, "CustomItems.json" ) );
             Type typeItems = new TypeToken<HashMap<String, CustomItems>>(){}.getType();
@@ -336,7 +337,7 @@ public class Main extends JavaPlugin {
         }
     }
     private void disableCustomItems(File dataDir) {
-        General.getBukkitRunnable().cancel();
+        CustomItemsRunnable.getBukkitRunnable().cancel();
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String jsonCustomItems = gson.toJson(items);
