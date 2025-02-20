@@ -31,8 +31,13 @@ public class CustomItemsCommands extends BaseCommand {
                     player.sendMessage(CC.translate("&cYou must specify an ID!"));
                     return;
                 }
+                if(CustomItems.contains(args[1])) {
+                    player.sendMessage(CC.translate("&4" + args[1] + "&c already exists"));
+                    return;
+                }
                 CustomItems custom = new CustomItems(player.getItemInHand());
                 custom.addCustomItem(args[1]);
+                player.sendMessage(CC.translate("&aItem registered correctly"));
                 break;
             case "list":
                 if(CustomItems.getAllCustomItems().isEmpty()) {
@@ -49,7 +54,7 @@ public class CustomItemsCommands extends BaseCommand {
                     return;
                 }
                 String key = args[1];
-                if(!CustomItems.contains(key)) {
+                if(!CustomItems.contains(key.toUpperCase().trim())) {
                     player.sendMessage(CC.translate("&cItem &4" + key + " &cdoes not exist!"));
                     return;
                 }

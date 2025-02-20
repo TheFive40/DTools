@@ -2,13 +2,14 @@ package org.delaware.tools.CustomItems;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.server.v1_7_R4.MojangsonParser;
+import net.minecraft.server.v1_7_R4.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.delaware.tools.CC;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,10 @@ public class CustomItems {
     @Getter @Setter private String nbtData;
 
     public CustomItems(ItemStack item) {
-        this.displayName = item.getItemMeta().getDisplayName();
-        this.lore = item.getItemMeta().getLore();
+        if(item.hasItemMeta()) {
+            this.displayName = item.getItemMeta().getDisplayName();
+            this.lore = item.getItemMeta().getLore();
+        }
         this.durability = item.getDurability();
         this.amount = item.getAmount();
         this.enchantments = item.getEnchantments();
@@ -45,10 +48,25 @@ public class CustomItems {
         itemStack.setAmount(amount);
         itemStack.setDurability(durability);
         itemStack.addEnchantments(enchantments);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(displayName);
-        meta.setLore(lore);
-        itemStack.setItemMeta(meta);
+        if(this.displayName != null) {
+            if(this.displayName.isEmpty()) {
+                ItemMeta meta = itemStack.getItemMeta();
+                meta.setDisplayName(displayName);
+                meta.setLore(lore);
+                itemStack.setItemMeta(meta);
+            }
+        }
+        if(this.nbtData != null && !this.nbtData.isEmpty()) {
+            try {
+                net.minecraft.server.v1_7_R4.ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
+                NBTTagCompound nbt = (NBTTagCompound) MojangsonParser.parse(this.nbtData);
+                nmsStack.setTag(nbt);
+                itemStack = CraftItemStack.asBukkitCopy(nmsStack);
+            }catch(Exception e) {
+                Bukkit.getConsoleSender().sendMessage("Error while trying to apply NBT data " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
         return itemStack;
     }
     public void addCustomItem(String key) {
