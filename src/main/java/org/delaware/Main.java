@@ -31,13 +31,13 @@ import java.util.concurrent.ConcurrentHashMap;
 ;
 
 import static org.delaware.commands.CommandTransform.playerStats;
+import static org.delaware.tools.CustomItems.CustomItems.items;
 import static org.delaware.commands.DBItemsCommand.*;
 import static org.delaware.commands.TPSCommand.tps;
 import static org.delaware.events.InventoryClick.hasFullArmorSet;
 import static org.delaware.events.PlayerHeld.players;
 import static org.delaware.events.PlayerHeld.restorePlayerData;
 import static org.delaware.events.PlayerInteract.*;
-import static org.delaware.tools.CustomItems.CustomItems.items;
 
 
 public class Main extends JavaPlugin {
@@ -327,7 +327,7 @@ public class Main extends JavaPlugin {
         General.getBukkitRunnable().runTaskTimer(instance, 20, (20 * 5));
         try {
             FileReader readerCustomItems = new FileReader ( new File ( dataDir, "CustomItems.json" ) );
-            Type typeItems = new TypeToken<HashMap<String, ItemStack>>(){}.getType();
+            Type typeItems = new TypeToken<HashMap<String, CustomItems>>(){}.getType();
             Gson gson = new Gson();
             items = gson.fromJson(readerCustomItems, typeItems);
             readerCustomItems.close();
