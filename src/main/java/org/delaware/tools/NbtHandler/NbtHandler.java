@@ -24,12 +24,16 @@ public class NbtHandler {
     }
     public void setCompoundFromString(String comp) {
         try {
-            NBTTagCompound nbt = (NBTTagCompound) getCompoundFromString(comp);
+            NBTTagCompound nbt = getCompoundFromString(comp);
             item.setTag(nbt);
         }catch(Exception e) {
             Bukkit.getConsoleSender().sendMessage("Error while trying to apply NBT data " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    public void setString(String key, String value) {
+        compound.setString(key, value);
+        item.setTag(compound);
     }
     public ItemStack getItemStack() {
         return CraftItemStack.asBukkitCopy(item);

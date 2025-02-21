@@ -64,6 +64,15 @@ public class CustomItems {
     public void addCustomItem(String key) {
         items.put(key.toUpperCase().trim(), this);
     }
+    public void addBoost(String itemID, String stat, String boostID, String operation, String value) {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        nbt.setString("STAT", stat);
+        nbt.setString("BOOSTID", boostID);
+        nbt.setString("OPERATION", operation);
+        nbt.setString("VALUE", value);
+        this.nbtData = nbt.getCompound().toString();
+        items.put(itemID, this);
+    }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
         try {
