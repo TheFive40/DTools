@@ -51,4 +51,11 @@ public class BonusAttributes {
         if(!hasAnyBonus(stat)) return false;
         return nbt.getString("jrmcAttrBonus" + stat).contains(bonusID);
     }
+    public boolean hasBonus() {
+        String[] stats = {"str", "dex", "con", "wil", "mnd", "spi"};
+        for(String stat : stats) {
+            if(hasAnyBonus(stat)) return true;
+        }
+        return false;
+    }
 }
