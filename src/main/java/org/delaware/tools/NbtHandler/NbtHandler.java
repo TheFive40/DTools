@@ -13,7 +13,7 @@ public class NbtHandler {
     public NbtHandler(ItemStack item) {
         net.minecraft.server.v1_7_R4.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
         this.item = nmsStack;
-        if(nmsStack != null) this.compound = nmsStack.getTag();
+        if(nmsStack.getTag() != null) this.compound = nmsStack.getTag();
         else this.compound = null;
     }
     public boolean hasNBT() {
