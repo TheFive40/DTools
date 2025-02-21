@@ -35,6 +35,10 @@ public class NbtHandler {
         compound.setString(key, value);
         item.setTag(compound);
     }
+    public void setBoolean(String key, boolean value) {
+        compound.setBoolean(key, value);
+        item.setTag(compound);
+    }
     public ItemStack getItemStack() {
         return CraftItemStack.asBukkitCopy(item);
     }

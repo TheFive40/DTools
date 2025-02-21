@@ -25,7 +25,7 @@ public class CustomItems {
     @Getter @Setter private Map<Enchantment, Integer> enchantments;
     @Getter @Setter private String nbtData;
 
-    public CustomItems(ItemStack item) {
+    public CustomItems(ItemStack item) { //IMPORTANT TO REMEMBER: ADD METADATA, FOR SAME ID ITEMS (NUMBER AFTER THE :)
         if(item.hasItemMeta()) {
             this.displayName = item.getItemMeta().getDisplayName();
             this.lore = item.getItemMeta().getLore();
@@ -64,12 +64,13 @@ public class CustomItems {
     public void addCustomItem(String key) {
         items.put(key.toUpperCase().trim(), this);
     }
-    public void addBoost(String itemID, String stat, String boostID, String operation, String value) {
+    public void addBoost(String itemID, String stat, String boostID, String operation, String value, boolean unbreakable) {
         NbtHandler nbt = new NbtHandler(this.toItemStack());
         nbt.setString("STAT", stat);
         nbt.setString("BOOSTID", boostID);
         nbt.setString("OPERATION", operation);
         nbt.setString("VALUE", value);
+        if(unbreakable) nbt.setBoolean("Unbreakable", true);
         this.nbtData = nbt.getCompound().toString();
         items.put(itemID, this);
     }
