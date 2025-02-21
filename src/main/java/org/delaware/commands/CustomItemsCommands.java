@@ -126,7 +126,7 @@ public class CustomItemsCommands extends BaseCommand {
                 }
                 CustomItems cItem = CustomItems.getCustomItem(args[1].toUpperCase().trim());
                 cItem.addBoost(args[1].toUpperCase().trim(), args[2].toLowerCase().trim(), args[3].toUpperCase().trim(), args[4].trim(), args[5]);
-                player.sendMessage("&aBoost added to item " + args[1] + " &acorrectly");
+                player.sendMessage(CC.translate("&aBoost added to item " + args[1] + " &acorrectly"));
         }
     }
 }
