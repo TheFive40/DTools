@@ -73,6 +73,17 @@ public class CustomItems {
         this.nbtData = nbt.getCompound().toString();
         items.put(itemID, this);
     }
+    public boolean hasCustomBoost() {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        if(nbt.getCompound() == null) return false;
+        return nbt.getCompound().hasKey("STAT");
+    }
+    //STAT , BOOSTID , OPERATION , VALUE
+    public String[] getCustomBoostValues() {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        if(nbt.getCompound() == null || !this.hasCustomBoost()) return null;
+        return new String[] {nbt.getCompound().getString("STAT"), nbt.getCompound().getString("BOOSTID"), nbt.getCompound().getString("OPERATION"), nbt.getCompound().getString("VALUE")};
+    }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
         try {
