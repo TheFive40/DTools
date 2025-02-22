@@ -1,9 +1,6 @@
 package org.delaware.tools.CustomItems;
 
-import kamkeel.npcdbc.controllers.StatusEffectController;
 import lombok.Getter;
-import net.minecraft.entity.player.EntityPlayer;
-import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,49 +24,47 @@ public class CustomItemsRunnable {
                 int setEffectCheck = 0;
                 String kitName = "";
                 if(chestplate != null) {
-                    CustomItems cItem = new CustomItems(chestplate);
+                    CustomItems cItem = CustomItems.getFromNbt(chestplate);
                     if(cItem.hasCustomBoost()) {
-                        String[] values = cItem.getCustomBoostValues();
-                        if(bonus.hasAnyBonus(values[0])) {
-                            bonus.clearBonus(values[0]);
-                        }
-                        bonus.addBonus(values[0], values[1], values[2], Double.parseDouble(values[3]));
-                        if(cItem.hasSetEffect()) {
-                            kitName = cItem.getKitName();
-                            setEffectCheck++;
-                        }
+                        clearAndAddBonus(cItem, bonus);
+                    }
+                    if(cItem.hasSetEffect()) {
+                        kitName = cItem.getKitName();
+                        setEffectCheck++;
                     }
                 }
                 if(leggings != null) {
-                    CustomItems cItem = new CustomItems(leggings);
+                    CustomItems cItem = CustomItems.getFromNbt(leggings);
                     if(cItem.hasCustomBoost()) {
-                        String[] values = cItem.getCustomBoostValues();
-                        if(bonus.hasAnyBonus(values[0])) {
-                            bonus.clearBonus(values[0]);
-                        }
-                        bonus.addBonus(values[0], values[1], values[2], Double.parseDouble(values[3]));
-                        if(cItem.hasSetEffect()) {
-                            if(cItem.getKitName().equals(kitName)) setEffectCheck++;
-                        }
+                        clearAndAddBonus(cItem, bonus);
+                    }
+                    if(cItem.hasSetEffect()) {
+                        if(cItem.getKitName().equals(kitName)) setEffectCheck++;
                     }
                 }
                 if(boots != null) {
-                    CustomItems cItem = new CustomItems(boots);
+                    CustomItems cItem = CustomItems.getFromNbt(boots);
                     if(cItem.hasCustomBoost()) {
-                        String[] values = cItem.getCustomBoostValues();
-                        if(bonus.hasAnyBonus(values[0])) {
-                            bonus.clearBonus(values[0]);
-                        }
-                        bonus.addBonus(values[0], values[1], values[2], Double.parseDouble(values[3]));
+                        clearAndAddBonus(cItem, bonus);
                         if(cItem.hasSetEffect()) {
                             if(cItem.getKitName().equals(kitName)) setEffectCheck++;
                         }
                     }
+                    if(cItem.hasSetEffect()) {
+                        if(cItem.getKitName().equals(kitName)) setEffectCheck++;
+                    }
                     if(setEffectCheck >= 3) {
-                        int[] values = cItem.getSetEffectValuesIntegers();
-                        bonus.setCustomEffect(values[0], 5, (byte) values[1]);
+                        bonus.setCustomEffect(cItem.getEffect(), 5, cItem.getLevel());
                     }
                 }
+            }
+        }
+        private void clearAndAddBonus(CustomItems cItem, BonusAttributes bonus) {
+            for(int i = 0; i < cItem.getStats().size(); i++) {
+                if(bonus.hasAnyBonus(cItem.getStats().get(i))) {
+                    bonus.clearBonus(cItem.getStats().get(i));
+                }
+                bonus.addBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i), cItem.getOperations().get(i), cItem.getValues().get(i));
             }
         }
     };

@@ -8,22 +8,29 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.delaware.tools.CC;
 import org.delaware.tools.NbtHandler.NbtHandler;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import java.util.*;
+
+@Setter
+@Getter
 public class CustomItems {
 
     public static HashMap<String, CustomItems> items = new HashMap<>();
 
-    @Getter @Setter private String displayName;
-    @Getter @Setter private List<String> lore;
-    @Getter @Setter private short durability;
-    @Getter @Setter private int amount;
-    @Getter @Setter private int itemID;
-    @Getter @Setter private Map<Enchantment, Integer> enchantments;
-    @Getter @Setter private String nbtData;
+    private String displayName;
+    private List<String> lore;
+    private short durability;
+    private int amount;
+    private int itemID;
+    private Map<Enchantment, Integer> enchantments;
+    private String nbtData;
+    private String KitName;
+    private List<String> stats = new ArrayList<>();
+    private List<String> boostIDS = new ArrayList<>();
+    private List<String> operations = new ArrayList<>();
+    private List<Double> values = new ArrayList<>();
+    private int effect;
+    private byte level;
 
     public CustomItems(ItemStack item) { //IMPORTANT TO REMEMBER: ADD METADATA, FOR SAME ID ITEMS (NUMBER AFTER THE :)
         if(item.hasItemMeta()) {
@@ -67,55 +74,45 @@ public class CustomItems {
         return itemStack;
     }
     public void addCustomItem(String key) {
-        items.put(key.toUpperCase().trim(), this);
-    }
-    public void addBoost(String itemID, String stat, String boostID, String operation, String value, boolean unbreakable) {
         NbtHandler nbt = new NbtHandler(this.toItemStack());
-        nbt.setString("STAT", stat);
-        nbt.setString("BOOSTID", boostID);
-        nbt.setString("OPERATION", operation);
-        nbt.setString("VALUE", value);
+        nbt.setString("KEY", key);
+        this.nbtData = nbt.getCompound().toString();
+        items.put(key, this);
+    }
+    public void addBoost(String itemID, String stat, String boostID, String operation, double value, boolean unbreakable) {
+        this.stats.add(stat);
+        this.boostIDS.add(boostID);
+        this.operations.add(operation);
+        this.values.add(value);
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
         if(unbreakable) nbt.setBoolean("Unbreakable", true);
         this.nbtData = nbt.getCompound().toString();
         items.put(itemID, this);
     }
     public boolean hasCustomBoost() {
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        if(nbt.getCompound() == null) return false;
-        return nbt.getCompound().hasKey("STAT");
+        return !this.stats.isEmpty();
     }
-    //STAT , BOOSTID , OPERATION , VALUE
-    public String[] getCustomBoostValues() {
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        if(nbt.getCompound() == null || !this.hasCustomBoost()) return null;
-        return new String[] {nbt.getCompound().getString("STAT"), nbt.getCompound().getString("BOOSTID"), nbt.getCompound().getString("OPERATION"), nbt.getCompound().getString("VALUE")};
+    public void deleteLastBoost(String itemID) {
+        if(!this.stats.isEmpty()) this.stats.remove((this.stats.size()-1));
+        if(!this.boostIDS.isEmpty()) this.boostIDS.remove((this.boostIDS.size()-1));
+        if(!this.operations.isEmpty()) this.operations.remove((this.operations.size()-1));
+        if(!this.values.isEmpty()) this.values.remove((this.values.size()-1));
+        items.put(itemID, this);
     }
     public void addSetEffect(String itemID, String kitName, String effectID, int level) {
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        nbt.setString("KIT_NAME", kitName);
-        int effect = 0;
-        if(effectID.equals("HEALTHREGEN")) effect = 1;
-        if(effectID.equals("KIREGEN")) effect = 2;
-        if(effectID.equals("STAMINAREGEN")) effect = 3;
-        nbt.setInteger("EFFECT_ID", effect);
-        nbt.setInteger("LEVEL", level);
-        this.nbtData = nbt.getCompound().toString();
+        this.KitName = kitName;
+        if(effectID.equals("HEALTHREGEN")) this.effect = 1;
+        if(effectID.equals("KIREGEN")) this.effect = 2;
+        if(effectID.equals("STAMINAREGEN")) this.effect = 3;
+        this.level = (byte) level;
         items.put(itemID, this);
     }
     public boolean hasSetEffect() {
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        if(nbt.getCompound() == null) return false;
-        return nbt.getCompound().hasKey("KIT_NAME");
+        return KitName != null;
     }
-    public String getKitName() {
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        if(nbt.getCompound() == null || !this.hasSetEffect()) return null;
-        return nbt.getString("KIT_NAME");
-    }
-    public int[] getSetEffectValuesIntegers() {
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        if(nbt.getCompound() == null || !this.hasSetEffect()) return null;
-        return new int[] {nbt.getInteger("EFFECT_ID"), nbt.getInteger("LEVEL")};
+    public void deleteLastEffect(String itemID) {
+        KitName = null;
+        items.put(itemID, this);
     }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
@@ -134,6 +131,11 @@ public class CustomItems {
     }
     public static void removeItem(String key) {
         items.remove(key);
+    }
+    public static CustomItems getFromNbt(ItemStack item) {
+        NbtHandler nbt = new NbtHandler(item);
+        if(nbt.getCompound() != null && nbt.getCompound().hasKey("KEY")) return getCustomItem(nbt.getString("KEY"));
+        else return new CustomItems(item);
     }
     //STATIC METHODS
 }
