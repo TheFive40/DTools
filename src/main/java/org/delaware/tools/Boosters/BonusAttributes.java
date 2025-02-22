@@ -4,7 +4,6 @@ import kamkeel.npcdbc.controllers.StatusEffectController;
 import noppes.npcs.api.INbt;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class BonusAttributes {
