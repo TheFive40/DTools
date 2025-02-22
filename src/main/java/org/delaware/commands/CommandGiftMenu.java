@@ -83,8 +83,6 @@ public class CommandGiftMenu extends BaseCommand {
                                     player.teleport(location);
                                 });
                             }
-                            pagination.setItems(clickableItem);
-                            pagination.setItemsPerPage(21);
                             ItemStack previous = new ItemStack(Material.ARROW);
                             ItemMeta itemMeta = previous.getItemMeta();
                             itemMeta.setDisplayName(CC.translate("&c&lAtrás"));
@@ -93,7 +91,10 @@ public class CommandGiftMenu extends BaseCommand {
                             itemMetaNext.setDisplayName(CC.translate("&2&lSiguiente"));
                             previous.setItemMeta(itemMeta);
                             next.setItemMeta(itemMetaNext);
-                            pagination.addToIterator(inventoryContents.newIterator(SlotIterator.Type.HORIZONTAL, 1, 1));
+                            pagination.setItems(clickableItem);
+                            pagination.setItemsPerPage(21);
+                            pagination.addToIterator(inventoryContents.newIterator(SlotIterator.Type.HORIZONTAL, 1, 1)
+                                    .allowOverride(false));
                             inventoryContents.set(4, 3, ClickableItem.of(previous,
                                     e -> INVENTORY.open(command.getPlayer(), pagination.previous().getPage())));
                             inventoryContents.set(4, 5, ClickableItem.of(next,
