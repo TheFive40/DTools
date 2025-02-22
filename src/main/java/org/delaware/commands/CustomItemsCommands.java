@@ -17,7 +17,16 @@ public class CustomItemsCommands extends BaseCommand {
         String[] args = command.getArgs();
         Player player = command.getPlayer();
         if(args.length < 1) {
-            player.sendMessage("");
+            player.sendMessage(CC.translate("&7---------------------------------------------------"));
+            player.sendMessage(CC.translate("&6Available Commands:"));
+            player.sendMessage(CC.translate("&6dbCustomItems add <ID> -> &eAdds the item the player's holding to the config"));
+            player.sendMessage(CC.translate("&6dbCustomItems list -> &eShows all currently registered items"));
+            player.sendMessage(CC.translate("&6dbCustomItems get <ID> -> &eGives the player an item registered"));
+            player.sendMessage(CC.translate("&6dbCustomItems remove <ID> -> &eRemoves an item"));
+            player.sendMessage(CC.translate("&6dbCustomItems makeUnbreakable -> &eAdds the item the player's holding to the config"));
+            player.sendMessage(CC.translate("&6dbCustomItems addEffect -> &eUse for bonus attributes, for help type /dbCustomItems addEffect"));
+            player.sendMessage(CC.translate("&6dbCustomItems addSetEffect -> &eFor adding set effects, for help type /dbCustomItems addSetEffect"));
+            player.sendMessage(CC.translate("&7---------------------------------------------------"));
             return;
         }
         String action = args[0];
@@ -178,6 +187,7 @@ public class CustomItemsCommands extends BaseCommand {
                 int effectLevel = Integer.parseInt(args[4].trim());
                 customItem.addSetEffect(args[1].toUpperCase().trim(), args[2].toUpperCase().trim(), effectid, effectLevel);
                 player.sendMessage(CC.translate("&aBonus effect added correctly to item " + args[1]));
+                break;
             case "makeunbreakable":
                 if(player.getItemInHand().getType().equals(Material.AIR)) {
                     player.sendMessage(CC.translate("&cYou must be holding an item!"));
@@ -187,6 +197,7 @@ public class CustomItemsCommands extends BaseCommand {
                 toUnbreakable.setUnbreakable(true);
                 player.setItemInHand(toUnbreakable.toItemStack());
                 player.sendMessage(CC.translate("&aItem made unbreakable correctly"));
-        } //TO DO LATER ON: COMMAND TO MAKE ITEM UNBREAKABLE
+                break;
+        }
     }
 }

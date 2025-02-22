@@ -32,15 +32,27 @@ public class NbtHandler {
         }
     }
     public void setString(String key, String value) {
-        compound.setString(key, value);
+        if(compound == null) {
+            NBTTagCompound comp = new NBTTagCompound();
+            comp.setString(key, value);
+            this.compound = comp;
+        }else compound.setString(key, value);
         item.setTag(compound);
     }
     public void setInteger(String key, int value) {
-        compound.setInt(key, value);
+        if(compound == null) {
+            NBTTagCompound comp = new NBTTagCompound();
+            comp.setInt(key, value);
+            this.compound = comp;
+        }else compound.setInt(key, value);
         item.setTag(compound);
     }
     public void setBoolean(String key, boolean value) {
-        compound.setBoolean(key, value);
+        if(compound == null) {
+            NBTTagCompound comp = new NBTTagCompound();
+            comp.setBoolean(key, value);
+            this.compound = comp;
+        }else compound.setBoolean(key, value);
         item.setTag(compound);
     }
     public String getString(String key) {
