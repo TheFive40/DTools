@@ -27,20 +27,25 @@ public class EntityDeath implements Listener {
         if (event.getEntity ( ).getKiller ( ) != null) {
             Player player = event.getEntity ( ).getKiller ( );
             ItemStack hand = player.getItemInHand ( );
-            IEntity<?> entity = NpcAPI.Instance ( ).getIWorld ( event.getEntity ( ).getWorld ( ).getEnvironment ( ).getId ( ) )
-                    .getEntityByID ( event.getEntity ( ).getEntityId ( ) );
-            if (entity instanceof ICustomNpc<?> && hasFullArmorSet ( player ) && armorsPlayers.containsKey ( player.getName ( ) )) {
-                if (isDBItem ( player.getInventory ( ).getChestplate ( ) ) && isDBItem ( player.getInventory ( ).getLeggings ( ) ) &&
-                        isDBItem ( player.getInventory ( ).getBoots ( ) )) {
-                    ArrayList<DBItem> armaduras = new ArrayList<> ( Arrays.asList ( wrapDBItem ( player.getInventory ( ).getChestplate ( ) ), wrapDBItem ( player.getInventory ( ).getChestplate ( ) ),
-                            wrapDBItem ( player.getInventory ( ).getBoots ( ) )) );
-                    if (hasSetArmor ( armaduras )){
-                        setPlayerData ( player, wrapDBItem ( player.getInventory ( ).getChestplate ( ) ), true );
+            try{
+                IEntity<?> entity = NpcAPI.Instance ( ).getIWorld ( event.getEntity ( ).getWorld ( ).getEnvironment ( ).getId ( ) )
+                        .getEntityByID ( event.getEntity ( ).getEntityId ( ) );
+                if (entity instanceof ICustomNpc<?> && hasFullArmorSet ( player ) && armorsPlayers.containsKey ( player.getName ( ) )) {
+                    if (isDBItem ( player.getInventory ( ).getChestplate ( ) ) && isDBItem ( player.getInventory ( ).getLeggings ( ) ) &&
+                            isDBItem ( player.getInventory ( ).getBoots ( ) )) {
+                        ArrayList<DBItem> armaduras = new ArrayList<> ( Arrays.asList ( wrapDBItem ( player.getInventory ( ).getChestplate ( ) ), wrapDBItem ( player.getInventory ( ).getChestplate ( ) ),
+                                wrapDBItem ( player.getInventory ( ).getBoots ( ) )) );
+                        if (hasSetArmor ( armaduras )){
+                            setPlayerData ( player, wrapDBItem ( player.getInventory ( ).getChestplate ( ) ), true );
+                        }
                     }
+                } else if (entity instanceof ICustomNpc<?> && isDBItem ( hand )) {
+                    setPlayerData ( player, wrapDBItem ( hand ), true );
                 }
-            } else if (entity instanceof ICustomNpc<?> && isDBItem ( hand )) {
-                setPlayerData ( player, wrapDBItem ( hand ), true );
+            }catch(Exception exception){
+
             }
+
         }
 
     }

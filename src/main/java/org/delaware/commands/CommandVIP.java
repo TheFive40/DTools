@@ -23,7 +23,7 @@ public class CommandVIP extends BaseCommand {
     @Override
     @Command(aliases = "vip", name = "vip", permission = "dtools.vip")
     public void onCommand ( CommandArgs command ) throws IOException {
-        SmartInventory trainingInventory = SmartInventory.builder ( ).title ( CC.translate ( "&6&k::&c&lVIP&6k::" ) )
+        SmartInventory trainingInventory = SmartInventory.builder ( ).title ( CC.translate ( "&6&k::&c&lVIP&6&k::" ) )
                 .type ( InventoryType.CHEST )
                 .provider ( new InventoryProvider ( ) {
                     @Override
@@ -63,7 +63,7 @@ public class CommandVIP extends BaseCommand {
                                             inventoryContents.set ( 1, 5, ClickableItem.of ( Majin, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set Majin -1 " + player.getName ( ) );
                                             } ) );
-                                            ItemStack KO = new ItemStack ( 4457 );
+                                            ItemStack KO = new ItemStack ( 4959 );
                                             ItemMeta koItemMeta = KO.getItemMeta ( );
                                             koItemMeta.setDisplayName ( CC.translate ( "&6&lK.O" ) );
                                             KO.setItemMeta ( koItemMeta );
@@ -77,7 +77,7 @@ public class CommandVIP extends BaseCommand {
                                             inventoryContents.set ( 2, 4, ClickableItem.of ( NoFuse, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set NoFuse 0 " + player.getName ( ) );
                                             } ) );
-                                            ItemStack fatigue = new ItemStack ( 4456 );
+                                            ItemStack fatigue = new ItemStack ( 4941 );
                                             ItemMeta fatigueItemMeta = fatigue.getItemMeta ( );
                                             fatigueItemMeta.setDisplayName ( CC.translate ( "&e&lFatigue" ) );
                                             fatigue.setItemMeta ( fatigueItemMeta );
@@ -150,7 +150,7 @@ public class CommandVIP extends BaseCommand {
                     public void update ( Player player, InventoryContents inventoryContents ) {
                         inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
                     }
-                } ).id ( "trainings" )
+                } ).id ( "trainingsVIP" )
                 .size ( 3, 9 ).id ( "FUTURE_VIP" ).build ( );
         trainingInventory.open ( command.getPlayer ( ) );
     }
