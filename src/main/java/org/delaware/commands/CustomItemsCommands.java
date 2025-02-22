@@ -17,7 +17,7 @@ public class CustomItemsCommands extends BaseCommand {
         String[] args = command.getArgs();
         Player player = command.getPlayer();
         if(args.length < 1) {
-            player.sendMessage(command.getCommand().getUsage());
+            player.sendMessage("");
             return;
         }
         String action = args[0];
@@ -178,6 +178,15 @@ public class CustomItemsCommands extends BaseCommand {
                 int effectLevel = Integer.parseInt(args[4].trim());
                 customItem.addSetEffect(args[1].toUpperCase().trim(), args[2].toUpperCase().trim(), effectid, effectLevel);
                 player.sendMessage(CC.translate("&aBonus effect added correctly to item " + args[1]));
+            case "makeunbreakable":
+                if(player.getItemInHand().getType().equals(Material.AIR)) {
+                    player.sendMessage(CC.translate("&cYou must be holding an item!"));
+                    return;
+                }
+                CustomItems toUnbreakable = new CustomItems(player.getItemInHand());
+                toUnbreakable.setUnbreakable(true);
+                player.setItemInHand(toUnbreakable.toItemStack());
+                player.sendMessage(CC.translate("&aItem made unbreakable correctly"));
         } //TO DO LATER ON: COMMAND TO MAKE ITEM UNBREAKABLE
     }
 }

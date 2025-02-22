@@ -41,6 +41,11 @@ public class CustomItems {
             this.nbtData = null;
         }
     }
+    public void setUnbreakable(boolean unbreakable) {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        nbt.setBoolean("Unbreakable", unbreakable);
+        this.nbtData = nbt.getCompound().toString();
+    }
     public ItemStack toItemStack() {
         ItemStack itemStack = new ItemStack(itemID);
         itemStack.setAmount(amount);
