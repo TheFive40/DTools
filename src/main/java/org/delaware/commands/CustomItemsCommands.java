@@ -75,7 +75,7 @@ public class CustomItemsCommands extends BaseCommand {
                 CustomItems.removeItem(args[1].toUpperCase().trim());
                 player.sendMessage(CC.translate("&a" + args[1] + " &2Deleted correctly"));
                 break;
-            //dbcustomitems addEffect <ID> <Stat to boost> <boostID> <Operation> <value>
+            //dbcustomitems addEffect <ID> <Stat to boost> <boostID> <Operation> <value> <unbreakable>
             case "addeffect":
                 if(args.length < 7) {
                     player.sendMessage(CC.translate("&7---------------------------------------------------"));
@@ -85,7 +85,7 @@ public class CustomItemsCommands extends BaseCommand {
                     player.sendMessage(CC.translate("&eboostID -> &6Attribute ID for the boost"));
                     player.sendMessage(CC.translate("&eOperation -> &6+, -, *, /"));
                     player.sendMessage(CC.translate("&eUnbreakable -> &6 Should the item be unbreakable? true | false"));
-                    player.sendMessage(CC.translate("&b&lExample:\n&r&b/dbCustomItems addEffect KITGOKU str KIT_GOKU * 1.15 &e-> &6Provides a 15% STR boost"));
+                    player.sendMessage(CC.translate("&b&lExample:\n&r&b/dbCustomItems addEffect KITGOKU_CHESTPLATE str KIT_GOKU * 1.15 &e-> &6Provides a 15% STR boost"));
                     player.sendMessage(CC.translate("&7---------------------------------------------------"));
                     return;
                 }
@@ -129,6 +129,55 @@ public class CustomItemsCommands extends BaseCommand {
                 CustomItems cItem = CustomItems.getCustomItem(args[1].toUpperCase().trim());
                 cItem.addBoost(args[1].toUpperCase().trim(), args[2].toLowerCase().trim(), args[3].toUpperCase().trim(), args[4].trim(), args[5], unbreakable);
                 player.sendMessage(CC.translate("&aBoost added to item " + args[1] + " &acorrectly"));
-        }
+                break;
+            //dbcustomitems addSetEffect <ID> <KIT_NAME> <EFFECTID> <LEVEL>
+            case "addseteffect":
+                if(args.length < 5) {
+                    player.sendMessage(CC.translate("&7---------------------------------------------------"));
+                    player.sendMessage(CC.translate("&6Correct usage: /dbCustomItems addSetEffect <ID> <KIT_NAME> <EFFECTID> <LEVEL>"));
+                    player.sendMessage(CC.translate("&eID -> &6Custom item's ID, use /dbCustomItems list to see them"));
+                    player.sendMessage(CC.translate("&eKIT_NAME -> &6Kit's name (all three pieces must have same kit name)"));
+                    player.sendMessage(CC.translate("&eEFFECTID -> &6What effect should be given to players wearing the whole set"));
+                    player.sendMessage(CC.translate("&6These can be: HEALTHREGEN, KIREGEN, STAMINAREGEN"));
+                    player.sendMessage(CC.translate("&eLEVEL -> &6Determines how strong the effect is"));
+                    player.sendMessage(CC.translate("&b&lExample:\n&r&b/dbCustomItems addSetEffect KITGOKU_CHESTPLATE HEALTHREGEN 2 &e-> &62% health regeneration while wearing full set"));
+                    player.sendMessage(CC.translate("&7---------------------------------------------------"));
+                    return;
+                }
+                if(!CustomItems.contains(args[1].toUpperCase().trim())) {
+                    player.sendMessage(CC.translate("&cItem &4" + args[1] + " &cdoes not exist"));
+                    return;
+                }
+                String effectid;
+                switch(args[3].toUpperCase().trim()) {
+                    case "HEALTHREGEN":
+                        effectid = "HEALTHREGEN";
+                        break;
+                    case "KIREGEN":
+                        effectid = "KIREGEN";
+                        break;
+                    case "STAMINAREGEN":
+                        effectid = "STAMINAREGEN";
+                        break;
+                    default:
+                        player.sendMessage(CC.translate("&cInvalid effect ID!"));
+                        player.sendMessage(CC.translate("&cValid effect IDs are: healthregen, kiregen, staminaregen"));
+                        return;
+                }
+                try {
+                    Integer.parseInt(args[4].trim());
+                } catch (NumberFormatException error) {
+                    player.sendMessage(CC.translate("&cLevel must be a whole number!"));
+                    return;
+                }
+                if(Integer.parseInt(args[4].trim()) < 1 || Integer.parseInt(args[4].trim()) > 100) {
+                    player.sendMessage(CC.translate("&cLevel must be a number above 0 and below 100"));
+                    return;
+                }
+                CustomItems customItem = CustomItems.getCustomItem(args[1].toUpperCase().trim());
+                int effectLevel = Integer.parseInt(args[4].trim());
+                customItem.addSetEffect(args[1].toUpperCase().trim(), args[2].toUpperCase().trim(), effectid, effectLevel);
+                player.sendMessage(CC.translate("&aBonus effect added correctly to item " + args[1]));
+        } //TO DO LATER ON: COMMAND TO MAKE ITEM UNBREAKABLE
     }
 }

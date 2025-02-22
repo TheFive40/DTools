@@ -85,6 +85,33 @@ public class CustomItems {
         if(nbt.getCompound() == null || !this.hasCustomBoost()) return null;
         return new String[] {nbt.getCompound().getString("STAT"), nbt.getCompound().getString("BOOSTID"), nbt.getCompound().getString("OPERATION"), nbt.getCompound().getString("VALUE")};
     }
+    public void addSetEffect(String itemID, String kitName, String effectID, int level) {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        nbt.setString("KIT_NAME", kitName);
+        int effect = 0;
+        if(effectID.equals("HEALTHREGEN")) effect = 1;
+        if(effectID.equals("KIREGEN")) effect = 2;
+        if(effectID.equals("STAMINAREGEN")) effect = 3;
+        nbt.setInteger("EFFECT_ID", effect);
+        nbt.setInteger("LEVEL", level);
+        this.nbtData = nbt.getCompound().toString();
+        items.put(itemID, this);
+    }
+    public boolean hasSetEffect() {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        if(nbt.getCompound() == null) return false;
+        return nbt.getCompound().hasKey("KIT_NAME");
+    }
+    public String getKitName() {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        if(nbt.getCompound() == null || !this.hasSetEffect()) return null;
+        return nbt.getString("KIT_NAME");
+    }
+    public int[] getSetEffectValuesIntegers() {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        if(nbt.getCompound() == null || !this.hasSetEffect()) return null;
+        return new int[] {nbt.getInteger("EFFECT_ID"), nbt.getInteger("LEVEL")};
+    }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
         try {

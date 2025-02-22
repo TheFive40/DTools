@@ -1,8 +1,10 @@
 package org.delaware.tools.Boosters;
 
+import kamkeel.npcdbc.controllers.StatusEffectController;
 import noppes.npcs.api.INbt;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class BonusAttributes {
@@ -50,6 +52,9 @@ public class BonusAttributes {
     public boolean hasSpecificBonus(String stat, String bonusID) {
         if(!hasAnyBonus(stat)) return false;
         return nbt.getString("jrmcAttrBonus" + stat).contains(bonusID);
+    }
+    public void setCustomEffect(int effectID, int duration, byte level) {
+        StatusEffectController.getInstance().applyEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID, duration, level);
     }
     public boolean hasBonus() {
         String[] stats = {"str", "dex", "con", "wil", "mnd", "spi"};

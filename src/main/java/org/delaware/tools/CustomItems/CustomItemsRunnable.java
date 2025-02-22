@@ -1,6 +1,9 @@
 package org.delaware.tools.CustomItems;
 
+import kamkeel.npcdbc.controllers.StatusEffectController;
 import lombok.Getter;
+import net.minecraft.entity.player.EntityPlayer;
+import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +24,8 @@ public class CustomItemsRunnable {
                 ItemStack chestplate = player.getInventory().getChestplate();
                 ItemStack leggings = player.getInventory().getLeggings();
                 ItemStack boots = player.getInventory().getBoots();
+                int setEffectCheck = 0;
+                String kitName = "";
                 if(chestplate != null) {
                     CustomItems cItem = new CustomItems(chestplate);
                     if(cItem.hasCustomBoost()) {
@@ -29,6 +34,10 @@ public class CustomItemsRunnable {
                             bonus.clearBonus(values[0]);
                         }
                         bonus.addBonus(values[0], values[1], values[2], Double.parseDouble(values[3]));
+                        if(cItem.hasSetEffect()) {
+                            kitName = cItem.getKitName();
+                            setEffectCheck++;
+                        }
                     }
                 }
                 if(leggings != null) {
@@ -39,6 +48,9 @@ public class CustomItemsRunnable {
                             bonus.clearBonus(values[0]);
                         }
                         bonus.addBonus(values[0], values[1], values[2], Double.parseDouble(values[3]));
+                        if(cItem.hasSetEffect()) {
+                            if(cItem.getKitName().equals(kitName)) setEffectCheck++;
+                        }
                     }
                 }
                 if(boots != null) {
@@ -49,6 +61,13 @@ public class CustomItemsRunnable {
                             bonus.clearBonus(values[0]);
                         }
                         bonus.addBonus(values[0], values[1], values[2], Double.parseDouble(values[3]));
+                        if(cItem.hasSetEffect()) {
+                            if(cItem.getKitName().equals(kitName)) setEffectCheck++;
+                        }
+                    }
+                    if(setEffectCheck >= 3) {
+                        int[] values = cItem.getSetEffectValuesIntegers();
+                        bonus.setCustomEffect(values[0], 5, (byte) values[1]);
                     }
                 }
             }
