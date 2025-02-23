@@ -14,6 +14,7 @@ public class CustomItemsRunnable {
         public void run() {
             for(Player player : Bukkit.getServer().getOnlinePlayers()) {
                 BonusAttributes bonus = new BonusAttributes(player);
+                //DELETES ALL APPLIED BONUSES
                 if(bonus.hasBonus()) bonus.clearAllBonuses();
                 if(player.getInventory().getChestplate() == null && player.getInventory().getLeggings() == null && player.getInventory().getBoots() == null) {
                     continue;
@@ -25,9 +26,7 @@ public class CustomItemsRunnable {
                 String kitName = "";
                 if(chestplate != null) {
                     CustomItems cItem = CustomItems.getFromNbt(chestplate);
-                    if(cItem.hasCustomBoost()) {
-                        clearAndAddBonus(cItem, bonus);
-                    }
+                    if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
                     if(cItem.hasSetEffect()) {
                         kitName = cItem.getKitName();
                         setEffectCheck++;
@@ -35,34 +34,25 @@ public class CustomItemsRunnable {
                 }
                 if(leggings != null) {
                     CustomItems cItem = CustomItems.getFromNbt(leggings);
-                    if(cItem.hasCustomBoost()) {
-                        clearAndAddBonus(cItem, bonus);
-                    }
-                    if(cItem.hasSetEffect()) {
-                        if(cItem.getKitName().equals(kitName)) setEffectCheck++;
-                    }
+                    if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    if(cItem.hasSetEffect())
+                        if(cItem.getKitName().equals(kitName))
+                            setEffectCheck++;
                 }
                 if(boots != null) {
                     CustomItems cItem = CustomItems.getFromNbt(boots);
-                    if(cItem.hasCustomBoost()) {
-                        clearAndAddBonus(cItem, bonus);
-                        if(cItem.hasSetEffect()) {
-                            if(cItem.getKitName().equals(kitName)) setEffectCheck++;
-                        }
-                    }
-                    if(cItem.hasSetEffect()) {
-                        if(cItem.getKitName().equals(kitName)) setEffectCheck++;
-                    }
-                    if(setEffectCheck >= 3) {
-                        bonus.setCustomEffect(cItem.getEffect(), 5, cItem.getLevel());
-                    }
+                    if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    if(cItem.hasSetEffect())
+                        if(cItem.getKitName().equals(kitName))
+                            setEffectCheck++;
+                    if(setEffectCheck >= 3) bonus.setCustomEffect(cItem.getEffect(), 7, cItem.getLevel());
                 }
             }
         }
         private void clearAndAddBonus(CustomItems cItem, BonusAttributes bonus) {
             for(int i = 0; i < cItem.getStats().size(); i++) {
-                if(bonus.hasAnyBonus(cItem.getStats().get(i))) {
-                    bonus.clearBonus(cItem.getStats().get(i));
+                if(bonus.hasSpecificBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i))) {
+                    bonus.clearBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i));
                 }
                 bonus.addBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i), cItem.getOperations().get(i), cItem.getValues().get(i));
             }

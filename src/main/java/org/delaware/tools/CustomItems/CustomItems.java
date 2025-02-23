@@ -2,13 +2,20 @@ package org.delaware.tools.CustomItems;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.util.com.google.gson.Gson;
+import net.minecraft.util.com.google.gson.GsonBuilder;
+import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.delaware.Main;
 import org.delaware.tools.CC;
 import org.delaware.tools.NbtHandler.NbtHandler;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 @Setter
@@ -78,6 +85,7 @@ public class CustomItems {
         nbt.setString("KEY", key);
         this.nbtData = nbt.getCompound().toString();
         items.put(key, this);
+        saveToConfig();
     }
     public void addBoost(String itemID, String stat, String boostID, String operation, double value, boolean unbreakable) {
         this.stats.add(stat);
@@ -88,6 +96,7 @@ public class CustomItems {
         if(unbreakable) nbt.setBoolean("Unbreakable", true);
         this.nbtData = nbt.getCompound().toString();
         items.put(itemID, this);
+        saveToConfig();
     }
     public boolean hasCustomBoost() {
         if(this.stats == null) return false;
@@ -99,6 +108,7 @@ public class CustomItems {
         if(!this.operations.isEmpty()) this.operations.remove((this.operations.size()-1));
         if(!this.values.isEmpty()) this.values.remove((this.values.size()-1));
         items.put(itemID, this);
+        saveToConfig();
     }
     public void addSetEffect(String itemID, String kitName, String effectID, int level) {
         this.KitName = kitName;
@@ -107,6 +117,7 @@ public class CustomItems {
         if(effectID.equals("STAMINAREGEN")) this.effect = 3;
         this.level = (byte) level;
         items.put(itemID, this);
+        saveToConfig();
     }
     public boolean hasSetEffect() {
         return KitName != null;
@@ -114,6 +125,7 @@ public class CustomItems {
     public void deleteLastEffect(String itemID) {
         KitName = null;
         items.put(itemID, this);
+        saveToConfig();
     }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
@@ -132,6 +144,7 @@ public class CustomItems {
     }
     public static void removeItem(String key) {
         items.remove(key);
+        saveToConfig();
     }
     public static CustomItems getFromNbt(ItemStack item) {
         NbtHandler nbt = new NbtHandler(item);
@@ -143,4 +156,21 @@ public class CustomItems {
         return new CustomItems(item);
     }
     //STATIC METHODS
+    private static void saveToConfig() {
+        try {
+            File rootDir = new File (Main.instance.getDataFolder(), "DTools");
+            File dataDir = new File (rootDir, "data");
+            if (!dataDir.exists ( )) {
+                dataDir.mkdirs ( );
+            }
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String jsonCustomItems = gson.toJson(items);
+            FileWriter writerCustomItems = new FileWriter ( new File( dataDir, "CustomItems.json" ) );
+            writerCustomItems.write(jsonCustomItems);
+            writerCustomItems.close();
+        }catch(IOException | JsonSyntaxException e) {
+            Bukkit.getConsoleSender().sendMessage("Error while writing CustomItems data, send log to SpaceyDCO!");
+            throw new RuntimeException(e);
+        }
+    }
 }
