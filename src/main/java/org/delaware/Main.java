@@ -338,15 +338,15 @@ public class Main extends JavaPlugin {
     }
     private void disableCustomItems(File dataDir) {
         CustomItemsRunnable.getBukkitRunnable().cancel();
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String jsonCustomItems = gson.toJson(items);
-            FileWriter writerCustomItems = new FileWriter ( new File ( dataDir, "CustomItems.json" ) );
-            writerCustomItems.write(jsonCustomItems);
-            writerCustomItems.close();
-        }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            String jsonCustomItems = gson.toJson(items);
+//            FileWriter writerCustomItems = new FileWriter ( new File ( dataDir, "CustomItems.json" ) );
+//            writerCustomItems.write(jsonCustomItems);
+//            writerCustomItems.close();
+//        }catch(IOException | JsonSyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
     }
     //Spacey
 }

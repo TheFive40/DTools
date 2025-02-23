@@ -53,7 +53,10 @@ public class BonusAttributes {
         return nbt.getString("jrmcAttrBonus" + stat).contains(bonusID);
     }
     public void setCustomEffect(int effectID, int duration, byte level) {
-        StatusEffectController.getInstance().applyEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID, duration, level);
+        StatusEffectController effectController = StatusEffectController.getInstance();
+        if(effectController.hasEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID))
+            effectController.removeEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID);
+        effectController.applyEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID, duration, level);
     }
     public boolean hasBonus() {
         String[] stats = {"str", "dex", "con", "wil", "mnd", "spi"};
