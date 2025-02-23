@@ -90,6 +90,7 @@ public class CustomItems {
         items.put(itemID, this);
     }
     public boolean hasCustomBoost() {
+        if(this.stats == null) return false;
         return !this.stats.isEmpty();
     }
     public void deleteLastBoost(String itemID) {
