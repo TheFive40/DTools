@@ -134,8 +134,12 @@ public class CustomItems {
     }
     public static CustomItems getFromNbt(ItemStack item) {
         NbtHandler nbt = new NbtHandler(item);
-        if(nbt.getCompound() != null && nbt.getCompound().hasKey("KEY")) return getCustomItem(nbt.getString("KEY"));
-        else return new CustomItems(item);
+        try {
+            if(nbt.getCompound() != null && nbt.getCompound().hasKey("KEY")) return getCustomItem(nbt.getString("KEY"));
+        }catch(NullPointerException e) {
+            return new CustomItems(item);
+        }
+        return new CustomItems(item);
     }
     //STATIC METHODS
 }
