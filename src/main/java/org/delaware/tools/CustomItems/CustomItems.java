@@ -82,7 +82,7 @@ public class CustomItems {
     }
     public void addCustomItem(String key) {
         NbtHandler nbt = new NbtHandler(this.toItemStack());
-        nbt.setString("KEY", key);
+        nbt.setString("CUSTOMID", key);
         this.nbtData = nbt.getCompound().toString();
         items.put(key, this);
         saveToConfig();
@@ -149,7 +149,7 @@ public class CustomItems {
     public static CustomItems getFromNbt(ItemStack item) {
         NbtHandler nbt = new NbtHandler(item);
         try {
-            if(nbt.getCompound() != null && nbt.getCompound().hasKey("KEY")) return getCustomItem(nbt.getString("KEY"));
+            if(nbt.getCompound() != null && nbt.getCompound().hasKey("CUSTOMID")) return getCustomItem(nbt.getString("CUSTOMID"));
         }catch(NullPointerException e) {
             return new CustomItems(item);
         }
