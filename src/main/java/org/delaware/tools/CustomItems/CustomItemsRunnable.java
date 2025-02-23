@@ -26,7 +26,12 @@ public class CustomItemsRunnable {
                 String kitName = "";
                 if(chestplate != null) {
                     CustomItems cItem = CustomItems.getFromNbt(chestplate);
-                    if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    try {
+                        if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    }catch(java.lang.NullPointerException e) {
+                        Bukkit.getConsoleSender().sendMessage("Item " + chestplate.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
+                        throw new RuntimeException(e);
+                    }
                     if(cItem.hasSetEffect()) {
                         kitName = cItem.getKitName();
                         setEffectCheck++;
@@ -34,14 +39,24 @@ public class CustomItemsRunnable {
                 }
                 if(leggings != null) {
                     CustomItems cItem = CustomItems.getFromNbt(leggings);
-                    if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    try {
+                        if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    }catch(java.lang.NullPointerException e) {
+                        Bukkit.getConsoleSender().sendMessage("Item " + leggings.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
+                        throw new RuntimeException(e);
+                    }
                     if(cItem.hasSetEffect())
                         if(cItem.getKitName().equals(kitName))
                             setEffectCheck++;
                 }
                 if(boots != null) {
                     CustomItems cItem = CustomItems.getFromNbt(boots);
-                    if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    try {
+                        if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                    }catch(java.lang.NullPointerException e) {
+                        Bukkit.getConsoleSender().sendMessage("Item " + boots.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
+                        throw new RuntimeException(e);
+                    }
                     if(cItem.hasSetEffect())
                         if(cItem.getKitName().equals(kitName))
                             setEffectCheck++;
