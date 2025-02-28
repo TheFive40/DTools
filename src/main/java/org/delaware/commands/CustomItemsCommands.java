@@ -21,7 +21,7 @@ public class CustomItemsCommands extends BaseCommand {
             player.sendMessage(CC.translate("&6Available Commands:"));
             player.sendMessage(CC.translate("&6dbCustomItems add <ID> -> &eAdds the item the player's holding to the config"));
             player.sendMessage(CC.translate("&6dbCustomItems removeBoost <ID> -> &eRemoves the last applied boost to <ID>"));
-            player.sendMessage(CC.translate("&6dbCustomItems removeEffect <ID> -> &eRemoves the effect applied to <ID>"));
+            player.sendMessage(CC.translate("&6dbCustomItems removeEffect <ID> -> &eRemoves effects applied to <ID>"));
             player.sendMessage(CC.translate("&6dbCustomItems list -> &eShows all currently registered items"));
             player.sendMessage(CC.translate("&6dbCustomItems get <ID> -> &eGives the player an item registered"));
             player.sendMessage(CC.translate("&6dbCustomItems remove <ID> -> &eRemoves an item"));
@@ -86,16 +86,15 @@ public class CustomItemsCommands extends BaseCommand {
                 CustomItems.removeItem(args[1].toUpperCase().trim());
                 player.sendMessage(CC.translate("&a" + args[1] + " &2Deleted correctly"));
                 break;
-            //dbcustomitems addBoost <ID> <Stat to boost> <boostID> <Operation> <value> <unbreakable>
+            //dbcustomitems addBoost <ID> <Stat to boost> <boostID> <Operation> <value>
             case "addboost":
-                if(args.length < 7) {
+                if(args.length < 6) {
                     player.sendMessage(CC.translate("&7---------------------------------------------------"));
                     player.sendMessage(CC.translate("&6Correct usage: /dbCustomItems addBoost <ID> <Stat> <boostID> <Operation> <Value> <Unbreakable>"));
                     player.sendMessage(CC.translate("&eID -> &6Custom item's ID, use /dbCustomItems list to see them"));
                     player.sendMessage(CC.translate("&eStat -> &6Stat to boost, these can be: str, dex, con, wil, mnd, spi"));
                     player.sendMessage(CC.translate("&eboostID -> &6Attribute ID for the boost"));
                     player.sendMessage(CC.translate("&eOperation -> &6+, -, *, /"));
-                    player.sendMessage(CC.translate("&eUnbreakable -> &6 Should the item be unbreakable? true | false"));
                     player.sendMessage(CC.translate("&b&lExample:\n&r&b/dbCustomItems addBoost KITGOKU_CHESTPLATE str KIT_GOKU * 1.15 &e-> &6Provides a 15% STR boost"));
                     player.sendMessage(CC.translate("&7---------------------------------------------------"));
                     return;
@@ -136,9 +135,8 @@ public class CustomItemsCommands extends BaseCommand {
                     player.sendMessage(CC.translate("&cValue must be a number!"));
                     return;
                 }
-                boolean unbreakable = args[6].toLowerCase().trim().equals("true");
                 CustomItems cItem = CustomItems.getCustomItem(args[1].toUpperCase().trim());
-                cItem.addBoost(args[1].toUpperCase().trim(), args[2].toLowerCase().trim(), args[3].toUpperCase().trim(), args[4].trim(), Double.parseDouble(args[5].trim()), unbreakable);
+                cItem.addBoost(args[1].toUpperCase().trim(), args[2].toLowerCase().trim(), args[3].toUpperCase().trim(), args[4].trim(), Double.parseDouble(args[5].trim()));
                 player.sendMessage(CC.translate("&aBoost added to item " + args[1] + " &acorrectly"));
                 break;
             //dbcustomitems addSetEffect <ID> <KIT_NAME> <EFFECTID> <LEVEL>
@@ -223,7 +221,7 @@ public class CustomItemsCommands extends BaseCommand {
                     return;
                 }
                 CustomItems customIt = CustomItems.getCustomItem(args[1].toUpperCase().trim());
-                customIt.deleteLastEffect(args[1].toUpperCase().trim());
+                customIt.deleteEffects(args[1].toUpperCase().trim());
                 player.sendMessage(CC.translate("&cEffect applied to " + args[1] + " deleted correctly"));
                 break;
         }

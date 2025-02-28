@@ -36,8 +36,8 @@ public class CustomItems {
     private List<String> boostIDS = new ArrayList<>();
     private List<String> operations = new ArrayList<>();
     private List<Double> values = new ArrayList<>();
-    private int effect;
-    private byte level;
+    private List<Integer> effect = new ArrayList<>();
+    private List<Byte> level = new ArrayList<>();
 
     public CustomItems(ItemStack item) { //IMPORTANT TO REMEMBER: ADD METADATA, FOR SAME ID ITEMS (NUMBER AFTER THE :)
         if(item.hasItemMeta()) {
@@ -87,14 +87,11 @@ public class CustomItems {
         items.put(key, this);
         saveToConfig();
     }
-    public void addBoost(String itemID, String stat, String boostID, String operation, double value, boolean unbreakable) {
+    public void addBoost(String itemID, String stat, String boostID, String operation, double value) {
         this.stats.add(stat);
         this.boostIDS.add(boostID);
         this.operations.add(operation);
         this.values.add(value);
-        NbtHandler nbt = new NbtHandler(this.toItemStack());
-        if(unbreakable) nbt.setBoolean("Unbreakable", true);
-        this.nbtData = nbt.getCompound().toString();
         items.put(itemID, this);
         saveToConfig();
     }
@@ -112,18 +109,20 @@ public class CustomItems {
     }
     public void addSetEffect(String itemID, String kitName, String effectID, int level) {
         this.KitName = kitName;
-        if(effectID.equals("HEALTHREGEN")) this.effect = 1;
-        if(effectID.equals("KIREGEN")) this.effect = 2;
-        if(effectID.equals("STAMINAREGEN")) this.effect = 3;
-        this.level = (byte) level;
+        if(effectID.equals("HEALTHREGEN")) this.effect.add(1);
+        if(effectID.equals("KIREGEN")) this.effect.add(2);
+        if(effectID.equals("STAMINAREGEN")) this.effect.add(3);
+        this.level.add((byte) level);
         items.put(itemID, this);
         saveToConfig();
     }
     public boolean hasSetEffect() {
         return KitName != null;
     }
-    public void deleteLastEffect(String itemID) {
+    public void deleteEffects(String itemID) {
         KitName = null;
+        this.level = new ArrayList<>();
+        this.effect = new ArrayList<>();
         items.put(itemID, this);
         saveToConfig();
     }
