@@ -2,4 +2,3 @@ main: org.delaware.Main
 version: 1.7.5
 name: DBFuture
 author: DelawareX
-depend: [Gohan]

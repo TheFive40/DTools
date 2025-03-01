@@ -60,7 +60,12 @@ public class CustomItemsRunnable {
                     if(cItem.hasSetEffect())
                         if(cItem.getKitName().equals(kitName))
                             setEffectCheck++;
-                    if(setEffectCheck >= 3) bonus.setCustomEffect(cItem.getEffect(), 7, cItem.getLevel());
+                    if(setEffectCheck >= 3) {
+                        for(int i = 0; i < cItem.getEffect().size(); i++) {
+                            bonus.setCustomEffect(cItem.getEffect().get(i), 7, cItem.getLevel().get(i));
+                        }
+                        //bonus.setCustomEffect(cItem.getEffect(), 7, cItem.getLevel());
+                    }
                 }
             }
         }
