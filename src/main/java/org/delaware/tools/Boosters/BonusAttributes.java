@@ -44,12 +44,12 @@ public class BonusAttributes {
         nbt.remove("jrmcAttrBonusspi");
     }
     //Checks for any bonus in the specified stat (regardless of bonusID)
-    public boolean hasAnyBonus(String stat) {
+    public boolean hasBonus(String stat) {
         return nbt.has("jrmcAttrBonus" + stat);
     }
     //Checks if certain stat has an specific bonus
     public boolean hasSpecificBonus(String stat, String bonusID) {
-        if(!hasAnyBonus(stat)) return false;
+        if(!hasBonus(stat)) return false;
         return nbt.getString("jrmcAttrBonus" + stat).contains(bonusID);
     }
     public void setCustomEffect(int effectID, int duration, byte level) {
@@ -58,10 +58,10 @@ public class BonusAttributes {
             effectController.removeEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID);
         effectController.applyEffect(NpcAPI.Instance().getPlayer(player.getName()), effectID, duration, level);
     }
-    public boolean hasBonus() {
+    public boolean hasAnyBonus() {
         String[] stats = {"str", "dex", "con", "wil", "mnd", "spi"};
         for(String stat : stats) {
-            if(hasAnyBonus(stat)) return true;
+            if(hasBonus(stat)) return true;
         }
         return false;
     }

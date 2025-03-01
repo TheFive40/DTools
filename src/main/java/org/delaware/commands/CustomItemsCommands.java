@@ -90,7 +90,7 @@ public class CustomItemsCommands extends BaseCommand {
             case "addboost":
                 if(args.length < 6) {
                     player.sendMessage(CC.translate("&7---------------------------------------------------"));
-                    player.sendMessage(CC.translate("&6Correct usage: /dbCustomItems addBoost <ID> <Stat> <boostID> <Operation> <Value> <Unbreakable>"));
+                    player.sendMessage(CC.translate("&6Correct usage: /dbCustomItems addBoost <ID> <Stat> <boostID> <Operation> <Value>"));
                     player.sendMessage(CC.translate("&eID -> &6Custom item's ID, use /dbCustomItems list to see them"));
                     player.sendMessage(CC.translate("&eStat -> &6Stat to boost, these can be: str, dex, con, wil, mnd, spi"));
                     player.sendMessage(CC.translate("&eboostID -> &6Attribute ID for the boost"));
