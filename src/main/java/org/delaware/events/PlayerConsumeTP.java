@@ -20,15 +20,15 @@ public class PlayerConsumeTP implements Listener {
     @EventHandler
     public void onPlayerGainTPEvent ( DbcPlayerTpGainEvent event ) {
         DecimalFormat formatter = new DecimalFormat ( "#,###" );
-        long tp = event.amount ( );
+        int tp = (int) event.amount ( );
         // TODO: Add your custom logic here, e.g., save TP to a database or log it.
-        Player player = Main.instance.getServer ( ).getPlayer ( event.dbcPlayer ( ).uuid ( ) );
-        if (!boosterHandler.contains ( player.getUniqueId ( ) )) return;
+        Player player = Main.instance.getServer ( ).getPlayer ( event.dbcPlayer ( ).player ().getUniqueId () );
         VIPBooster booster = boosterHandler.findBooster ( player.getUniqueId ( ) );
-        if (!booster.isActive ( ) || booster.isCooldownActive ( )) return;
+        if(booster == null) return;
+        if (!booster.isActive ( )) return;
         int bonus = (int) (tp * booster.getMultiplier ( ));
         IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
-        idbcPlayer.setTP ( bonus );
+        idbcPlayer.setTP ( event.dbcPlayer ().tps () + bonus );
         idbcPlayer.sendMessage ( CC.translate ( "&6+" + formatter.format ( bonus ) + " (Booster Pasivo)" ) );
         player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
 

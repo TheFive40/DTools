@@ -17,12 +17,13 @@ public class CommandBosterMultiplier extends BaseCommand {
     public void onCommand ( CommandArgs command ) throws IOException {
         Player player = command.getPlayer ( );
         if (command.length ( ) < 2) {
-            player.sendMessage ( ChatColor.DARK_GRAY + "------------------------------------" );
+            player.sendMessage ( ChatColor.DARK_GRAY + "-----------------------------------------" );
             player.sendMessage ( ChatColor.GOLD + "✦ PVBooster Plugin " + ChatColor.YELLOW + "v" + VERSION );
             player.sendMessage ( ChatColor.GRAY + "Usage: " + ChatColor.AQUA + "/pvbooster <rank> <multiplier>" );
             player.sendMessage ( ChatColor.GRAY + "Example: " + ChatColor.GREEN + "/pvbooster VIP 2.0" );
+            player.sendMessage ( ChatColor.GRAY + "Author: " + ChatColor.LIGHT_PURPLE + "TheFive" );
             player.sendMessage ( ChatColor.RED + "Invalid usage! Please follow the correct format." );
-            player.sendMessage ( ChatColor.DARK_GRAY + "------------------------------------" );
+            player.sendMessage ( ChatColor.DARK_GRAY + "-----------------------------------------" );
             return;
         }
         double multiplier = Double.parseDouble ( command.getArgs ( 1 ) );

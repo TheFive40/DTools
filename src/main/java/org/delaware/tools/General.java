@@ -95,9 +95,11 @@ public class General {
     }
 
     public static String formatDuration ( Duration duration ) {
-        long hours = duration.toHours ( );
-        long minutes = duration.toMinutes ( );
-        return String.format("%02dh %02dm", hours, minutes);
+        long days = duration.toDays();
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+        return String.format("%dd %02dh %02dm %02ds", days, hours, minutes, seconds);
     }
 
     public static boolean isConvertibleToInt ( String text ) {

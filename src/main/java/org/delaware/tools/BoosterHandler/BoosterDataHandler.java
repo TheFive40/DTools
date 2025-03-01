@@ -1,19 +1,81 @@
 package org.delaware.tools.BoosterHandler;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
+import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
+import org.delaware.Main;
 import org.delaware.tools.Boosters.VIPBooster;
+
+import java.io.*;
+import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
 @Getter
 @Setter
-public class BoosterDataHandler {
+public class BoosterDataHandler implements Serializable{
     // Handle booster data
     @Getter
+    @Setter
     private static ConcurrentHashMap<String, Double> boostMultiplier = new ConcurrentHashMap<> ( );
     @Getter
+    @Setter
     private static CopyOnWriteArrayList<VIPBooster> boosterData = new CopyOnWriteArrayList<> ( );
+    private static final  Gson GSON = new GsonBuilder ().setPrettyPrinting().create();
+    private static final File rootDir = new File( Main.instance.getDataFolder(), "DTools");
+    private static final File dataDir = new File(rootDir, "data");
+    private static final File MULTIPLIER_FILE = new File(dataDir, "pvboost_multiplier.json");
+    private static final File BOOSTERS_FILE = new File(dataDir, "pvboost_boosters.json");
+
+    public static void saveData() {
+        if (!dataDir.exists()) dataDir.mkdirs();
+
+        // Guardar boostMultiplier
+        try (FileWriter writer = new FileWriter(MULTIPLIER_FILE)) {
+            GSON.toJson(boostMultiplier, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Guardar boosterData
+        try (FileWriter writer = new FileWriter(BOOSTERS_FILE)) {
+            GSON.toJson(boosterData, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadData() {
+        if (!dataDir.exists()) dataDir.mkdirs();
+
+        // Cargar boostMultiplier
+        if (MULTIPLIER_FILE.exists()) {
+            try (FileReader reader = new FileReader(MULTIPLIER_FILE)) {
+                Type type = new TypeToken<ConcurrentHashMap<String, Double>>() {}.getType();
+                ConcurrentHashMap<String, Double> loadedData = GSON.fromJson(reader, type);
+                if (loadedData != null) boostMultiplier = loadedData;
+            } catch (IOException | JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Cargar boosterData
+        if (BOOSTERS_FILE.exists()) {
+            try (FileReader reader = new FileReader(BOOSTERS_FILE)) {
+                Type type = new TypeToken<CopyOnWriteArrayList<VIPBooster>>() {}.getType();
+                CopyOnWriteArrayList<VIPBooster> loadedBoosters = GSON.fromJson(reader, type);
+                if (loadedBoosters != null) boosterData = loadedBoosters;
+            } catch (IOException | JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     // Add booster data to the map
     public void addBoosterData ( String rank, Double booster ) {

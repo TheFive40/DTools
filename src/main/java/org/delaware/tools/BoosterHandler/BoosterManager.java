@@ -45,6 +45,7 @@ public class BoosterManager {
                 Iterator<VIPBooster> iterator = BoosterDataHandler.getBoosterData().iterator();
 
                 while (iterator.hasNext()) {
+                    BoosterDataHandler.saveData ();
                     VIPBooster booster = iterator.next();
                     UUID playerUUID = booster.getPlayerUUID();
                     String rank = General.getGroup(playerUUID);

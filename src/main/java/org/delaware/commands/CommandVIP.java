@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.delaware.tools.General.formatDuration;
 
@@ -124,19 +125,22 @@ public class CommandVIP extends BaseCommand {
                                             ItemStack BoosterGlobal = new ItemStack ( 4979 );
                                             ItemMeta BoosterGlobalMeta = BoosterGlobal.getItemMeta ( );
                                             BoosterGlobalMeta.setDisplayName ( CC.translate ( "&dBooster Global" ) );
-                                            BoosterGlobal.setItemMeta ( goodItemMeta );
+                                            BoosterGlobal.setItemMeta ( BoosterGlobalMeta );
                                             inventoryContents.set ( 1, 7, ClickableItem.of ( BoosterGlobal, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmca set Alignment 100 " + player.getName ( ) );
                                             } ) );
                                             ItemStack BoosterPersonal = new ItemStack ( 4957 );
                                             ItemMeta BoosterPersonalMeta = BoosterPersonal.getItemMeta ( );
                                             BoosterPersonalMeta.setDisplayName ( CC.translate ( "&cBooster Personal" ) );
-                                            BoosterPersonal.setItemMeta ( goodItemMeta );
+                                            BoosterPersonal.setItemMeta ( BoosterPersonalMeta );
                                             inventoryContents.set ( 1, 1, ClickableItem.of ( BoosterPersonal, e -> {
                                                 if (boosterHandler.contains ( player.getUniqueId ( ) )) {
                                                     VIPBooster vipBooster = boosterHandler.findBooster ( player.getUniqueId ( ) );
-                                                    if (!BoosterDataHandler.getBoostMultiplier ( ).containsKey ( General.getGroup ( player.getUniqueId ( ) ) ))
+                                                    if (!BoosterDataHandler.getBoostMultiplier ( ).containsKey ( General.getGroup ( player.getUniqueId ( ) ) )){
+                                                        player.sendMessage(CC.translate("&4[Alert] &cYou do not have permission to activate a personal booster."));
+                                                        player.sendMessage(CC.translate("&eUpgrade your rank to unlock this feature."));
                                                         return;
+                                                    }
                                                     String rank = General.getGroup ( player.getUniqueId ( ) );
                                                     double multiplier = BoosterDataHandler.getBoostMultiplier ( ).get ( rank.toLowerCase ( ) );
                                                     if (vipBooster == null) return;
@@ -151,7 +155,6 @@ public class CommandVIP extends BaseCommand {
                                                     }
                                                     Duration remainingTime = vipBooster.getTimeRemaining ( );
                                                     player.sendMessage ( CC.translate ( "&cYou cannot activate your booster yet!" ) );
-                                                    vipBooster.setActive ( false );
                                                     player.sendMessage ( CC.translate ( "&7Time remaining: &e" + formatDuration ( remainingTime ) ) );
                                                     return;
                                                 }
@@ -161,21 +164,23 @@ public class CommandVIP extends BaseCommand {
                                                 double multiplier = BoosterDataHandler.getBoostMultiplier ( ).get ( rank.toLowerCase ( ) );
                                                 VIPBooster vipBooster = new VIPBooster ( player.getUniqueId ( ), rank, multiplier );
                                                 vipBooster.setActive ( true );
-                                                BoosterDataHandler.getBoosterData ( ).add ( vipBooster );
+                                                CopyOnWriteArrayList<VIPBooster> list = BoosterDataHandler.getBoosterData ( );
+                                                list.add ( vipBooster );
+                                                BoosterDataHandler.setBoosterData ( list );
                                                 player.sendMessage ( CC.translate ( "&aYou have activated your personal weekly booster!" ) );
                                                 player.playSound ( player.getLocation ( ), Sound.valueOf ( "LEVEL_UP" ), 1.0f, 1.0f );
                                             } ) );
                                             ItemStack NoPain = new ItemStack ( 4967 );
                                             ItemMeta NoPainMeta = NoPain.getItemMeta ( );
                                             NoPainMeta.setDisplayName ( CC.translate ( "&1No Pain" ) );
-                                            NoPain.setItemMeta ( goodItemMeta );
+                                            NoPain.setItemMeta ( NoPainMeta );
                                             inventoryContents.set ( 3, 1, ClickableItem.of ( NoPain, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmca set Alignment 100 " + player.getName ( ) );
                                             } ) );
                                             ItemStack NoStrain = new ItemStack ( 4985 );
                                             ItemMeta NoStrainMeta = NoStrain.getItemMeta ( );
                                             NoStrainMeta.setDisplayName ( CC.translate ( "&2No Strain" ) );
-                                            NoStrain.setItemMeta ( goodItemMeta );
+                                            NoStrain.setItemMeta ( NoStrainMeta );
                                             inventoryContents.set ( 3, 7, ClickableItem.of ( NoStrain, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmca set Alignment 100 " + player.getName ( ) );
                                             } ) );

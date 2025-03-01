@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
+import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.BoosterHandler.BoosterManager;
 import org.delaware.tools.ClassesRegistration;
 import org.delaware.tools.CustomItems.CustomItems;
@@ -73,7 +74,7 @@ public class Main extends JavaPlugin {
         System.out.println ( "By DelawareX" );
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
-|
+
         loadGifts();
 
         //Spacey
@@ -83,6 +84,7 @@ public class Main extends JavaPlugin {
         //Five
         BoosterManager.startBoosterCheckTask ();
         BoosterManager.startVipCheckTask ();
+        BoosterDataHandler.loadData ();
         //Five
         try {
             Type typeTps = new TypeToken<ConcurrentHashMap<Integer, TP>> ( ) {
@@ -171,7 +173,6 @@ public class Main extends JavaPlugin {
         String jsonPlayers = gson.toJson ( players );
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
-
         if (!dataDir.exists ( )) {
             dataDir.mkdirs ( );
         }
@@ -179,6 +180,10 @@ public class Main extends JavaPlugin {
         //Spacey
         disableCustomItems();
         //Spacey
+
+        //Five
+        BoosterDataHandler.saveData ();
+        //Five
 
         try {
             FileWriter writerTps = new FileWriter ( new File ( dataDir, "tps.json" ) );

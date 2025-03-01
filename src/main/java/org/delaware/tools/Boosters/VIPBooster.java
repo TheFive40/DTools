@@ -16,7 +16,7 @@ public class VIPBooster implements Serializable {
     private String playerRank;
     private double multiplier;
     private LocalDateTime activationTime;
-    private static final int COOLDOWN_HOURS = 24;
+    private static final int COOLDOWN_HOURS = 168;
     boolean isActive;
     public VIPBooster ( UUID playerUUID, String playerRank, double multiplier ) {
         this.playerUUID = playerUUID;
