@@ -1,13 +1,25 @@
 package org.delaware.tools;
 
+import JinRyuu.JRMCore.JRMCoreH;
+import io.github.facuu16.gohan.dbc.model.DbcPlayer;
+import io.github.facuu16.gohan.dbc.model.Stat;
+import kamkeel.addon.DBCAddon;
 import lombok.Getter;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.time.Duration;
+import java.util.*;
 
 public class General {
 
@@ -41,54 +53,51 @@ public class General {
         return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getTP ( );
     }
 
-    public static int getSTR ( Player player ) {
-        String str = General.STATS_MAP.get ( "STR" );
-        return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getNbt ( ).getCompound ( "PlayerPersisted" )
-                .getInteger ( str );
-    }
-
-    public static int getCON ( Player player ) {
-        String con = General.STATS_MAP.get ( "CON" );
-        return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getNbt ( ).getCompound ( "PlayerPersisted" )
-                .getInteger ( con );
-    }
-
-    public static int getDEX ( Player player ) {
-        String dex = General.STATS_MAP.get ( "DEX" );
-        return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getNbt ( ).getCompound ( "PlayerPersisted" )
-                .getInteger ( dex );
-    }
-
-    public static int getMND ( Player player ) {
-        String MND = General.STATS_MAP.get ( "MND" );
-        return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getNbt ( ).getCompound ( "PlayerPersisted" )
-                .getInteger ( MND );
-    }
-
-    public static int getSPI ( Player player ) {
-        String spi = General.STATS_MAP.get ( "SPI" );
-        return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getNbt ( ).getCompound ( "PlayerPersisted" )
-                .getInteger ( spi );
-    }
-
-    public static int getWIL ( Player player ) {
-        String wil = General.STATS_MAP.get ( "WIL" );
-        return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getNbt ( ).getCompound ( "PlayerPersisted" )
-                .getInteger ( wil );
+    public static int getSTAT ( Stat stat, Player entity ) {
+        DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( entity.getUniqueId ( ) );
+        return jugador.stat ( stat );
     }
 
     public static int getLVL ( Player player ) {
-        int str = General.getSTR ( player );
-        int dex = General.getDEX ( player );
-        int con = General.getCON ( player );
-        int wil = General.getWIL ( player );
-        int mnd = General.getMND ( player );
-        int spi = General.getSPI ( player );
-        return (str + dex + con + wil + mnd + spi) / 5 - 11;
+        DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( player.getUniqueId ( ) );
+        return jugador.level ( );
+    }
+
+    public static boolean hasStaffParent ( Player player ) {
+        LuckPerms luckPerms = LuckPermsProvider.get ( );
+        User user = luckPerms.getUserManager ( ).getUser ( player.getUniqueId ( ) );
+
+        if (user == null) return false;
+
+        return user.getPrimaryGroup ( ).equalsIgnoreCase ( "staff" ) ||
+                user.getInheritedGroups ( user.getQueryOptions ( ) ).stream ( )
+                        .anyMatch ( group -> group.getName ( ).equalsIgnoreCase ( "staff" ) );
+    }
+
+    public static boolean isHakaishin ( Player player ) {
+        LuckPerms luckPerms = LuckPermsProvider.get ( );
+        User user = luckPerms.getUserManager ( ).getUser ( player.getUniqueId ( ) );
+
+        if (user == null) return false;
+
+        return user.getPrimaryGroup ( ).equalsIgnoreCase ( "hakaishin" ) ||
+                user.getInheritedGroups ( user.getQueryOptions ( ) ).stream ( )
+                        .anyMatch ( group -> group.getName ( ).equalsIgnoreCase ( "hakaishin" ) );
+    }
+
+    public static String getGroup ( UUID playerUUID ) {
+        LuckPerms luckPerms = LuckPermsProvider.get ( );
+        return Objects.requireNonNull ( luckPerms.getUserManager ( ).getUser ( playerUUID ) ).getPrimaryGroup ( ).toLowerCase ( );
     }
 
     public static void setPlayerTps ( Player player, int amount ) {
         NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).setTP ( getPlayerTps ( player ) + amount );
+    }
+
+    public static String formatDuration ( Duration duration ) {
+        long hours = duration.toHours ( );
+        long minutes = duration.toMinutes ( );
+        return String.format("%02dh %02dm", hours, minutes);
     }
 
     public static boolean isConvertibleToInt ( String text ) {
