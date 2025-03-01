@@ -14,25 +14,12 @@ import org.delaware.Main;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
 
-import static org.delaware.commands.DBItemsCommand.isDBItem;
-import static org.delaware.events.PlayerInteract.armorCompleted;
-
 public class PlayerJoinEvent implements Listener {
     private String welcomeStaff = "---------------------------------------------";
 
     @EventHandler
     public void onPlayerJoin ( org.bukkit.event.player.PlayerJoinEvent event ) {
         messageJoin ( event.getPlayer () );
-        ItemStack[] items = event.getPlayer ( ).getInventory ( ).getArmorContents ( );
-        int armorCount = 0;
-        for (ItemStack item : items) {
-            if (item != null && isDBItem ( item )) {
-                armorCount++;
-            }
-        }
-        IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( event.getPlayer ( ).getName ( ) )
-                .getDBCPlayer ( );
-        armorCompleted.put ( event.getPlayer ( ).getName ( ), armorCount );
     }
     public void messageJoin(Player player){
         int messageWidth = welcomeStaff.length();

@@ -1,50 +1,35 @@
 package org.delaware;
-
-import net.minecraft.util.com.google.gson.Gson;
-import net.minecraft.util.com.google.gson.GsonBuilder;
-import net.minecraft.util.com.google.gson.JsonSyntaxException;
-import net.minecraft.util.com.google.gson.reflect.TypeToken;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
+import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
+import org.delaware.tools.BoosterHandler.BoosterManager;
 import org.delaware.tools.ClassesRegistration;
 import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.CustomItems.CustomItemsRunnable;
 import org.delaware.tools.General;
 import org.delaware.tools.commands.CommandFramework;
-import org.delaware.tools.model.entities.DBItem;
 import org.delaware.tools.model.entities.Gift;
 import org.delaware.tools.model.entities.Localizaciones;
 import org.delaware.tools.model.entities.TP;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-;
-
 import static org.delaware.commands.CommandTransform.playerStats;
 import static org.delaware.tools.CustomItems.CustomItems.items;
-import static org.delaware.commands.DBItemsCommand.*;
 import static org.delaware.commands.TPSCommand.tps;
-import static org.delaware.events.InventoryClick.hasFullArmorSet;
-import static org.delaware.events.PlayerHeld.players;
-import static org.delaware.events.PlayerHeld.restorePlayerData;
-import static org.delaware.events.PlayerInteract.*;
-
 
 public class Main extends JavaPlugin {
-    public static HashMap<String, DBItem> armorsPlayers = new HashMap<> ( );
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
-    public static ArrayList<ArrayList<DBItem>> armors = new ArrayList<> ( );
     static {
         String ruta1 = System.getProperty ( "user.dir" ) + File.separator + "plugins";
         File file = new File ( ruta1, "DTools" );
@@ -73,7 +58,8 @@ public class Main extends JavaPlugin {
         System.out.println ( "Plugin successfully enabled" );
         System.out.println ( "Version: 1.1.0 " );
         System.out.println ( "By DelawareX" );
-
+        BoosterManager.startBoosterCheckTask ();
+        BoosterManager.startVipCheckTask ();
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
 
@@ -86,50 +72,23 @@ public class Main extends JavaPlugin {
         try {
             Type typeTps = new TypeToken<ConcurrentHashMap<Integer, TP>> ( ) {
             }.getType ( );
-            Type typePlayers = new TypeToken<ArrayList<String>> ( ) {
-            }.getType ( );
-            Type typeItems = new TypeToken<ConcurrentHashMap<String, DBItem>> ( ) {
-            }.getType ( );
-            Type typeArmorsPlayers = new TypeToken<HashMap<String, DBItem>> ( ) {
-            }.getType ( );
-            Type typeBonus = new TypeToken<HashMap<String, Float>> ( ) {
-            }.getType ( );
-            Type typeCost = new TypeToken<HashMap<String, Float>> ( ) {
-            }.getType ( );
-            Type typeArmors = new TypeToken<ArrayList<ArrayList<DBItem>>> ( ) {
-            }.getType ( );
-
-
             FileReader readerTps = new FileReader ( new File ( dataDir, "tps.json" ) );
             FileReader readerPlayers = new FileReader ( new File ( dataDir, "players.json" ) );
             FileReader readerItems = new FileReader ( new File ( dataDir, "itemsRegistry.json" ) );
-            FileReader readerArmorsPlayers = new FileReader ( new File ( dataDir, "armorsPlayer.json" ) );
-            FileReader readerBonus = new FileReader ( new File ( dataDir, "bonus.json" ) );
-            FileReader readerCost = new FileReader ( new File ( dataDir, "cost.json" ) );
             FileReader readerArmors = new FileReader ( new File ( dataDir, "armors.json" ) );
 
             Gson gson = new Gson ( );
             tps = gson.fromJson ( readerTps, typeTps );
-            players = gson.fromJson ( readerPlayers, typePlayers );
-            itemsRegistry = gson.fromJson ( readerItems, typeItems );
-            armorsPlayers = gson.fromJson ( readerArmorsPlayers, typeArmorsPlayers );
-            playerBonus = gson.fromJson ( readerBonus, typeBonus );
-            playerCost = gson.fromJson ( readerCost, typeCost );
-            armors = gson.fromJson ( readerArmors, typeArmors );
-
             readerTps.close ( );
             readerPlayers.close ( );
             readerItems.close ( );
             readerPlayers.close ( );
-            readerBonus.close ( );
-            readerCost.close ( );
             readerArmors.close ();
         } catch (FileNotFoundException e) {
             System.out.println ( "No se encontraron algunos archivos JSON. Se generarán automáticamente al desactivar el plugin." );
         } catch (IOException e) {
             throw new RuntimeException ( e );
         }
-        armorTask ( );
     }
     public void writeData(){
         File rootDir = new File(getDataFolder(), "DTools");
@@ -139,7 +98,7 @@ public class Main extends JavaPlugin {
             dataDir.mkdirs();
         }
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder ().setPrettyPrinting().create();
         String jsonGift = gson.toJson(new Gift(
                 CommandAddGift.itemStackHashMap,
                 interactWithGift.contadorRegalos,
@@ -202,24 +161,14 @@ public class Main extends JavaPlugin {
         writeData ();
         Gson gson = new GsonBuilder ( ).setPrettyPrinting ( ).create ( );
         String jsonTps = gson.toJson ( tps );
-        String jsonPlayers = gson.toJson ( players );
-        String jsonItems = gson.toJson ( itemsRegistry );
-        String jsonArmorsPlayers = gson.toJson ( armorsPlayers );
-        String jsonBonus = gson.toJson ( playerBonus );
-        String jsonCost = gson.toJson ( playerCost );
-        String jsonArmors = gson.toJson ( armors );
-
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
-
         if (!dataDir.exists ( )) {
             dataDir.mkdirs ( );
         }
-
         //Spacey
         disableCustomItems(dataDir);
         //Spacey
-
         try {
             FileWriter writerTps = new FileWriter ( new File ( dataDir, "tps.json" ) );
             FileWriter writerPlayers = new FileWriter ( new File ( dataDir, "players.json" ) );
@@ -228,15 +177,7 @@ public class Main extends JavaPlugin {
             FileWriter writerBonus = new FileWriter ( new File ( dataDir, "bonus.json" ) );
             FileWriter writerCost = new FileWriter ( new File ( dataDir, "cost.json" ) );
             FileWriter writerArmors = new FileWriter ( new File ( dataDir, "armors.json" ) );
-
             writerTps.write ( jsonTps );
-            writerPlayers.write ( jsonPlayers );
-            writerItems.write ( jsonItems );
-            writerArmorsPlayers.write ( jsonArmorsPlayers );
-            writerBonus.write ( jsonBonus );
-            writerCost.write ( jsonCost );
-            writerArmors.write ( jsonArmors );
-
             writerTps.close ( );
             writerPlayers.close ( );
             writerItems.close ( );
@@ -258,63 +199,9 @@ public class Main extends JavaPlugin {
         } );
     }
 
-    public static boolean hasSetArmor ( ArrayList<DBItem> armor ) {
-        return armors.stream ( ).anyMatch ( e -> e.containsAll ( armor ) );
-    }
 
-    public void armorTask () {
 
-        BukkitRunnable runnable = new BukkitRunnable ( ) {
-            @Override
-            public void run () {
-                for (Player player : Main.instance.getServer ( ).getOnlinePlayers ( )) {
-                    ItemStack chestplate = player.getInventory ( ).getChestplate ( );
-                    ItemStack leggings = player.getInventory ( ).getLeggings ( );
-                    ItemStack boots = player.getInventory ( ).getBoots ( );
-                    if (hasFullArmorSet ( player ) && !armorsPlayers.containsKey ( player.getName ( ) )) {
-                        if (isDBItem ( chestplate ) && isDBItem ( leggings ) && isDBItem ( boots )) {
-                            ArrayList<DBItem> armaduras = new ArrayList<> ( Arrays.asList ( wrapDBItem ( chestplate ), wrapDBItem ( leggings ),
-                                    wrapDBItem ( boots )) );
-                            if (hasSetArmor ( armaduras )){
-                                setPlayerData ( player, wrapDBItem ( chestplate ), false );
-                                armorsPlayers.put ( player.getName ( ), wrapDBItem ( chestplate ) );
-                                armorCompleted.put ( player.getName ( ), 3 );
-                            }
-                        }
-                    } else if (!hasFullArmorSet ( player )) {
-                        if (armorCompleted.containsKey ( player.getName ( ) )) {
-                            IDBCPlayer idbcPlayer;
-                            try {
-                                idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
-                            } catch (NullPointerException exception) {
-                                continue;
-                            }
-                            restorePlayerData ( player, armorsPlayers.get ( player.getName ( ) ), idbcPlayer );
-                            armorCompleted.remove ( player.getName ( ) );
-                            armorsPlayers.remove ( player.getName ( ) );
-                        }
-                    }else if(hasFullArmorSet ( player ) && armorCompleted.containsKey ( player.getName ( ) )){
-                        if (isDBItem ( chestplate ) && isDBItem ( leggings ) && isDBItem ( boots )) {
-                            ArrayList<DBItem> armaduras = new ArrayList<> ( Arrays.asList ( wrapDBItem ( chestplate ), wrapDBItem ( leggings ),
-                                    wrapDBItem ( boots )) );
-                            if (!hasSetArmor ( armaduras )){
-                                IDBCPlayer idbcPlayer;
-                                try {
-                                    idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
-                                } catch (NullPointerException exception) {
-                                    continue;
-                                }
-                                restorePlayerData ( player, armorsPlayers.get ( player.getName ( ) ), idbcPlayer );
-                                armorCompleted.remove ( player.getName ( ) );
-                                armorsPlayers.remove ( player.getName ( ) );
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        runnable.runTaskTimerAsynchronously ( Main.instance, 0L, 20L );
-    }
+
 
     public CommandFramework getCommandFramework () {
         return commandFramework;

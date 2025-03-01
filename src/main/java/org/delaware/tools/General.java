@@ -18,10 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Duration;
+import java.util.*;
 
 public class General {
 
@@ -56,37 +54,50 @@ public class General {
     }
 
     public static int getSTAT ( Stat stat, Player entity ) {
-        DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( entity.getUniqueId () );
+        DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( entity.getUniqueId ( ) );
         return jugador.stat ( stat );
     }
 
     public static int getLVL ( Player player ) {
-        DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( player.getUniqueId () );
-        return jugador.level ();
+        DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( player.getUniqueId ( ) );
+        return jugador.level ( );
     }
-    public static boolean hasStaffParent(Player player) {
-        LuckPerms luckPerms = LuckPermsProvider.get();
-        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+
+    public static boolean hasStaffParent ( Player player ) {
+        LuckPerms luckPerms = LuckPermsProvider.get ( );
+        User user = luckPerms.getUserManager ( ).getUser ( player.getUniqueId ( ) );
 
         if (user == null) return false;
 
-        return user.getPrimaryGroup().equalsIgnoreCase("staff") ||
-                user.getInheritedGroups(user.getQueryOptions()).stream()
-                        .anyMatch(group -> group.getName().equalsIgnoreCase("staff"));
+        return user.getPrimaryGroup ( ).equalsIgnoreCase ( "staff" ) ||
+                user.getInheritedGroups ( user.getQueryOptions ( ) ).stream ( )
+                        .anyMatch ( group -> group.getName ( ).equalsIgnoreCase ( "staff" ) );
     }
-    public static boolean isHakaishin(Player player) {
-        LuckPerms luckPerms = LuckPermsProvider.get();
-        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+
+    public static boolean isHakaishin ( Player player ) {
+        LuckPerms luckPerms = LuckPermsProvider.get ( );
+        User user = luckPerms.getUserManager ( ).getUser ( player.getUniqueId ( ) );
 
         if (user == null) return false;
 
-        return user.getPrimaryGroup().equalsIgnoreCase("hakaishin") ||
-                user.getInheritedGroups(user.getQueryOptions()).stream()
-                        .anyMatch(group -> group.getName().equalsIgnoreCase("hakaishin"));
+        return user.getPrimaryGroup ( ).equalsIgnoreCase ( "hakaishin" ) ||
+                user.getInheritedGroups ( user.getQueryOptions ( ) ).stream ( )
+                        .anyMatch ( group -> group.getName ( ).equalsIgnoreCase ( "hakaishin" ) );
+    }
+
+    public static String getGroup ( UUID playerUUID ) {
+        LuckPerms luckPerms = LuckPermsProvider.get ( );
+        return Objects.requireNonNull ( luckPerms.getUserManager ( ).getUser ( playerUUID ) ).getPrimaryGroup ( ).toLowerCase ( );
     }
 
     public static void setPlayerTps ( Player player, int amount ) {
         NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).setTP ( getPlayerTps ( player ) + amount );
+    }
+
+    public static String formatDuration ( Duration duration ) {
+        long hours = duration.toHours ( );
+        long minutes = duration.toMinutes ( );
+        return String.format("%02dh %02dm", hours, minutes);
     }
 
     public static boolean isConvertibleToInt ( String text ) {

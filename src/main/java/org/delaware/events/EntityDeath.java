@@ -1,52 +1,38 @@
 package org.delaware.events;
 
-import noppes.npcs.api.entity.ICustomNpc;
-import noppes.npcs.api.entity.IEntity;
+import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.ItemStack;
-import org.delaware.tools.model.entities.DBItem;
+import org.delaware.tools.BoosterHandler.BoosterDataHandler;
+import org.delaware.tools.Boosters.VIPBooster;
+import org.delaware.tools.CC;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.DecimalFormat;
 
-import static org.delaware.Main.armorsPlayers;
-import static org.delaware.Main.hasSetArmor;
-import static org.delaware.commands.DBItemsCommand.isDBItem;
-import static org.delaware.commands.DBItemsCommand.wrapDBItem;
-import static org.delaware.events.InventoryClick.hasFullArmorSet;
-import static org.delaware.events.PlayerInteract.setPlayerData;
+import static org.delaware.Main.playersTPS;
 
 public class EntityDeath implements Listener {
+    private BoosterDataHandler boosterHandler = new BoosterDataHandler ( );
 
-    @EventHandler
-    public void onEntityDeathEvent ( EntityDeathEvent event ) {
-        if (event.getEntity ( ).getKiller ( ) != null) {
-            Player player = event.getEntity ( ).getKiller ( );
-            ItemStack hand = player.getItemInHand ( );
-            try{
-                IEntity<?> entity = NpcAPI.Instance ( ).getIWorld ( event.getEntity ( ).getWorld ( ).getEnvironment ( ).getId ( ) )
-                        .getEntityByID ( event.getEntity ( ).getEntityId ( ) );
-                if (entity instanceof ICustomNpc<?> && hasFullArmorSet ( player ) && armorsPlayers.containsKey ( player.getName ( ) )) {
-                    if (isDBItem ( player.getInventory ( ).getChestplate ( ) ) && isDBItem ( player.getInventory ( ).getLeggings ( ) ) &&
-                            isDBItem ( player.getInventory ( ).getBoots ( ) )) {
-                        ArrayList<DBItem> armaduras = new ArrayList<> ( Arrays.asList ( wrapDBItem ( player.getInventory ( ).getChestplate ( ) ), wrapDBItem ( player.getInventory ( ).getChestplate ( ) ),
-                                wrapDBItem ( player.getInventory ( ).getBoots ( ) )) );
-                        if (hasSetArmor ( armaduras )){
-                            setPlayerData ( player, wrapDBItem ( player.getInventory ( ).getChestplate ( ) ), true );
-                        }
-                    }
-                } else if (entity instanceof ICustomNpc<?> && isDBItem ( hand )) {
-                    setPlayerData ( player, wrapDBItem ( hand ), true );
-                }
-            }catch(Exception exception){
-
-            }
-
-        }
+    public void onDeathEntity ( EntityDeathEvent event ) {
+        DecimalFormat formatter = new DecimalFormat ( "#,###" );
+        // death event logic here
+        Player player = event.getEntity ( ).getKiller ( );
+        IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
+        int currentTP = idbcPlayer.getTP ( );
+        int oldTP = playersTPS.get ( player.getName ( ) );
+        int gainTP = currentTP - oldTP;
+        // apply gainTP to player's stats or whatever you want here
+        if (!boosterHandler.contains ( player.getUniqueId ( ) )) return;
+        VIPBooster booster = boosterHandler.findBooster ( player.getUniqueId ( ) );
+        if (!booster.isActive ( ) || booster.isCooldownActive ( )) return;
+        int bonus = (int) (gainTP * booster.getMultiplier ( ));
+        idbcPlayer.setTP ( currentTP + bonus );
+        idbcPlayer.sendMessage ( CC.translate ( "&6+" + formatter.format ( bonus ) + " (Booster Pasivo)" ) );
+        player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
 
     }
 }
