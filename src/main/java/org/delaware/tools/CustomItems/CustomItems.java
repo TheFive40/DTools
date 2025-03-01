@@ -60,6 +60,11 @@ public class CustomItems {
         nbt.setBoolean("Unbreakable", unbreakable);
         this.nbtData = nbt.getCompound().toString();
     }
+    public void setDamage(int damage) {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        nbt.changeDamage(damage);
+        this.nbtData = nbt.getCompound().toString();
+    }
     public ItemStack toItemStack() {
         ItemStack itemStack = new ItemStack(itemID);
         itemStack.setAmount(amount);
@@ -85,7 +90,6 @@ public class CustomItems {
         nbt.setString("CUSTOMID", key);
         this.nbtData = nbt.getCompound().toString();
         items.put(key, this);
-        saveToConfig();
     }
     public void addBoost(String itemID, String stat, String boostID, String operation, double value) {
         this.stats.add(stat);
@@ -93,7 +97,6 @@ public class CustomItems {
         this.operations.add(operation);
         this.values.add(value);
         items.put(itemID, this);
-        saveToConfig();
     }
     public boolean hasCustomBoost() {
         if(this.stats == null) return false;
@@ -105,7 +108,6 @@ public class CustomItems {
         if(!this.operations.isEmpty()) this.operations.remove((this.operations.size()-1));
         if(!this.values.isEmpty()) this.values.remove((this.values.size()-1));
         items.put(itemID, this);
-        saveToConfig();
     }
     public void addSetEffect(String itemID, String kitName, String effectID, int level) {
         this.KitName = kitName;
@@ -114,7 +116,6 @@ public class CustomItems {
         if(effectID.equals("STAMINAREGEN")) this.effect.add(3);
         this.level.add((byte) level);
         items.put(itemID, this);
-        saveToConfig();
     }
     public boolean hasSetEffect() {
         return KitName != null;
@@ -124,7 +125,6 @@ public class CustomItems {
         this.level = new ArrayList<>();
         this.effect = new ArrayList<>();
         items.put(itemID, this);
-        saveToConfig();
     }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
@@ -143,7 +143,6 @@ public class CustomItems {
     }
     public static void removeItem(String key) {
         items.remove(key);
-        saveToConfig();
     }
     public static CustomItems getFromNbt(ItemStack item) {
         NbtHandler nbt = new NbtHandler(item);
@@ -155,7 +154,7 @@ public class CustomItems {
         return new CustomItems(item);
     }
     //STATIC METHODS
-    private static void saveToConfig() {
+    public static void saveToConfig() {
         try {
             File rootDir = new File (Main.instance.getDataFolder(), "DTools");
             File dataDir = new File (rootDir, "data");

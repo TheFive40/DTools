@@ -15,7 +15,13 @@ public class CustomItemsRunnable {
             for(Player player : Bukkit.getServer().getOnlinePlayers()) {
                 BonusAttributes bonus = new BonusAttributes(player);
                 //DELETES ALL APPLIED BONUSES
-                if(bonus.hasBonus()) bonus.clearAllBonuses();
+                if(!PlayerBonusesData.getPlayerBonusData(player.getUniqueId().toString()).getBonusesIDs().isEmpty()) {
+                    PlayerBonusesData data = PlayerBonusesData.getPlayerBonusData(player.getUniqueId().toString());
+                    for(int i = 0; i < data.getBonusesIDs().size(); i++) {
+                        bonus.clearBonus(data.getStats().get(i), data.getBonusesIDs().get(i));
+                    }
+                    data.removeAllData(player.getUniqueId().toString());
+                 }
                 if(player.getInventory().getChestplate() == null && player.getInventory().getLeggings() == null && player.getInventory().getBoots() == null) {
                     continue;
                 }
@@ -27,7 +33,7 @@ public class CustomItemsRunnable {
                 if(chestplate != null) {
                     CustomItems cItem = CustomItems.getFromNbt(chestplate);
                     try {
-                        if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player.getUniqueId().toString());
                     }catch(java.lang.NullPointerException e) {
                         Bukkit.getConsoleSender().sendMessage("Item " + chestplate.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
                         throw new RuntimeException(e);
@@ -40,7 +46,7 @@ public class CustomItemsRunnable {
                 if(leggings != null) {
                     CustomItems cItem = CustomItems.getFromNbt(leggings);
                     try {
-                        if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player.getUniqueId().toString());
                     }catch(java.lang.NullPointerException e) {
                         Bukkit.getConsoleSender().sendMessage("Item " + leggings.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
                         throw new RuntimeException(e);
@@ -52,7 +58,7 @@ public class CustomItemsRunnable {
                 if(boots != null) {
                     CustomItems cItem = CustomItems.getFromNbt(boots);
                     try {
-                        if(cItem.hasCustomBoost()) clearAndAddBonus(cItem, bonus);
+                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player.getUniqueId().toString());
                     }catch(java.lang.NullPointerException e) {
                         Bukkit.getConsoleSender().sendMessage("Item " + boots.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
                         throw new RuntimeException(e);
@@ -64,17 +70,15 @@ public class CustomItemsRunnable {
                         for(int i = 0; i < cItem.getEffect().size(); i++) {
                             bonus.setCustomEffect(cItem.getEffect().get(i), 7, cItem.getLevel().get(i));
                         }
-                        //bonus.setCustomEffect(cItem.getEffect(), 7, cItem.getLevel());
                     }
                 }
+                //CHECK FOR CUSTOM ARMOR
             }
         }
-        private void clearAndAddBonus(CustomItems cItem, BonusAttributes bonus) {
+        private void addBonus(CustomItems cItem, BonusAttributes bonus, String name) {
             for(int i = 0; i < cItem.getStats().size(); i++) {
-                if(bonus.hasSpecificBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i))) {
-                    bonus.clearBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i));
-                }
                 bonus.addBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i), cItem.getOperations().get(i), cItem.getValues().get(i));
+                new PlayerBonusesData(name, cItem.getStats().get(i), cItem.getBoostIDS().get(i));
             }
         }
     };
