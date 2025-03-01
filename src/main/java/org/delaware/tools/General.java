@@ -5,6 +5,11 @@ import io.github.facuu16.gohan.dbc.model.DbcPlayer;
 import io.github.facuu16.gohan.dbc.model.Stat;
 import kamkeel.addon.DBCAddon;
 import lombok.Getter;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.entity.IDBCPlayer;
@@ -15,6 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class General {
 
@@ -56,6 +63,26 @@ public class General {
     public static int getLVL ( Player player ) {
         DbcPlayer<EntityPlayerMP> jugador = new DbcPlayer<> ( player.getUniqueId () );
         return jugador.level ();
+    }
+    public static boolean hasStaffParent(Player player) {
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) return false;
+
+        return user.getPrimaryGroup().equalsIgnoreCase("staff") ||
+                user.getInheritedGroups(user.getQueryOptions()).stream()
+                        .anyMatch(group -> group.getName().equalsIgnoreCase("staff"));
+    }
+    public static boolean isHakaishin(Player player) {
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) return false;
+
+        return user.getPrimaryGroup().equalsIgnoreCase("hakaishin") ||
+                user.getInheritedGroups(user.getQueryOptions()).stream()
+                        .anyMatch(group -> group.getName().equalsIgnoreCase("hakaishin"));
     }
 
     public static void setPlayerTps ( Player player, int amount ) {

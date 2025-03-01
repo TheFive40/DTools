@@ -7,6 +7,7 @@ import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.content.Pagination;
 import fr.minuskube.inv.content.SlotIterator;
 import io.github.facuu16.gohan.dbc.model.Stat;
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.delaware.Main;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
+import org.delaware.tools.SkullUtils;
 import org.delaware.tools.commands.BaseCommand;
 import org.delaware.tools.commands.Command;
 import org.delaware.tools.commands.CommandArgs;
@@ -49,20 +51,20 @@ public class ComandTopPlayer extends BaseCommand {
                     @Override
                     public void init ( Player player, InventoryContents inventoryContents ) {
                         for (Player jugadorOnline : Main.instance.getServer ( ).getOnlinePlayers ( )) {
-                            playerLvL.put ( jugadorOnline.getName ( ), General.getLVL ( jugadorOnline ) );
+                            if(!General.hasStaffParent ( jugadorOnline )){
+                                playerLvL.put ( jugadorOnline.getName ( ), General.getLVL ( jugadorOnline ) );
+                            }
                         }
                         inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE ) ) );
                         ClickableItem[] clickableItem = new ClickableItem[playerLvL.size ( )];
                         Pagination pagination = inventoryContents.pagination ( );
                         DecimalFormat formatter = new DecimalFormat ( "#,###" );
-                        // Ordenar jugadores antes de agregarlos al inventario
                         List<Map.Entry<String, Integer>> sortedEntries = playerLvL.entrySet()
                                 .stream()
-                                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()) // Ordenar de mayor a menor
+                                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                                 .collect(Collectors.toList());
 
                         AtomicInteger i = new AtomicInteger(0);
-
                         sortedEntries.forEach(entry -> {
                             String name = entry.getKey();
                             if (name == null || name.isEmpty()) return;
@@ -89,7 +91,7 @@ public class ComandTopPlayer extends BaseCommand {
                             SkullMeta skullMeta = (SkullMeta) skullPlayer.getItemMeta();
                             if (skullMeta != null) {
                                 skullMeta.setOwner(playerLVL.getName());
-                                skullMeta.setDisplayName(CC.translate("&6➤ &e " + playerLVL.getName()));
+                                skullMeta.setDisplayName(CC.translate("&6➤ &e" + playerLVL.getName() + " &6#" + (i.get ()+1)));
                                 skullMeta.setLore(lore);
                                 skullPlayer.setItemMeta(skullMeta);
                             }
