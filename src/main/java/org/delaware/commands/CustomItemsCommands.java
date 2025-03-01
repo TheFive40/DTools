@@ -26,6 +26,7 @@ public class CustomItemsCommands extends BaseCommand {
             player.sendMessage(CC.translate("&6dbCustomItems get <ID> -> &eGives the player an item registered"));
             player.sendMessage(CC.translate("&6dbCustomItems remove <ID> -> &eRemoves an item"));
             player.sendMessage(CC.translate("&6dbCustomItems makeUnbreakable -> &eAdds the item the player's holding to the config"));
+            player.sendMessage(CC.translate("&6dbCustomItems setDamage <Damage> -> &eChanges the item's damage"));
             player.sendMessage(CC.translate("&6dbCustomItems addBoost -> &eUse for bonus attributes, for help type /dbCustomItems addBoost"));
             player.sendMessage(CC.translate("&6dbCustomItems addEffect -> &eFor adding set effects, for help type /dbCustomItems addEffect"));
             player.sendMessage(CC.translate("&7---------------------------------------------------"));
@@ -223,6 +224,26 @@ public class CustomItemsCommands extends BaseCommand {
                 CustomItems customIt = CustomItems.getCustomItem(args[1].toUpperCase().trim());
                 customIt.deleteEffects(args[1].toUpperCase().trim());
                 player.sendMessage(CC.translate("&cEffect applied to " + args[1] + " deleted correctly"));
+                break;
+            case "setdamage":
+                if(args.length < 2) {
+                    player.sendMessage(CC.translate("&cCorrect usage: /dbCustomItems setDamage <Damage>"));
+                    return;
+                }
+                if(player.getItemInHand().getType().equals(Material.AIR)) {
+                    player.sendMessage(CC.translate("&cYou must be holding an item!"));
+                    return;
+                }
+                try {
+                    Integer.parseInt(args[1]);
+                } catch (NumberFormatException error) {
+                    player.sendMessage(CC.translate("&cDamage must be a number!"));
+                    return;
+                }
+                CustomItems changeDmg = new CustomItems(player.getItemInHand());
+                changeDmg.setDamage(Integer.parseInt(args[1]));
+                player.setItemInHand(changeDmg.toItemStack());
+                player.sendMessage(CC.translate("&aDamage changed correctly!"));
                 break;
         }
     }
