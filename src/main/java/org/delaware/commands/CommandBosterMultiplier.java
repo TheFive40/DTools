@@ -12,7 +12,7 @@ public class CommandBosterMultiplier extends BaseCommand {
     private static final String VERSION = "1.0.0";
     private BoosterDataHandler boosterHandler = new BoosterDataHandler ( );
 
-    @Command(name = "pvboost", aliases = "pvboost", permission = "dtools.pvboost")
+    @Command(name = "pvboost", aliases = {"pvboost","pvbooster"}, permission = "dtools.pvboost")
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         Player player = command.getPlayer ( );
