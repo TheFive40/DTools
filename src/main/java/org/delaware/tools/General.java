@@ -10,6 +10,7 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
+import net.luckperms.api.query.QueryOptions;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.entity.IDBCPlayer;
@@ -17,6 +18,7 @@ import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.delaware.Main;
 
 import java.time.Duration;
 import java.util.*;
@@ -101,7 +103,15 @@ public class General {
         long seconds = duration.getSeconds() % 60;
         return String.format("%dd %02dh %02dm %02ds", days, hours, minutes, seconds);
     }
-
+    public static List<Player> getStaffs(){
+       ArrayList<Player> staffs = new ArrayList<> (  );
+        for(Player player : Main.instance.getServer ().getOnlinePlayers () ){
+          if (hasStaffParent(player)){
+              staffs.add ( player );
+          }
+       }
+        return staffs;
+    }
     public static boolean isConvertibleToInt ( String text ) {
         try {
             Integer.parseInt ( text );

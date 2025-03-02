@@ -3,3 +3,9 @@ version: 1.7.5
 name: DBFuture
 author: DelawareX
 depend: [Gohan]
+softdepend:
+  - Essentials
+
+overridden-commands:
+  - nick
+  - nickname

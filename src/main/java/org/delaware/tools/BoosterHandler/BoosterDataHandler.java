@@ -1,20 +1,17 @@
 package org.delaware.tools.BoosterHandler;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
 import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import org.delaware.Main;
 import org.delaware.tools.Boosters.VIPBooster;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 
 @Getter
 @Setter

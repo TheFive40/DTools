@@ -17,14 +17,14 @@ public class ScytheJoinEvent implements Listener {
         for(int i = 0; i < player.getInventory().getSize(); i++) {
             ItemStack item = player.getInventory().getItem(i);
             if(item == null) continue;
-            if(item.getTypeId() == 4511) {
-                player.sendMessage(CC.translate("&1---------------------------------------------------"));
-                player.sendMessage(CC.translate("&bTu guadaña ha sido actualizada a tu nivel."));
-                player.sendMessage(CC.translate("&bRecuerda que para volverla actualizar, puedes salir y volver a entrar del server."));
-                player.sendMessage(CC.translate("&b¡Gracias por tu compra!"));
-                player.sendMessage(CC.translate("&1---------------------------------------------------"));
+            if(item.getTypeId () == 5009) {
+                player.sendMessage(CC.translate("&6&l&m------------------------------------------"));
+                player.sendMessage(CC.translate("&eTu guadaña ha sido actualizada a tu nivel."));
+                player.sendMessage(CC.translate("&eRecuerda que para volverla actualizar, puedes salir y entrar"));
+                player.sendMessage(CC.translate("&e¡Gracias por tu compra!"));
+                player.sendMessage(CC.translate("&6&l&m------------------------------------------"));
                 CustomItems cItem = new CustomItems(item);
-                cItem.setDamage((calculateLevel(player)*dmgMultiplier));
+                cItem.setDamage((calculateLevel(player)*dmgMultiplier)+14000);
                 player.getInventory().setItem(i, cItem.toItemStack());
                 break;
             }

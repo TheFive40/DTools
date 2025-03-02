@@ -27,7 +27,7 @@ public class BoosterManager {
                 for (VIPBooster booster : boosters) {
                     if (booster.isActive ( ) && booster.getActivationTime ( ) != null) {
                         Duration elapsedTime = Duration.between ( booster.getActivationTime ( ), LocalDateTime.now ( ) );
-                        if (elapsedTime.toHours ( ) >= 1) {
+                        if (elapsedTime.toMinutes ( ) >= 60) {
                             booster.setActive ( false );
                             if (Bukkit.getPlayer ( booster.getPlayerUUID ( ) ) != null) {
                                 Bukkit.getPlayer ( booster.getPlayerUUID ( ) ).sendMessage ( CC.translate ( "&cYour personal booster has expired!" ) );
