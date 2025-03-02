@@ -20,6 +20,7 @@ import org.delaware.tools.ClassesRegistration;
 import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.CustomItems.CustomItemsRunnable;
 import org.delaware.tools.CustomItems.PlayerBonusesData;
+import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
 import org.delaware.tools.General;
 import org.delaware.tools.commands.CommandFramework;
@@ -43,6 +44,7 @@ import static org.delaware.events.PlayerInteract.*;
 
 
 public class Main extends JavaPlugin {
+    public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     static {
         String ruta1 = System.getProperty ( "user.dir" ) + File.separator + "plugins";
@@ -79,6 +81,8 @@ public class Main extends JavaPlugin {
 
         //Spacey
         loadCustomItems();
+        loadCustomBonuses();
+        loadScytheConfig();
         //Spacey
 
         //Five
@@ -222,14 +226,43 @@ public class Main extends JavaPlugin {
                 dataDir.mkdirs ( );
             }
             FileReader readerCustomItems = new FileReader ( new File ( dataDir, "CustomItems.json" ) );
-            FileReader readerCustomBonuses = new FileReader(new File(dataDir, "PlayerBonusesData.json"));
-            Type typeBonuses = new TypeToken<HashMap<String, PlayerBonusesData>>(){}.getType();
             Type typeItems = new TypeToken<HashMap<String, CustomItems>>(){}.getType();
             Gson gson = new Gson();
             items = gson.fromJson(readerCustomItems, typeItems);
-            bonusData = gson.fromJson(readerCustomBonuses, typeBonuses);
             readerCustomItems.close();
+        }catch(IOException | JsonSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadCustomBonuses() {
+        try {
+            File rootDir = new File (getDataFolder(), "DTools");
+            File dataDir = new File (rootDir, "data");
+            if (!dataDir.exists ( )) {
+                dataDir.mkdirs ( );
+            }
+            FileReader readerCustomBonuses = new FileReader(new File(dataDir, "PlayerBonusesData.json"));
+            Type typeBonuses = new TypeToken<HashMap<String, PlayerBonusesData>>(){}.getType();
+            Gson gson = new Gson();
+            bonusData = gson.fromJson(readerCustomBonuses, typeBonuses);
             readerCustomBonuses.close();
+        }catch(IOException | JsonSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadScytheConfig() {
+        ScytheRunnable.getRun().runTaskTimer(instance, 20, (20 * 5));
+        try {
+            File rootDir = new File (getDataFolder(), "DTools");
+            File dataDir = new File (rootDir, "data");
+            if (!dataDir.exists ( )) {
+                dataDir.mkdirs ( );
+            }
+            FileReader readerScytheConfig = new FileReader(new File(dataDir, "ScytheConfig.json"));
+            Type typeScythe = new TypeToken<HashMap<String, Integer>>(){}.getType();
+            Gson gson = new Gson();
+            scytheConfig = gson.fromJson(readerScytheConfig, typeScythe);
+            readerScytheConfig.close();
         }catch(IOException | JsonSyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -237,6 +270,7 @@ public class Main extends JavaPlugin {
     private void disableCustomItems() {
         CustomItemsRunnable.getBukkitRunnable().cancel();
         WriteRunnable.getRunnable().cancel();
+        ScytheRunnable.getRun().cancel();
         CustomItems.saveToConfig();
         PlayerBonusesData.saveToConfig();
     }
