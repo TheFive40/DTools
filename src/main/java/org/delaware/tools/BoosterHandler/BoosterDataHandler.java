@@ -31,7 +31,7 @@ public class BoosterDataHandler implements Serializable{
 
     public static void saveData() {
         if (!dataDir.exists()) dataDir.mkdirs();
-
+        if (boostMultiplier.isEmpty () || boosterData.isEmpty () ) return;
         // Guardar boostMultiplier
         try (FileWriter writer = new FileWriter(MULTIPLIER_FILE)) {
             GSON.toJson(boostMultiplier, writer);

@@ -38,25 +38,7 @@ public class BoosterManager {
             }
         }.runTaskTimerAsynchronously ( Main.instance, 0L, 5 * 20L );
     }
-    public static void startVipCheckTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Iterator<VIPBooster> iterator = BoosterDataHandler.getBoosterData().iterator();
 
-                while (iterator.hasNext()) {
-                    BoosterDataHandler.saveData ();
-                    VIPBooster booster = iterator.next();
-                    UUID playerUUID = booster.getPlayerUUID();
-                    String rank = General.getGroup(playerUUID);
-                    if (!isVip(rank)) {
-                        iterator.remove();
-                        System.out.println("[PVBooster] Removed booster for " + playerUUID + " (No longer VIP)");
-                    }
-                }
-            }
-        }.runTaskTimer(Main.instance, 0L, 1728000L); // Ejecuta cada 24h (1728000 ticks)
-    }
 
     private static boolean isVip(String rank) {
         return rank != null && VIP_RANKS.contains(rank.toLowerCase());
