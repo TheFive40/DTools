@@ -27,6 +27,5 @@ public class CommandNickAccept extends BaseCommand {
         Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "enick " + player.getName ( ) + " " + CommandNick.nicknames.get ( player )  );
         player.sendMessage ( CC.translate ( "&aYour nickname has been accepted by &c" + command.getPlayer ( ).getName ( ) ) );
         command.getPlayer().sendMessage(CC.translate("&aYou have accepted the nickname change for &c" + player.getName() + " &ato &e" + CommandNick.nicknames.get ( player ) ));
-
     }
 }

@@ -19,7 +19,7 @@ public class CommandNick extends BaseCommand {
     public void onCommand ( CommandArgs command ) throws IOException {
         Player player = command.getPlayer ( );
         if (command.getArgs ( ).length == 0) {
-            player.sendMessage(CC.translate("&8[&6✦&8] &cCorrect usage: &e/nick <nickname>"));
+            player.sendMessage(CC.translate("&8[&6✦&8] &cCorrect usage: &e/name <nickname>"));
             return;
         }
         General.getStaffs ( ).forEach ( e -> {
