@@ -27,6 +27,8 @@ public class CustomItemsCommands extends BaseCommand {
             player.sendMessage(CC.translate("&6dbCustomItems remove <ID> -> &eRemoves an item"));
             player.sendMessage(CC.translate("&6dbCustomItems makeUnbreakable -> &eAdds the item the player's holding to the config"));
             player.sendMessage(CC.translate("&6dbCustomItems setDamage <Damage> -> &eChanges the item's damage"));
+            player.sendMessage(CC.translate("&6dbCustomItems clone <ID> -> &eCopies a custom item's data to your item in hand (DO NOT USE UNLESS YOU KNOW WHAT YOU'RE DOING)"));
+            player.sendMessage(CC.translate("&6dbCustomItems info <ID> -> &eShows information about a registered item"));
             player.sendMessage(CC.translate("&6dbCustomItems addBoost -> &eUse for bonus attributes, for help type /dbCustomItems addBoost"));
             player.sendMessage(CC.translate("&6dbCustomItems addEffect -> &eFor adding set effects, for help type /dbCustomItems addEffect"));
             player.sendMessage(CC.translate("&7---------------------------------------------------"));
@@ -244,6 +246,88 @@ public class CustomItemsCommands extends BaseCommand {
                 changeDmg.setDamage(Integer.parseInt(args[1]));
                 player.setItemInHand(changeDmg.toItemStack());
                 player.sendMessage(CC.translate("&aDamage changed correctly!"));
+                break;
+            case "clone":
+                if(args.length < 2) {
+                    player.sendMessage(CC.translate("&cYou must specify which ID to clone!"));
+                    return;
+                }
+                if(player.getItemInHand().getType().equals(Material.AIR)) {
+                    player.sendMessage(CC.translate("&cYou're not holding an item!"));
+                    return;
+                }
+                if(!CustomItems.contains(args[1].toUpperCase().trim())) {
+                    player.sendMessage(CC.translate("&cItem with ID " + args[1] + " doesn't exist"));
+                    return;
+                }
+                CustomItems clone = new CustomItems(player.getItemInHand());
+                clone.clone(args[1].toUpperCase().trim());
+                player.setItemInHand(clone.toItemStack());
+                player.sendMessage(CC.translate("&aConfig from " + args[1].toUpperCase().trim() + " set to your item in hand!"));
+                player.sendMessage(CC.translate("&aNote that this doesn't save a new item in the config, only copies the effects from an already existing item"));
+                break;
+            case "info":
+                if(args.length < 2) {
+                    player.sendMessage(CC.translate("&cYou must specify an ID!"));
+                    return;
+                }
+                if(!CustomItems.contains(args[1].toUpperCase().trim())) {
+                    player.sendMessage(CC.translate("&cItem with ID " + args[1] + " doesn't exist"));
+                    return;
+                }
+                CustomItems info = CustomItems.getCustomItem(args[1].toUpperCase().trim());
+                String name = info.getDisplayName() != null ? info.getDisplayName() : "None set";
+                player.sendMessage(CC.translate("&8---------------------------------------------------"));
+                player.sendMessage(CC.translate("&7Information about item ID &f" + args[1].toUpperCase().trim() + "&7:"));
+                player.sendMessage(CC.translate("&7Material: &f" + info.toItemStack().getType().toString()));
+                player.sendMessage(CC.translate("&7ID: &f" + info.getItemID()));
+                player.sendMessage(CC.translate("&7Name: &f" + name));
+                if(info.getLore() != null) {
+                    player.sendMessage(CC.translate("&7Lore:"));
+                    for(String cLore : info.getLore()) {
+                       player.sendMessage(CC.translate("&f" + cLore));
+                    }
+                }else {
+                    player.sendMessage(CC.translate("&7Lore: &fNone set"));
+                }
+                if(info.hasCustomBoost()) {
+                    player.sendMessage(CC.translate("&7Active boosts:"));
+                    for(int i = 0; i < info.getBoostIDS().size(); i++) {
+                        player.sendMessage(CC.translate("&7" + (i+1) + "º: " + "&7Stat: &f" + info.getStats().get(i) + " &7bonusID: &f" + info.getBoostIDS().get(i)+ " &7Operation: &f" + info.getOperations().get(i) + " &7Value: &f" + info.getValues().get(i)));
+                    }
+                }else {
+                    player.sendMessage(CC.translate("&7Active boosts: &fNone set"));
+                }
+                if(info.hasSetEffect()) {
+                    player.sendMessage(CC.translate("&7Active effects (full set):"));
+                    for(int i = 0; i < info.getEffect().size(); i++) {
+                        player.sendMessage(CC.translate("&7" + (i+1) + "º: " + "&7Effect: &f" + info.getEffect().get(i) + " &7Level: &f" + info.getLevel().get(i)));
+                    }
+                    player.sendMessage(CC.translate("&7Part of kit: &f" + info.getKitName()));
+                }else {
+                    player.sendMessage(CC.translate("&7Active effects (full set): &fNone"));
+                }
+                player.sendMessage(CC.translate("&8---------------------------------------------------"));
+                break;
+                //dbcustomitem changematerial <newmaterial>
+            case "changematerial":
+                if(args.length < 2) {
+                    player.sendMessage(CC.translate("&cYou must specify a new material!"));
+                    return;
+                }
+                if(player.getItemInHand().getType().equals(Material.AIR)) {
+                    player.sendMessage(CC.translate("&cYou're not holding an item!"));
+                    return;
+                }
+                try {
+                    Integer.parseInt(args[1].trim());
+                } catch (NumberFormatException error) {
+                    player.sendMessage(CC.translate("&cNew material must be a number!"));
+                    return;
+                }
+                CustomItems changeItem = new CustomItems(player.getItemInHand());
+                changeItem.setItemID(Integer.parseInt(args[1].trim()));
+                player.setItemInHand(changeItem.toItemStack());
                 break;
         }
     }
