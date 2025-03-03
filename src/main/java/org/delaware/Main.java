@@ -29,18 +29,12 @@ import org.delaware.tools.model.entities.Localizaciones;
 import org.delaware.tools.model.entities.TP;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-
 import static org.delaware.commands.CommandTransform.playerStats;
 import static org.delaware.tools.CustomItems.CustomItems.items;
 import static org.delaware.tools.CustomItems.PlayerBonusesData.bonusData;
 import static org.delaware.commands.TPSCommand.tps;
-import static org.delaware.events.InventoryClick.hasFullArmorSet;
-import static org.delaware.events.PlayerHeld.players;
-import static org.delaware.events.PlayerInteract.*;
 
 
 public class Main extends JavaPlugin {
@@ -77,7 +71,25 @@ public class Main extends JavaPlugin {
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
 
-        loadGifts();
+        try{
+            //Five
+            BoosterDataHandler.loadData ();
+            BoosterManager.startBoosterCheckTask ();
+            loadGifts();
+            //Five
+            try {
+                Type typeTps = new TypeToken<ConcurrentHashMap<Integer, TP>> ( ) {
+                }.getType ( );
+                FileReader readerTps = new FileReader ( new File ( dataDir, "tps.json" ) );
+                Gson gson = new Gson ( );
+                tps = gson.fromJson ( readerTps, typeTps );
+                readerTps.close ( );
+            } catch (FileNotFoundException e) {
+                System.out.println ( "No se encontraron algunos archivos JSON. Se generarán automáticamente al desactivar el plugin." );
+            } catch (IOException e) {
+                throw new RuntimeException ( e );
+            }
+        }catch(Exception e){}
 
         //Spacey
         loadCustomItems();
@@ -85,23 +97,8 @@ public class Main extends JavaPlugin {
         loadScytheConfig();
         //Spacey
 
-        //Five
-        BoosterManager.startBoosterCheckTask ();
-        BoosterManager.startVipCheckTask ();
-        BoosterDataHandler.loadData ();
-        //Five
-        try {
-            Type typeTps = new TypeToken<ConcurrentHashMap<Integer, TP>> ( ) {
-            }.getType ( );
-            FileReader readerTps = new FileReader ( new File ( dataDir, "tps.json" ) );
-            Gson gson = new Gson ( );
-            tps = gson.fromJson ( readerTps, typeTps );
-            readerTps.close ( );
-        } catch (FileNotFoundException e) {
-            System.out.println ( "No se encontraron algunos archivos JSON. Se generarán automáticamente al desactivar el plugin." );
-        } catch (IOException e) {
-            throw new RuntimeException ( e );
-        }
+
+
     }
     public void writeData(){
         File rootDir = new File(getDataFolder(), "DTools");
@@ -174,21 +171,14 @@ public class Main extends JavaPlugin {
         writeData ();
         Gson gson = new GsonBuilder ( ).setPrettyPrinting ( ).create ( );
         String jsonTps = gson.toJson ( tps );
-        String jsonPlayers = gson.toJson ( players );
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
         if (!dataDir.exists ( )) {
             dataDir.mkdirs ( );
         }
-
-        //Spacey
-        disableCustomItems();
-        //Spacey
-
         //Five
         BoosterDataHandler.saveData ();
         //Five
-
         try {
             FileWriter writerTps = new FileWriter ( new File ( dataDir, "tps.json" ) );
             writerTps.write ( jsonTps );
@@ -196,6 +186,13 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException ( "Error al guardar los archivos JSON", e );
         }
+        //Spacey
+        disableCustomItems();
+        //Spacey
+
+
+
+
 
         playerStats.forEach ( ( k, v ) -> {
             IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( k ).getDBCPlayer ( );

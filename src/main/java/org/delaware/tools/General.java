@@ -1,25 +1,13 @@
 package org.delaware.tools;
-
-import JinRyuu.JRMCore.JRMCoreH;
 import io.github.facuu16.gohan.dbc.model.DbcPlayer;
 import io.github.facuu16.gohan.dbc.model.Stat;
-import kamkeel.addon.DBCAddon;
-import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
-import net.luckperms.api.query.QueryOptions;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.Main;
-
 import java.time.Duration;
 import java.util.*;
 
@@ -87,9 +75,20 @@ public class General {
                         .anyMatch ( group -> group.getName ( ).equalsIgnoreCase ( "hakaishin" ) );
     }
 
-    public static String getGroup ( UUID playerUUID ) {
-        LuckPerms luckPerms = LuckPermsProvider.get ( );
-        return Objects.requireNonNull ( luckPerms.getUserManager ( ).getUser ( playerUUID ) ).getPrimaryGroup ( ).toLowerCase ( );
+    public static String getGroup(UUID playerUUID) {
+        LuckPerms luckPerms = LuckPermsProvider.get();
+        if (luckPerms == null) {
+            System.out.println("[PVBooster] Error: LuckPerms no está disponible.");
+            return "default";
+        }
+
+        User user = luckPerms.getUserManager().getUser(playerUUID);
+        if (user == null) {
+            System.out.println("[PVBooster] Advertencia: No se encontró el usuario en LuckPerms para UUID " + playerUUID);
+            return "default";
+        }
+
+        return user.getPrimaryGroup().toLowerCase();
     }
 
     public static void setPlayerTps ( Player player, int amount ) {
@@ -97,11 +96,10 @@ public class General {
     }
 
     public static String formatDuration ( Duration duration ) {
-        long days = duration.toDays();
         long hours = duration.toHours() % 24;
         long minutes = duration.toMinutes() % 60;
         long seconds = duration.getSeconds() % 60;
-        return String.format("%dd %02dh %02dm %02ds", days, hours, minutes, seconds);
+        return String.format("%02dh %02dm %02ds", hours, minutes, seconds);
     }
     public static List<Player> getStaffs(){
        ArrayList<Player> staffs = new ArrayList<> (  );

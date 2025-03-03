@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 
 public class PlayerHeld implements Listener {
-    public static ArrayList<String> players = new ArrayList<> ( );
 
     @EventHandler
     public void onPlayerHeldItem ( PlayerItemHeldEvent event ) {
