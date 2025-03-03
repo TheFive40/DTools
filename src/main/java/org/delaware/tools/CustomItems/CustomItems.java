@@ -91,6 +91,11 @@ public class CustomItems {
         this.nbtData = nbt.getCompound().toString();
         items.put(key, this);
     }
+    public void clone(String key) {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        nbt.setString("CUSTOMID", key);
+        this.nbtData = nbt.getCompound().toString();
+    }
     public void addBoost(String itemID, String stat, String boostID, String operation, double value) {
         this.stats.add(stat);
         this.boostIDS.add(boostID);
