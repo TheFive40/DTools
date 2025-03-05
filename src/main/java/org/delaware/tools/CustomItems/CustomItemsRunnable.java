@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.tools.Boosters.BonusAttributes;
+import org.delaware.tools.Permissions.PermissionsManager;
+
 
 public class CustomItemsRunnable {
     @Getter
@@ -33,7 +35,7 @@ public class CustomItemsRunnable {
                 if(chestplate != null) {
                     CustomItems cItem = CustomItems.getFromNbt(chestplate);
                     try {
-                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player.getUniqueId().toString());
+                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player);
                     }catch(java.lang.NullPointerException e) {
                         Bukkit.getConsoleSender().sendMessage("Item " + chestplate.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
                         throw new RuntimeException(e);
@@ -46,7 +48,7 @@ public class CustomItemsRunnable {
                 if(leggings != null) {
                     CustomItems cItem = CustomItems.getFromNbt(leggings);
                     try {
-                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player.getUniqueId().toString());
+                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player);
                     }catch(java.lang.NullPointerException e) {
                         Bukkit.getConsoleSender().sendMessage("Item " + leggings.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
                         throw new RuntimeException(e);
@@ -58,7 +60,7 @@ public class CustomItemsRunnable {
                 if(boots != null) {
                     CustomItems cItem = CustomItems.getFromNbt(boots);
                     try {
-                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player.getUniqueId().toString());
+                        if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player);
                     }catch(java.lang.NullPointerException e) {
                         Bukkit.getConsoleSender().sendMessage("Item " + boots.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
                         throw new RuntimeException(e);
@@ -75,10 +77,24 @@ public class CustomItemsRunnable {
                 //CHECK FOR CUSTOM ARMOR
             }
         }
-        private void addBonus(CustomItems cItem, BonusAttributes bonus, String name) {
-            for(int i = 0; i < cItem.getStats().size(); i++) {
-                bonus.addBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i), cItem.getOperations().get(i), cItem.getValues().get(i));
-                new PlayerBonusesData(name, cItem.getStats().get(i), cItem.getBoostIDS().get(i));
+        private void addBonus(CustomItems cItem, BonusAttributes bonus, Player player) {
+            if(!cItem.hasRequirements()) {
+                for(int i = 0; i < cItem.getStats().size(); i++) {
+                    bonus.addBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i), cItem.getOperations().get(i), cItem.getValues().get(i));
+                    new PlayerBonusesData(player.getUniqueId().toString(), cItem.getStats().get(i), cItem.getBoostIDS().get(i));
+                }
+            }else if(cItem.hasRequirements()) {
+                int requirementsQuantity = cItem.getRequirements().size();
+                int check = 0;
+                for(int i = 0; i < requirementsQuantity; i++) {
+                    if(PermissionsManager.hasPermission(player, cItem.getRequirements().get(i))) check++;
+                }
+                if(check >= requirementsQuantity) {
+                    for(int i = 0; i < cItem.getStats().size(); i++) {
+                        bonus.addBonus(cItem.getStats().get(i), cItem.getBoostIDS().get(i), cItem.getOperations().get(i), cItem.getValues().get(i));
+                        new PlayerBonusesData(player.getUniqueId().toString(), cItem.getStats().get(i), cItem.getBoostIDS().get(i));
+                    }
+                }
             }
         }
     };

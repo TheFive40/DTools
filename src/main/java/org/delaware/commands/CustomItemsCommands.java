@@ -29,6 +29,9 @@ public class CustomItemsCommands extends BaseCommand {
             player.sendMessage(CC.translate("&6dbCustomItems setDamage <Damage> -> &eChanges the item's damage"));
             player.sendMessage(CC.translate("&6dbCustomItems clone <ID> -> &eCopies a custom item's data to your item in hand (DO NOT USE UNLESS YOU KNOW WHAT YOU'RE DOING)"));
             player.sendMessage(CC.translate("&6dbCustomItems info <ID> -> &eShows information about a registered item"));
+            player.sendMessage(CC.translate("&6dbCustomItems changeMaterial <newID> -> &eChanges the item in your hand to the new specified ID"));
+            player.sendMessage(CC.translate("&6dbCustomItems addPermission <ID> <Permission> -> &eAdds a required permission to <ID>"));
+            player.sendMessage(CC.translate("&6dbCustomItems removePermission <ID> -> &eRemoves the last applied permission from <ID>"));
             player.sendMessage(CC.translate("&6dbCustomItems addBoost -> &eUse for bonus attributes, for help type /dbCustomItems addBoost"));
             player.sendMessage(CC.translate("&6dbCustomItems addEffect -> &eFor adding set effects, for help type /dbCustomItems addEffect"));
             player.sendMessage(CC.translate("&7---------------------------------------------------"));
@@ -287,26 +290,26 @@ public class CustomItemsCommands extends BaseCommand {
                     for(String cLore : info.getLore()) {
                        player.sendMessage(CC.translate("&f" + cLore));
                     }
-                }else {
-                    player.sendMessage(CC.translate("&7Lore: &fNone set"));
-                }
+                }else player.sendMessage(CC.translate("&7Lore: &fNone set"));
                 if(info.hasCustomBoost()) {
                     player.sendMessage(CC.translate("&7Active boosts:"));
                     for(int i = 0; i < info.getBoostIDS().size(); i++) {
                         player.sendMessage(CC.translate("&7" + (i+1) + "º: " + "&7Stat: &f" + info.getStats().get(i) + " &7bonusID: &f" + info.getBoostIDS().get(i)+ " &7Operation: &f" + info.getOperations().get(i) + " &7Value: &f" + info.getValues().get(i)));
                     }
-                }else {
-                    player.sendMessage(CC.translate("&7Active boosts: &fNone set"));
-                }
+                }else player.sendMessage(CC.translate("&7Active boosts: &fNone set"));
                 if(info.hasSetEffect()) {
                     player.sendMessage(CC.translate("&7Active effects (full set):"));
                     for(int i = 0; i < info.getEffect().size(); i++) {
                         player.sendMessage(CC.translate("&7" + (i+1) + "º: " + "&7Effect: &f" + info.getEffect().get(i) + " &7Level: &f" + info.getLevel().get(i)));
                     }
                     player.sendMessage(CC.translate("&7Part of kit: &f" + info.getKitName()));
-                }else {
-                    player.sendMessage(CC.translate("&7Active effects (full set): &fNone"));
-                }
+                }else player.sendMessage(CC.translate("&7Active effects (full set): &fNone"));
+                if(info.hasRequirements()) {
+                    player.sendMessage(CC.translate("&7Requirements: "));
+                    for(String cRequirement : info.getRequirements()) {
+                        player.sendMessage(CC.translate("&f" + cRequirement));
+                    }
+                }else player.sendMessage(CC.translate("&7Requirements: &fNone set"));
                 player.sendMessage(CC.translate("&8---------------------------------------------------"));
                 break;
                 //dbcustomitem changematerial <newmaterial>
@@ -328,6 +331,40 @@ public class CustomItemsCommands extends BaseCommand {
                 CustomItems changeItem = new CustomItems(player.getItemInHand());
                 changeItem.setItemID(Integer.parseInt(args[1].trim()));
                 player.setItemInHand(changeItem.toItemStack());
+                break;
+            case "addpermission":
+                if(args.length < 2) {
+                    player.sendMessage(CC.translate("&cYou must specify an ID!"));
+                    return;
+                }
+                if(args.length < 3) {
+                    player.sendMessage(CC.translate("&cYou must specify a permission!"));
+                    return;
+                }
+                if(!CustomItems.contains(args[1].toUpperCase().trim())) {
+                    player.sendMessage(CC.translate("&cItem &4" + args[1] + " &cdoes not exist!"));
+                    return;
+                }
+                CustomItems addPerm = CustomItems.getCustomItem(args[1].toUpperCase().trim());
+                addPerm.addRequirements(args[2].toUpperCase().trim());
+                player.sendMessage(CC.translate("&aPermission " + args[2].trim() + " added to " + args[1] + " &asuccessfully"));
+                break;
+            case "removepermission":
+                if(args.length < 2) {
+                    player.sendMessage(CC.translate("&cYou must specify an ID!"));
+                    return;
+                }
+                if(!CustomItems.contains(args[1].toUpperCase().trim())) {
+                    player.sendMessage(CC.translate("&cItem &4" + args[1] + " &cdoes not exist!"));
+                    return;
+                }
+                CustomItems remPerm = CustomItems.getCustomItem(args[1].toUpperCase().trim());
+                if(!remPerm.hasRequirements()) {
+                    player.sendMessage(CC.translate("&cThis item does not have any requirements!"));
+                    return;
+                }
+                remPerm.removeLastAppliedRequirement();
+                player.sendMessage(CC.translate("&aRemoved last applied permission requirement from " + args[1]));
                 break;
         }
     }

@@ -38,6 +38,7 @@ public class CustomItems {
     private List<Double> values = new ArrayList<>();
     private List<Integer> effect = new ArrayList<>();
     private List<Byte> level = new ArrayList<>();
+    private List<String> requirements = new ArrayList<>();
 
     public CustomItems(ItemStack item) { //IMPORTANT TO REMEMBER: ADD METADATA, FOR SAME ID ITEMS (NUMBER AFTER THE :)
         if(item.hasItemMeta()) {
@@ -53,6 +54,25 @@ public class CustomItems {
             this.nbtData = nbt.getCompound().toString();
         }else {
             this.nbtData = null;
+        }
+    }
+    public boolean hasRequirements() {
+        try {
+            return !this.requirements.isEmpty();
+        }catch(NullPointerException e) {
+            return false;
+        }
+    }
+    public void addRequirements(String permission) {
+        if(!this.requirements.contains(permission)) this.requirements.add(permission);
+    }
+    public void removeLastAppliedRequirement() {
+        try {
+            if(!this.requirements.isEmpty()) {
+                this.requirements.remove(this.requirements.size()-1);
+            }
+        }catch(NullPointerException e) {
+            Bukkit.getLogger().warning("CustomItem doesn't have requirements set-up yet!");
         }
     }
     public void setUnbreakable(boolean unbreakable) {
