@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import static org.delaware.commands.CommandTransform.playerStats;
 import static org.delaware.tools.CustomItems.CustomItems.items;
@@ -225,13 +226,18 @@ public class Main extends JavaPlugin {
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
-            FileReader readerCustomItems = new FileReader ( new File ( dataDir, "CustomItems.json" ) );
+            File customItemsFile = new File(dataDir, "CustomItems.json");
+            if(!customItemsFile.exists()) {
+                getLogger().log(Level.SEVERE, "CustomItems.json file doesn't exist!");
+                return;
+            }
+            FileReader readerCustomItems = new FileReader (customItemsFile);
             Type typeItems = new TypeToken<HashMap<String, CustomItems>>(){}.getType();
             Gson gson = new Gson();
             items = gson.fromJson(readerCustomItems, typeItems);
             readerCustomItems.close();
         }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
+            getLogger().log(Level.SEVERE, "Couldn't load CustomItems.json data!", e);
         }
     }
     private void loadCustomBonuses() {
@@ -241,13 +247,18 @@ public class Main extends JavaPlugin {
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
-            FileReader readerCustomBonuses = new FileReader(new File(dataDir, "PlayerBonusesData.json"));
+            File customBonusesFile = new File(dataDir, "PlayerBonusesData.json");
+            if(!customBonusesFile.exists()) {
+                getLogger().log(Level.SEVERE, "PlayerBonusesData.json file doesn't exist!");
+                return;
+            }
+            FileReader readerCustomBonuses = new FileReader(customBonusesFile);
             Type typeBonuses = new TypeToken<HashMap<String, PlayerBonusesData>>(){}.getType();
             Gson gson = new Gson();
             bonusData = gson.fromJson(readerCustomBonuses, typeBonuses);
             readerCustomBonuses.close();
         }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
+            getLogger().log(Level.SEVERE, "Couldn't load PlayerBonusesData.json data!", e);
         }
     }
     private void loadScytheConfig() {
@@ -258,13 +269,18 @@ public class Main extends JavaPlugin {
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
-            FileReader readerScytheConfig = new FileReader(new File(dataDir, "ScytheConfig.json"));
+            File scytheConfigFile = new File(dataDir, "ScytheConfig.json");
+            if(!scytheConfigFile.exists()) {
+                getLogger().log(Level.SEVERE, "ScytheConfig.json file doesn't exist!");
+                return;
+            }
+            FileReader readerScytheConfig = new FileReader(scytheConfigFile);
             Type typeScythe = new TypeToken<HashMap<String, Integer>>(){}.getType();
             Gson gson = new Gson();
             scytheConfig = gson.fromJson(readerScytheConfig, typeScythe);
             readerScytheConfig.close();
         }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
+            getLogger().log(Level.SEVERE, "Couldn't load ScytheConfig.json data!", e);
         }
     }
     private void disableCustomItems() {
