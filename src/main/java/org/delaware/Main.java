@@ -1,15 +1,18 @@
 package org.delaware;
 
+import net.luckperms.api.LuckPerms;
 import net.minecraft.util.com.google.gson.Gson;
 import net.minecraft.util.com.google.gson.GsonBuilder;
 import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.commands.CommandAddGift;
@@ -66,6 +69,7 @@ public class Main extends JavaPlugin {
 
     private static final String PATH_PLAYER_TICKETS = System.getProperty ( "user.dir" ) + File.separator + "plugins" + File.separator + "DTools" + File.separator + "data" +
             File.separator + "playertickets.dat";
+    public static LuckPerms luckPermsAPI;
 
     @Override
     public void onEnable () {
@@ -74,7 +78,7 @@ public class Main extends JavaPlugin {
         classesRegistration.loadListeners ( "org.delaware.events" );
         System.out.println ( "Plugin successfully enabled" );
         System.out.println ( "Version: 1.1.0 " );
-        System.out.println ( "By DelawareX" );
+        System.out.println ( "By DelawareX | SpaceyDCO" );
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
 
@@ -103,6 +107,12 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException ( e );
         }
+        //LUCKPERMS
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if(provider != null) {
+            luckPermsAPI = provider.getProvider();
+        }
+        //LUCKPERMS
     }
     public void writeData(){
         File rootDir = new File(getDataFolder(), "DTools");
