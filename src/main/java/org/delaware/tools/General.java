@@ -1,4 +1,7 @@
 package org.delaware.tools;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import io.github.facuu16.gohan.dbc.model.DbcPlayer;
 import io.github.facuu16.gohan.dbc.model.Stat;
 import net.luckperms.api.LuckPerms;
@@ -6,12 +9,19 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.Main;
+import org.delaware.tools.BoosterHandler.BoosterDataHandler;
+import org.delaware.tools.Boosters.VIPBooster;
+
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class General {
+
 
     public static final String[] ranks = {"founder", "developer", "manager", "admin", "moderador", "quester", "helper", "constructor", "programador", "dev"};
     public static String DEX = "jrmcDexI";
@@ -41,6 +51,23 @@ public class General {
 
     public static int getPlayerTps ( Player player ) {
         return NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( ).getTP ( );
+    }
+    public static String getBoosterTimeLeft(UUID playerUUID) {
+        VIPBooster booster = BoosterDataHandler.getBoosterByPlayer(playerUUID);
+        if (booster == null || !booster.isActive() || booster.getActivationTime() == null) {
+            return "00:00";
+        }
+
+        Duration elapsedTime = Duration.between(booster.getActivationTime(), LocalDateTime.now());
+        long remainingSeconds = (60 * 60) - elapsedTime.getSeconds();
+
+        if (remainingSeconds <= 0) {
+            return "00:00";
+        }
+
+        long minutes = remainingSeconds / 60;
+        long seconds = remainingSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     public static int getSTAT ( Stat stat, Player entity ) {

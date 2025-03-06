@@ -23,6 +23,7 @@ import org.delaware.tools.CustomItems.PlayerBonusesData;
 import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
 import org.delaware.tools.General;
+import org.delaware.tools.RegionUtils;
 import org.delaware.tools.commands.CommandFramework;
 import org.delaware.tools.model.entities.Gift;
 import org.delaware.tools.model.entities.Localizaciones;
@@ -91,12 +92,14 @@ public class Main extends JavaPlugin {
             }
         }catch(Exception e){}
 
+        //Five
+        RegionUtils.loadData ();
+        //Five
         //Spacey
         loadCustomItems();
         loadCustomBonuses();
         loadScytheConfig();
         //Spacey
-
 
 
     }
@@ -186,13 +189,13 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException ( "Error al guardar los archivos JSON", e );
         }
+        //Five
+        RegionUtils.saveData ();
+        //Five
+
         //Spacey
         disableCustomItems();
         //Spacey
-
-
-
-
 
         playerStats.forEach ( ( k, v ) -> {
             IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( k ).getDBCPlayer ( );

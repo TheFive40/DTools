@@ -32,21 +32,28 @@ public class BoosterDataHandler implements Serializable{
     public static void saveData() {
         if (!dataDir.exists()) dataDir.mkdirs();
         if (boostMultiplier.isEmpty () || boosterData.isEmpty () ) return;
-        // Guardar boostMultiplier
         try (FileWriter writer = new FileWriter(MULTIPLIER_FILE)) {
             GSON.toJson(boostMultiplier, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Guardar boosterData
         try (FileWriter writer = new FileWriter(BOOSTERS_FILE)) {
             GSON.toJson(boosterData, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public static VIPBooster getBoosterByPlayer(UUID playerUUID) {
+        if (boosterData == null || boosterData.isEmpty()) {
+            return null;
+        }
 
+        return boosterData.stream()
+                .filter(booster -> booster.getPlayerUUID().equals(playerUUID) && booster.isActive())
+                .findFirst()
+                .orElse(null);
+    }
     public static void loadData() {
         if (!dataDir.exists()) dataDir.mkdirs();
 
