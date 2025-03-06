@@ -1,5 +1,7 @@
 package org.delaware;
 
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.util.com.google.gson.Gson;
 import net.minecraft.util.com.google.gson.GsonBuilder;
 import net.minecraft.util.com.google.gson.JsonSyntaxException;
@@ -41,7 +43,8 @@ import static org.delaware.commands.TPSCommand.tps;
 public class Main extends JavaPlugin {
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
-    static {
+    public static LuckPerms luckPermsAPI;
+        static {
         String ruta1 = System.getProperty ( "user.dir" ) + File.separator + "plugins";
         File file = new File ( ruta1, "DTools" );
         file.mkdir ( );
@@ -64,6 +67,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable () {
         instance = this;
+        luckPermsAPI = LuckPermsProvider.get ();
         classesRegistration.loadCommands ( "org.delaware.commands" );
         classesRegistration.loadListeners ( "org.delaware.events" );
         System.out.println ( "Plugin successfully enabled" );
