@@ -1,7 +1,4 @@
 package org.delaware.tools;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import io.github.facuu16.gohan.dbc.model.DbcPlayer;
 import io.github.facuu16.gohan.dbc.model.Stat;
 import net.luckperms.api.LuckPerms;
