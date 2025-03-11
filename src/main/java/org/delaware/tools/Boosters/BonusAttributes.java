@@ -1,12 +1,21 @@
 package org.delaware.tools.Boosters;
 
+import kamkeel.npcdbc.api.IDBCAddon;
 import kamkeel.npcdbc.controllers.StatusEffectController;
 import noppes.npcs.api.INbt;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.delaware.tools.Multipliers.*;
 
 public class BonusAttributes {
+    //0: Human
+    //1: Saiyan
+    //2: Semi-saiyan
+    //3: Namek
+    //4: Arcosian
+    //5: Majin
     IDBCPlayer player;
     INbt nbt;
     public BonusAttributes(Player player) {
@@ -18,13 +27,19 @@ public class BonusAttributes {
         addBonus(stat, bonusID, operation, value, true);
     }
     public void addBonus(String stat, String bonusID, String operation, double value, boolean endOfLine) {
+        double modifiedValue = value;
+        if(operation.equals("+") || operation.equals("-")) {
+            IDBCAddon cnpcPlayer = (IDBCAddon) player;
+            int race = player.getRace();
+            modifiedValue = (value * getMultiplierByStat(stat.toUpperCase(), race) * cnpcPlayer.getCurrentFormMultiplier());
+        }
         if(hasSpecificBonus(stat, bonusID)) {
-            if (!nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(value))) {
-                player.setBonusAttribute(stat, bonusID, operation, value);
+            if (!nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(modifiedValue))) {
+                player.setBonusAttribute(stat, bonusID, operation, Math.round(modifiedValue));
             }
             return;
         }
-        player.addBonusAttribute(stat, bonusID, operation, value, endOfLine);
+        player.addBonusAttribute(stat, bonusID, operation, Math.round(modifiedValue), endOfLine);
     }
     //Clears all the bonuses applied to the specified stat
     public void clearBonus(String stat) {
@@ -64,5 +79,94 @@ public class BonusAttributes {
             if(hasBonus(stat)) return true;
         }
         return false;
+    }
+    private double getMultiplierByStat(String stat, int race) {
+        switch(race) {
+            case 0:
+                switch (stat) {
+                    case "STR":
+                        return Human.strMultiplier;
+                    case "DEX":
+                        return Human.dexMultiplier;
+                    case "CON":
+                        return Human.conMultiplier;
+                    case "WIL":
+                        return Human.wilMultiplier;
+                    case "SPI":
+                        return Human.spiMultiplier;
+                }
+                break;
+            case 1:
+                switch (stat) {
+                    case "STR":
+                        return Saiyan.strMultiplier;
+                    case "DEX":
+                        return Saiyan.dexMultiplier;
+                    case "CON":
+                        return Saiyan.conMultiplier;
+                    case "WIL":
+                        return Saiyan.wilMultiplier;
+                    case "SPI":
+                        return Saiyan.spiMultiplier;
+                }
+                break;
+            case 2:
+                switch (stat) {
+                    case "STR":
+                        return SemiSaiyan.strMultiplier;
+                    case "DEX":
+                        return SemiSaiyan.dexMultiplier;
+                    case "CON":
+                        return SemiSaiyan.conMultiplier;
+                    case "WIL":
+                        return SemiSaiyan.wilMultiplier;
+                    case "SPI":
+                        return SemiSaiyan.spiMultiplier;
+                }
+                break;
+            case 3:
+                switch (stat) {
+                    case "STR":
+                        return Namekian.strMultiplier;
+                    case "DEX":
+                        return Namekian.dexMultiplier;
+                    case "CON":
+                        return Namekian.conMultiplier;
+                    case "WIL":
+                        return Namekian.wilMultiplier;
+                    case "SPI":
+                        return Namekian.spiMultiplier;
+                }
+                break;
+            case 4:
+                switch (stat) {
+                    case "STR":
+                        return Arcosian.strMultiplier;
+                    case "DEX":
+                        return Arcosian.dexMultiplier;
+                    case "CON":
+                        return Arcosian.conMultiplier;
+                    case "WIL":
+                        return Arcosian.wilMultiplier;
+                    case "SPI":
+                        return Arcosian.spiMultiplier;
+                }
+                break;
+            case 5:
+                switch (stat) {
+                    case "STR":
+                        return Majin.strMultiplier;
+                    case "DEX":
+                        return Majin.dexMultiplier;
+                    case "CON":
+                        return Majin.conMultiplier;
+                    case "WIL":
+                        return Majin.wilMultiplier;
+                    case "SPI":
+                        return Majin.spiMultiplier;
+                }
+                break;
+        }
+        return 1;
     }
 }
