@@ -87,21 +87,23 @@ public class CustomItems {
     }
     public ItemStack toItemStack() {
         ItemStack itemStack = new ItemStack(itemID);
-        itemStack.setAmount(amount);
-        itemStack.setDurability(durability);
-        itemStack.addEnchantments(enchantments);
-        if(this.displayName != null) {
-            if(this.displayName.isEmpty()) {
-                ItemMeta meta = itemStack.getItemMeta();
-                meta.setDisplayName(displayName);
-                meta.setLore(lore);
-                itemStack.setItemMeta(meta);
-            }
-        }
         if(this.nbtData != null && !this.nbtData.isEmpty()) {
             NbtHandler nbt = new NbtHandler(itemStack);
             nbt.setCompoundFromString(this.nbtData);
             itemStack = nbt.getItemStack();
+        }
+        itemStack.setAmount(amount);
+        itemStack.setDurability(durability);
+        itemStack.addEnchantments(enchantments);
+        if(this.displayName != null) {
+            ItemMeta meta = itemStack.getItemMeta();
+            if(meta != null) {
+                meta.setDisplayName(CC.translate(this.displayName));
+                if(this.lore != null) meta.setLore(CC.translate(this.lore));
+                itemStack.setItemMeta(meta);
+            }else {
+                Bukkit.getLogger().warning("Item " + itemStack.getType() + " has null meta?? (shouldn't happen)");
+            }
         }
         return itemStack;
     }
@@ -170,13 +172,28 @@ public class CustomItems {
         items.remove(key);
     }
     public static CustomItems getFromNbt(ItemStack item) {
+        String itemName = getLinkedCustomItem(item);
+        if(itemName == null) return new CustomItems(item);
+        return getCustomItem(itemName);
+    }
+//    public static CustomItems getFromNbt(ItemStack item) {
+//        NbtHandler nbt = new NbtHandler(item);
+//        try {
+//            if(nbt.getCompound() != null && nbt.getCompound().hasKey("CUSTOMID")) return getCustomItem(nbt.getString("CUSTOMID"));
+//        }catch(NullPointerException e) {
+//            return new CustomItems(item);
+//        }
+//        return new CustomItems(item);
+//    }
+    public static String getLinkedCustomItem(ItemStack item) {
         NbtHandler nbt = new NbtHandler(item);
         try {
-            if(nbt.getCompound() != null && nbt.getCompound().hasKey("CUSTOMID")) return getCustomItem(nbt.getString("CUSTOMID"));
+            if(nbt.getCompound() == null) return null;
+            if(nbt.getCompound().hasKey("CUSTOMID")) return nbt.getCompound().getString("CUSTOMID");
         }catch(NullPointerException e) {
-            return new CustomItems(item);
+            return null;
         }
-        return new CustomItems(item);
+        return null;
     }
     //STATIC METHODS
     public static void saveToConfig() {
