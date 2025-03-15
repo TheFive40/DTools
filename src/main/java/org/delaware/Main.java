@@ -32,6 +32,7 @@ import org.delaware.tools.model.entities.Localizaciones;
 import org.delaware.tools.model.entities.TP;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import static org.delaware.commands.CommandTransform.playerStats;
@@ -44,6 +45,7 @@ public class Main extends JavaPlugin {
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
+    public static ArrayList<String> playersCreatingItems = new ArrayList<>();
         static {
         String ruta1 = System.getProperty ( "user.dir" ) + File.separator + "plugins";
         File file = new File ( ruta1, "DTools" );
@@ -66,6 +68,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable () {
+        playersCreatingItems = new ArrayList<>();
         instance = this;
         luckPermsAPI = LuckPermsProvider.get ();
         classesRegistration.loadCommands ( "org.delaware.commands" );
