@@ -80,6 +80,11 @@ public class CustomItems {
         nbt.setBoolean("Unbreakable", unbreakable);
         this.nbtData = nbt.getCompound().toString();
     }
+    public boolean isUnbreakable() {
+        NbtHandler nbt = new NbtHandler(this.toItemStack());
+        if(nbt.getCompound() == null) return false;
+        return nbt.getBoolean("Unbreakable");
+    }
     public void setDamage(int damage) {
         NbtHandler nbt = new NbtHandler(this.toItemStack());
         nbt.changeDamage(damage);
