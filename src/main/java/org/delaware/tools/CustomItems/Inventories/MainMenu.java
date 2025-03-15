@@ -1,6 +1,7 @@
 package org.delaware.tools.CustomItems.Inventories;
 
 import fr.minuskube.inv.ClickableItem;
+import fr.minuskube.inv.SmartInventory;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import fr.minuskube.inv.content.Pagination;
@@ -24,6 +25,7 @@ public class MainMenu implements InventoryProvider {
     }
     @Override
     public void init(Player player, InventoryContents inventoryContents) {
+        inventoryContents.fillBorders(ClickableItem.empty(new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 9)));
         Pagination pagination = inventoryContents.pagination();
         ClickableItem[] clickableItems = new ClickableItem[this.allItems.size()];
         for(int i = 0; i < this.allItems.size(); i++) {
@@ -55,10 +57,9 @@ public class MainMenu implements InventoryProvider {
     }
 
     @Override
-    public void update(Player player, InventoryContents inventoryContents) {
-        inventoryContents.fillBorders(ClickableItem.empty(new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) General.getRandomNumber(0, 15))));
-    }
+    public void update(Player player, InventoryContents inventoryContents) {}
     private void itemClick(Player player, CustomItems item) {
-        player.sendMessage("you clicked");
+        final SmartInventory NEW_INV = SmartInventory.builder().provider(new ConfigMenu(item)).size(6, 9).build();
+        NEW_INV.open(player);
     }
 }
