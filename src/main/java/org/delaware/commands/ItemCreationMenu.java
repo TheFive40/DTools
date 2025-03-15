@@ -2,6 +2,7 @@ package org.delaware.commands;
 
 import fr.minuskube.inv.SmartInventory;
 import org.bukkit.entity.Player;
+import org.delaware.tools.CC;
 import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.CustomItems.Inventories.MainMenu;
 import org.delaware.tools.commands.BaseCommand;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class ItemCreationMenu extends BaseCommand {
-    @Command(name = "itemCreator", permission = "SPACEY.ITEMCREATOR")
+    @Command(name = "itemCreator", aliases = "crearitem", permission = "SPACEY.ITEMCREATOR")
     @Override
     public void onCommand(CommandArgs command) throws IOException {
         Player player = command.getPlayer();
@@ -22,7 +23,7 @@ public class ItemCreationMenu extends BaseCommand {
         for(String item : cItems) {
             custom.add(CustomItems.getCustomItem(item));
         }
-        final SmartInventory INV = SmartInventory.builder().id("Creación de Items").provider(new MainMenu(custom)).build();
+        final SmartInventory INV = SmartInventory.builder().title(CC.translate("&bItems registrador")).id("ItemCreator").provider(new MainMenu(custom)).build();
         INV.open(player);
     }
 }
