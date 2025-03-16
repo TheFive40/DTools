@@ -23,7 +23,7 @@ public class ItemCreationMenu extends BaseCommand {
         for(String item : cItems) {
             custom.add(CustomItems.getCustomItem(item));
         }
-        final SmartInventory INV = SmartInventory.builder().title(CC.translate("&bItems registrador")).id("ItemCreator").provider(new MainMenu(custom)).build();
+        final SmartInventory INV = SmartInventory.builder().title(CC.translate("&6Items registrados")).id("ItemCreator").provider(new MainMenu(custom)).build();
         INV.open(player);
     }
 }

@@ -44,11 +44,11 @@ public class MainMenu implements InventoryProvider {
         pagination.addToIterator(iterator);
         ItemStack previousPageItem = new ItemStack(Material.STAINED_CLAY, 1, (byte) 14);
         ItemMeta meta = previousPageItem.getItemMeta();
-        meta.setDisplayName(CC.translate("&fPagina anterior"));
+        meta.setDisplayName(CC.translate("&fPágina anterior"));
         previousPageItem.setItemMeta(meta);
         ItemStack nextPageItem = new ItemStack(Material.STAINED_CLAY, 1, (byte) 5);
         ItemMeta metaN = nextPageItem.getItemMeta();
-        metaN.setDisplayName(CC.translate("&fPagina anterior"));
+        metaN.setDisplayName(CC.translate("&fSiguiente página"));
         nextPageItem.setItemMeta(metaN);
         inventoryContents.set(5, 2, ClickableItem.of(previousPageItem,
                 e -> inventoryContents.inventory().open(player, pagination.previous().getPage())));
@@ -59,7 +59,7 @@ public class MainMenu implements InventoryProvider {
     @Override
     public void update(Player player, InventoryContents inventoryContents) {}
     private void itemClick(Player player, CustomItems item) {
-        final SmartInventory NEW_INV = SmartInventory.builder().provider(new ConfigMenu(item)).size(6, 9).build();
+        final SmartInventory NEW_INV = SmartInventory.builder().provider(new ConfigMenu(item)).size(6, 9).id("ItemsConfig").title(CC.translate("&eConfiguración")).build();
         NEW_INV.open(player);
     }
 }
