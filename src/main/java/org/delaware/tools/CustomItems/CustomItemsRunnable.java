@@ -8,6 +8,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.tools.Boosters.BonusAttributes;
 import org.delaware.tools.Permissions.PermissionsManager;
 
+import java.util.logging.Level;
+
 
 public class CustomItemsRunnable {
     @Getter
@@ -37,8 +39,7 @@ public class CustomItemsRunnable {
                     try {
                         if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player);
                     }catch(java.lang.NullPointerException e) {
-                        Bukkit.getConsoleSender().sendMessage("Item " + chestplate.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
-                        throw new RuntimeException(e);
+                        Bukkit.getLogger().log(Level.SEVERE, "Item " + chestplate.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!. ID: " + CustomItems.getLinkedCustomItem(chestplate), e);
                     }
                     if(cItem.hasSetEffect()) {
                         kitName = cItem.getKitName();
@@ -50,8 +51,7 @@ public class CustomItemsRunnable {
                     try {
                         if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player);
                     }catch(java.lang.NullPointerException e) {
-                        Bukkit.getConsoleSender().sendMessage("Item " + leggings.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
-                        throw new RuntimeException(e);
+                        Bukkit.getLogger().log(Level.SEVERE, "Item " + leggings.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!. ID: " + CustomItems.getLinkedCustomItem(leggings), e);
                     }
                     if(cItem.hasSetEffect())
                         if(cItem.getKitName().equals(kitName))
@@ -62,8 +62,7 @@ public class CustomItemsRunnable {
                     try {
                         if(cItem.hasCustomBoost()) addBonus(cItem, bonus, player);
                     }catch(java.lang.NullPointerException e) {
-                        Bukkit.getConsoleSender().sendMessage("Item " + boots.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!");
-                        throw new RuntimeException(e);
+                        Bukkit.getLogger().log(Level.SEVERE, "Item " + boots.getType() + " from player " + player.getName() + " has nbt but is not registered in the config!. ID: " + CustomItems.getLinkedCustomItem(boots), e);
                     }
                     if(cItem.hasSetEffect())
                         if(cItem.getKitName().equals(kitName))
