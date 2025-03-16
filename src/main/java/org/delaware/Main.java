@@ -8,6 +8,7 @@ import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +36,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+
 import static org.delaware.commands.CommandTransform.playerStats;
 import static org.delaware.tools.CustomItems.CustomItems.items;
 import static org.delaware.tools.CustomItems.PlayerBonusesData.bonusData;
@@ -236,7 +239,7 @@ public class Main extends JavaPlugin {
             items = gson.fromJson(readerCustomItems, typeItems);
             readerCustomItems.close();
         }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
+            Bukkit.getLogger().log(Level.SEVERE, "CustomItems.json doesn't exist!", e);
         }
     }
     private void loadCustomBonuses() {
@@ -252,7 +255,7 @@ public class Main extends JavaPlugin {
             bonusData = gson.fromJson(readerCustomBonuses, typeBonuses);
             readerCustomBonuses.close();
         }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
+            Bukkit.getLogger().log(Level.SEVERE, "PlayerBonusesData.json doesn't exist!", e);
         }
     }
     private void loadScytheConfig() {
@@ -269,8 +272,11 @@ public class Main extends JavaPlugin {
             scytheConfig = gson.fromJson(readerScytheConfig, typeScythe);
             readerScytheConfig.close();
         }catch(IOException | JsonSyntaxException e) {
-            throw new RuntimeException(e);
+            Bukkit.getLogger().log(Level.SEVERE, "ScytheConfig.json doesn't exist!", e);
         }
+    }
+    private void loadRegionData() {
+
     }
     private void disableCustomItems() {
         CustomItemsRunnable.getBukkitRunnable().cancel();
