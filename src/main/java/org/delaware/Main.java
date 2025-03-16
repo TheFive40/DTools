@@ -26,6 +26,7 @@ import org.delaware.tools.CustomItems.PlayerBonusesData;
 import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
 import org.delaware.tools.General;
+import org.delaware.tools.RegionTools.PlayerAccessManager;
 import org.delaware.tools.RegionUtils;
 import org.delaware.tools.commands.CommandFramework;
 import org.delaware.tools.model.entities.Gift;
@@ -42,6 +43,7 @@ import static org.delaware.commands.CommandTransform.playerStats;
 import static org.delaware.tools.CustomItems.CustomItems.items;
 import static org.delaware.tools.CustomItems.PlayerBonusesData.bonusData;
 import static org.delaware.commands.TPSCommand.tps;
+import static org.delaware.tools.RegionTools.PlayerAccessManager.allPlayers;
 
 
 public class Main extends JavaPlugin {
@@ -75,8 +77,8 @@ public class Main extends JavaPlugin {
         classesRegistration.loadCommands ( "org.delaware.commands" );
         classesRegistration.loadListeners ( "org.delaware.events" );
         System.out.println ( "Plugin successfully enabled" );
-        System.out.println ( "Version: 1.1.0 " );
-        System.out.println ( "By DelawareX" );
+        System.out.println ( "Version: 1.1.5 " );
+        System.out.println ( "By DelawareX | SpaceyDCO" );
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
 
@@ -107,6 +109,7 @@ public class Main extends JavaPlugin {
         loadCustomItems();
         loadCustomBonuses();
         loadScytheConfig();
+        loadRegionData();
         //Spacey
 
 
@@ -225,7 +228,7 @@ public class Main extends JavaPlugin {
     }
     //Spacey
     private void loadCustomItems() {
-        CustomItemsRunnable.getBukkitRunnable().runTaskTimer(instance, 20, (20 * 5));
+        CustomItemsRunnable.getBukkitRunnable().runTaskTimer(instance, (20 * 5), (20 * 5));
         WriteRunnable.getRunnable().runTaskTimer(instance, 100, (20 * 300));
         try {
             File rootDir = new File (getDataFolder(), "DTools");
@@ -276,7 +279,20 @@ public class Main extends JavaPlugin {
         }
     }
     private void loadRegionData() {
-
+        try {
+            File rootDir = new File (getDataFolder(), "DTools");
+            File dataDir = new File (rootDir, "data");
+            if (!dataDir.exists ( )) {
+                dataDir.mkdirs ( );
+            }
+            FileReader readerPlayerAccessData = new FileReader(new File(dataDir, "PlayerAccessData.json"));
+            Type typeAccessData = new TypeToken<HashMap<String, PlayerAccessManager>>(){}.getType();
+            Gson gson = new Gson();
+            allPlayers = gson.fromJson(readerPlayerAccessData, typeAccessData);
+            readerPlayerAccessData.close();
+        }catch(IOException | JsonSyntaxException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "PlayerAccessData.json doesn't exist!", e);
+        }
     }
     private void disableCustomItems() {
         CustomItemsRunnable.getBukkitRunnable().cancel();
@@ -284,6 +300,7 @@ public class Main extends JavaPlugin {
         ScytheRunnable.getRun().cancel();
         CustomItems.saveToConfig();
         PlayerBonusesData.saveToConfig();
+        PlayerAccessManager.saveToConfig();
     }
     //Spacey
 }
