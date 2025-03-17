@@ -39,7 +39,7 @@ public class BonusAttributes {
             }
             return;
         }
-        player.addBonusAttribute(stat, bonusID, operation, Math.round(modifiedValue), endOfLine);
+        player.addBonusAttribute(stat, bonusID, operation, modifiedValue, endOfLine);
     }
     //Clears all the bonuses applied to the specified stat
     public void clearBonus(String stat) {
