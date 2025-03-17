@@ -27,19 +27,27 @@ public class BonusAttributes {
         addBonus(stat, bonusID, operation, value, true);
     }
     public void addBonus(String stat, String bonusID, String operation, double value, boolean endOfLine) {
-        double modifiedValue = value;
         if(operation.equals("+") || operation.equals("-")) {
             IDBCAddon cnpcPlayer = (IDBCAddon) player;
             int race = player.getRace();
-            modifiedValue = (value * getMultiplierByStat(stat.toUpperCase(), race) * cnpcPlayer.getCurrentFormMultiplier());
-        }
-        if(hasSpecificBonus(stat, bonusID)) {
-            if (!nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(modifiedValue))) {
-                player.setBonusAttribute(stat, bonusID, operation, Math.round(modifiedValue));
+            if(stat.equals("CON") || stat.equals("SPI")) {
+                bonus(stat, bonusID, operation, Math.floor(value * getMultiplierByStat(stat.toUpperCase(), race)), endOfLine);
+            }
+            else {
+                bonus(stat, bonusID, operation, Math.floor(value * getMultiplierByStat(stat.toUpperCase(), race) * cnpcPlayer.getCurrentFormMultiplier()), endOfLine);
             }
             return;
         }
-        player.addBonusAttribute(stat, bonusID, operation, modifiedValue, endOfLine);
+        bonus(stat, bonusID, operation, value, endOfLine);
+    }
+    private void bonus(String stat, String bonusID, String operation, double value, boolean endOfLine) {
+        if(hasSpecificBonus(stat, bonusID)) {
+            if (!nbt.getString("jrmcAttrBonus" + stat).contains(String.valueOf(value))) {
+                player.setBonusAttribute(stat, bonusID, operation, value);
+            }
+            return;
+        }
+        player.addBonusAttribute(stat, bonusID, operation, value, endOfLine);
     }
     //Clears all the bonuses applied to the specified stat
     public void clearBonus(String stat) {
