@@ -21,7 +21,7 @@ public class DropItemRegion implements Listener {
         ItemStack item = event.getItemDrop ( ).getItemStack ( );
         RegionUtils regionUtils = new RegionUtils ( );
         Location location = event.getItemDrop ( ).getLocation ( );
-        if (item.getTypeId ( ) == 4432 && RegionUtils.isLocationInRegion ( location, "portalBlack" )
+        if (item.getTypeId ( ) == 4429 && RegionUtils.isLocationInRegion ( location, "portalBlack" )
                 && regionUtils.hasCooldown ( event.getPlayer ( ) )) {
             String remainingTime = regionUtils.getRemainingCooldown ( event.getPlayer ( ) );
             String msg = CC.translate ( "&8[&c⚠&8] &7Debes esperar &b" + remainingTime + " &7antes de usar este portal nuevamente." );
@@ -29,7 +29,7 @@ public class DropItemRegion implements Listener {
             event.getPlayer ().playSound ( event.getPlayer ().getLocation (),
                     Sound.CAT_MEOW,1.0f,1.0f);
 
-        } else if (item.getTypeId ( ) == 4432 && RegionUtils.isLocationInRegion ( location, "portalBlack" )) {
+        } else if (item.getTypeId ( ) == 4429 && RegionUtils.isLocationInRegion ( location, "portalBlack" )) {
             regionUtils.grantAccess(event.getPlayer(), "trainingoculto", findRegionInAnyWorld("trainingoculto"));
             event.getPlayer().sendMessage(CC.translate (  "§aAhora tienes acceso al training oculto durante 30 minutos."));
             event.getPlayer ().setItemInHand ( new ItemStack ( Material.STICK ) );

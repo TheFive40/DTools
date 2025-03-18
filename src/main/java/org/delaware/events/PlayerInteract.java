@@ -7,6 +7,7 @@ import noppes.npcs.api.entity.ICustomNpc;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +26,10 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onPlayerInteract ( PlayerInteractEvent event ) {
         Player player = event.getPlayer ( );
+        if(player.getItemInHand () == null) return;
+        if(player.getItemInHand ().getType () == Material.TNT){
+            player.setItemInHand ( new ItemStack(Material.DIRT) );
+        }
         if (entities.containsKey ( player.getName ( ) )) {
             IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
             ICustomNpc<?> npc = (ICustomNpc<?>) entities.get ( idbcPlayer.getName ( ) );
