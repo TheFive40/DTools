@@ -24,7 +24,6 @@ public class RegionCheckRunnable {
                     String regionName = region.getId();
                     PlayerAccessManager manager = PlayerAccessManager.allPlayers.get(player.getUniqueId().toString());
                     if(!manager.hasRecord(regionName)) {
-                        Bukkit.getConsoleSender().sendMessage("No record for region " + regionName + " returning...");
                         continue; //no record for this region,continuing...
                     }
                     if(!manager.canEnterRegion(regionName)) {

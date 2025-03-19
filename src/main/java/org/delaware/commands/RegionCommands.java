@@ -12,7 +12,7 @@ import org.delaware.tools.commands.CommandArgs;
 import java.io.IOException;
 
 public class RegionCommands extends BaseCommand {
-    @Command(name = "regionmanager", permission = "DBFUTURE.REGIONMANAGER")
+    @Command(name = "regionmanager", permission = "DBFUTURE.REGIONMANAGER", inGameOnly = false)
     @Override
     public void onCommand(CommandArgs command) throws IOException {
         String[] args = command.getArgs();
