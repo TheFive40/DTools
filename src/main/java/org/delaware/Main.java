@@ -11,6 +11,7 @@ import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +28,7 @@ import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
 import org.delaware.tools.General;
 import org.delaware.tools.RegionTools.PlayerAccessManager;
+import org.delaware.tools.RegionTools.Runnable.RegionCheckRunnable;
 import org.delaware.tools.RegionUtils;
 import org.delaware.tools.commands.CommandFramework;
 import org.delaware.tools.model.entities.Gift;
@@ -110,9 +112,8 @@ public class Main extends JavaPlugin {
         loadCustomBonuses();
         loadScytheConfig();
         loadRegionData();
+        RegionCheckRunnable.regionCheckRunnable.runTaskTimer(this, 60, 60);
         //Spacey
-
-
     }
     public void writeData(){
         File rootDir = new File(getDataFolder(), "DTools");
@@ -301,6 +302,9 @@ public class Main extends JavaPlugin {
         CustomItems.saveToConfig();
         PlayerBonusesData.saveToConfig();
         PlayerAccessManager.saveToConfig();
+        //Region
+        PlayerAccessManager.saveToConfig();
+        RegionCheckRunnable.regionCheckRunnable.cancel();
     }
     //Spacey
 }
