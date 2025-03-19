@@ -1,21 +1,23 @@
 package org.delaware;
 
+import kamkeel.npcdbc.api.event.IDBCEvent;
+import kamkeel.npcdbc.scripted.DBCPlayerEvent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.util.com.google.gson.Gson;
 import net.minecraft.util.com.google.gson.GsonBuilder;
 import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
+import noppes.npcs.api.IDamageSource;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.delaware.DBCEvents.DBCDamageEvent;
+import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
@@ -36,7 +38,6 @@ import org.delaware.tools.model.entities.Localizaciones;
 import org.delaware.tools.model.entities.TP;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -49,6 +50,7 @@ import static org.delaware.tools.RegionTools.PlayerAccessManager.allPlayers;
 
 
 public class Main extends JavaPlugin {
+    DamageEvent dmgEventInstance;
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
@@ -107,13 +109,19 @@ public class Main extends JavaPlugin {
         //Five
         RegionUtils.loadData ();
         //Five
+
         //Spacey
+        //CustomNPCS events
+        dmgEventInstance = new DamageEvent();
+        Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
+        //CustomNPCS events
         loadCustomItems();
         loadCustomBonuses();
         loadScytheConfig();
         loadRegionData();
         RegionCheckRunnable.regionCheckRunnable.runTaskTimer(this, 60, 60);
         //Spacey
+
     }
     public void writeData(){
         File rootDir = new File(getDataFolder(), "DTools");
@@ -207,6 +215,9 @@ public class Main extends JavaPlugin {
 
         //Spacey
         disableCustomItems();
+        //CustomNPCS events
+        DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
+        //CustomNPCS events
         //Spacey
 
         playerStats.forEach ( ( k, v ) -> {
@@ -306,5 +317,11 @@ public class Main extends JavaPlugin {
         PlayerAccessManager.saveToConfig();
         RegionCheckRunnable.regionCheckRunnable.cancel();
     }
+    //DBC EVENTS
+    public void damagedEvent(IDBCEvent.DamagedEvent event) {
+        DBCDamageEvent dmgEvent = new DBCDamageEvent(event);
+        Bukkit.getPluginManager().callEvent(dmgEvent);
+    }
+    //DBC EVENTS
     //Spacey
 }
