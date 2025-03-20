@@ -1,6 +1,7 @@
 package org.delaware.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
@@ -16,7 +17,7 @@ public class RegionCommands extends BaseCommand {
     @Override
     public void onCommand(CommandArgs command) throws IOException {
         String[] args = command.getArgs();
-        Player player = command.getPlayer();
+        CommandSender player = command.getSender();
         if(args.length == 0) {
             sendUsage(player);
             return;
@@ -126,7 +127,7 @@ public class RegionCommands extends BaseCommand {
                 sendUsage(player);
         }
     }
-    private void sendUsage(Player player) {
+    private void sendUsage(CommandSender player) {
         player.sendMessage(CC.translate("&e---------------------"));
         player.sendMessage(CC.translate("&6Comandos disponibles:"));
         player.sendMessage(CC.translate("&6/regionmanager grantAccess (nick) (nombre de region) (tiempo) (tiempo de espera) &e-> &6Este comando le dará acceso a un jugador a una región por un tiempo especificado, y no hará nada si el jugador ya tiene/tuvo acceso a esta región, básicamente sólo sirve 1 vez."));
