@@ -76,7 +76,7 @@ public class RegionUtils {
         }
 
         region.getMembers ( ).addPlayer ( player.getUniqueId ( ) );
-        player.sendMessage ( "§aAcceso concedido a la zona por 30 minutos." );
+        player.sendMessage ( "§aAcceso concedido a la zona por 60 minutos." );
         cooldowns.put ( player.getUniqueId ( ), Instant.now ( ).plus ( Duration.ofHours ( 24 ) ) );
 
         new BukkitRunnable ( ) {
@@ -85,7 +85,7 @@ public class RegionUtils {
                 region.getMembers ( ).removePlayer ( player.getName ( ) );
                 player.sendMessage ( "§cTu acceso ha expirado, puedes volver en 24 horas." );
             }
-        }.runTaskLater ( Main.instance, 30 * 60 * 20 );
+        }.runTaskLater ( Main.instance, 60 * 60 * 20 );
     }
 
     public ProtectedRegion getRegionAtLocation ( org.bukkit.Location location ) {
@@ -111,7 +111,6 @@ public class RegionUtils {
             return;
         }
         region.getMembers ( ).addPlayer ( player.getName ( ) );
-        player.sendMessage ( "§aAcceso concedido a la zona por 30 minutos." );
         cooldowns.put ( player.getUniqueId ( ), Instant.now ( ).plus ( Duration.ofHours ( 24 ) ) );
         new BukkitRunnable ( ) {
             @Override
@@ -119,7 +118,7 @@ public class RegionUtils {
                 region.getMembers ( ).removePlayer ( player.getName ( ) );
                 player.sendMessage ( "§cTu acceso ha expirado, puedes volver en 24 horas." );
             }
-        }.runTaskLater ( Main.instance, 30 * 60 * 20 );
+        }.runTaskLater ( Main.instance, 60 * 60 * 20 );
     }
 
     /**

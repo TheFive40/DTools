@@ -31,7 +31,7 @@ public class DropItemRegion implements Listener {
 
         } else if (item.getTypeId ( ) == 4429 && RegionUtils.isLocationInRegion ( location, "portalBlack" )) {
             regionUtils.grantAccess(event.getPlayer(), "trainingoculto", findRegionInAnyWorld("trainingoculto"));
-            event.getPlayer().sendMessage(CC.translate (  "§aAhora tienes acceso al training oculto durante 30 minutos."));
+            event.getPlayer().sendMessage(CC.translate (  "§aAhora tienes acceso al training oculto durante 60 minutos."));
             event.getPlayer ().setItemInHand ( new ItemStack ( Material.STICK ) );
             event.setCancelled ( true );
             new BukkitRunnable() {

@@ -44,9 +44,6 @@ public class PlayerJoinEvent implements Listener {
             Main.instance.getServer().broadcastMessage(CC.translate("&d¡Inclínense ante su presencia y sientan su poder divino!"));
             Main.instance.getServer().broadcastMessage("");
             Main.instance.getServer().broadcastMessage(CC.translate("&5&l&m---------------------------------------------"));
-            for(Player playerOnline : player.getServer().getOnlinePlayers()){
-                playerOnline.playSound(playerOnline.getLocation(), Sound.WITHER_DEATH,10f,5f);
-            }
         }
     }
 }
