@@ -163,6 +163,7 @@ public class RegionCommands extends BaseCommand {
                     PlayerAccessManager m = new PlayerAccessManager(playerCommand4);
                     m.setPermanentAccess(args[2]);
                 }
+                break;
             default:
                 sendUsage(player);
         }
