@@ -143,15 +143,12 @@ public class PlayerAccessManager {
     public void setAccess(String regionName, int durationInSeconds) {
         setAccess(regionName, durationInSeconds, -1);
     }
-    public void setAccess(String regionName) {
-        setAccess(regionName, 10);
-        setPermanentAccess(regionName);
-    }
     public void setAccess(String regionName, int durationInSeconds, int refreshDurationInSeconds) {
         for(PlayerAccessRecord record : accessRecords) {
             if(record.getRegionName().equalsIgnoreCase(regionName)) {
                 record.setMaxDuration(durationInSeconds);
                 record.setStartTime(Instant.now());
+                record.setTimeElapsed(0);
                 if(refreshDurationInSeconds > 0) record.setCooldown(refreshDurationInSeconds);
                 save();
                 return;
@@ -187,7 +184,7 @@ public class PlayerAccessManager {
     public void setPermanentAccess(String regionName) {
         for(PlayerAccessRecord record : accessRecords) {
             if(record.getRegionName().equalsIgnoreCase(regionName)) {
-                record.setMaxDuration(-10);
+                setAccess(record.getRegionName(), -10);
                 save();
             }
         }
