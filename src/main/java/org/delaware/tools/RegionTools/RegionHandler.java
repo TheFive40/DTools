@@ -3,8 +3,10 @@ package org.delaware.tools.RegionTools;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -41,9 +43,21 @@ public class RegionHandler {
 
         ProtectedRegion region = regionManager.getRegion(regionName);
         if (region == null) return false;
-
         Location playerLocation = player.getLocation();
         return region.contains(playerLocation.getBlockX(), playerLocation.getBlockY(), playerLocation.getBlockZ()); // Proper method to check if player is within region's bounds
+    }
+    public Map<Flag<?>, Object> getFlags(ProtectedRegion region) {
+        return region.getFlags();
+    }
+    //Returns the value from a specific flag name
+    public String getFlagValue(ProtectedRegion region, String flagName) {
+        Map<Flag<?>, Object> flags = getFlags(region);
+        for(Flag<?> cFlag : flags.keySet()) {
+            if(cFlag.getName().equalsIgnoreCase(flagName)) {
+                return flags.get(cFlag).toString();
+            }
+        }
+        return null;
     }
     //Returns the region the player is standing in
     public ProtectedRegion getPlayerRegion(Player player) {
