@@ -30,16 +30,18 @@ public class RegionCheckRunnable {
                         if(manager.regionCooldownCheck(regionName)) {
                             if(!manager.hasActiveRefreshTime(regionName)) { //Time has expired, let player know
                                 manager.setRefreshTime(regionName);
-                                player.sendMessage(CC.translate("Time's up! you have to wait " + manager.getFormattedCooldown(regionName)));
+                                player.sendMessage(CC.translate("&cHa expirado tu tiempo de acceso para esta zona!, vuelve en " + manager.getFormattedCooldown(regionName)));
+                                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "spawn " + player.getName());
                                 continue;
                             }
                             if(manager.isRefreshable(regionName)) { //Checking if player should be able to re-enter again
                                 manager.refresh(regionName);
                                 continue;
                             }
-                            player.sendMessage(CC.translate("You still have to wait " + manager.getRemainingCooldown(regionName)));
+                            player.sendMessage(CC.translate("&cAún tienes que esperar " + manager.getRemainingCooldown(regionName) + "&c para entrar a esta zona!"));
                         }
                         player.sendMessage(CC.translate("&cNo tienes acceso a esta zona!"));
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "spawn " + player.getName());
                         //Kick player, he doesn't have access
                     }else manager.addTimeElapsed(regionName, 3);
                 }
