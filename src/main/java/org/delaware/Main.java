@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.delaware.DBCEvents.DBCDamageEvent;
+import org.delaware.DBCEvents.DBCKnockoutEvent;
 import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
@@ -321,6 +322,10 @@ public class Main extends JavaPlugin {
     public void damagedEvent(IDBCEvent.DamagedEvent event) {
         DBCDamageEvent dmgEvent = new DBCDamageEvent(event);
         Bukkit.getPluginManager().callEvent(dmgEvent);
+    }
+    public void koEvent(IDBCEvent.DBCKnockout event) {
+        DBCKnockoutEvent koEvent = new DBCKnockoutEvent(event);
+        Bukkit.getPluginManager().callEvent(koEvent);
     }
     //DBC EVENTS
     //Spacey
