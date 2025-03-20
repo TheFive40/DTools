@@ -43,12 +43,20 @@ public class RegionCommands extends BaseCommand {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
                         return;
                     }
-                    PlayerAccessManager accessManager = new PlayerAccessManager(playerCommand);
-                    accessManager.grantAccess(args[2].toUpperCase().trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    if(PlayerAccessManager.allPlayers.containsKey(playerCommand.getUniqueId().toString())) {
+                        PlayerAccessManager.allPlayers.get(playerCommand.getUniqueId().toString()).grantAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    }else {
+                        PlayerAccessManager m = new PlayerAccessManager(playerCommand);
+                        m.grantAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    }
                     return;
                 }
-                PlayerAccessManager accessManager = new PlayerAccessManager(playerCommand);
-                accessManager.grantAccess(args[2].toUpperCase().trim(), Integer.parseInt(args[3].trim()));
+                if(PlayerAccessManager.allPlayers.containsKey(playerCommand.getUniqueId().toString())) {
+                    PlayerAccessManager.allPlayers.get(playerCommand.getUniqueId().toString()).grantAccess(args[2].trim(), Integer.parseInt(args[3].trim()));
+                }else {
+                    PlayerAccessManager m = new PlayerAccessManager(playerCommand);
+                    m.grantAccess(args[2].trim(), Integer.parseInt(args[3].trim()));
+                }
                 player.sendMessage(CC.translate("&aAcceso agregado."));
                 break;
             case "setaccess":
@@ -71,12 +79,20 @@ public class RegionCommands extends BaseCommand {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
                         return;
                     }
-                    PlayerAccessManager accessManager2 = new PlayerAccessManager(playerCommand2);
-                    accessManager2.grantAccess(args[2].toUpperCase().trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    if(PlayerAccessManager.allPlayers.containsKey(playerCommand2.getUniqueId().toString())) {
+                        PlayerAccessManager.allPlayers.get(playerCommand2.getUniqueId().toString()).setAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    }else {
+                        PlayerAccessManager m = new PlayerAccessManager(playerCommand2);
+                        m.setAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    }
                     return;
                 }
-                PlayerAccessManager accessManager2 = new PlayerAccessManager(playerCommand2);
-                accessManager2.grantAccess(args[2].toUpperCase().trim(), Integer.parseInt(args[3].trim()));
+                if(PlayerAccessManager.allPlayers.containsKey(playerCommand2.getUniqueId().toString())) {
+                    PlayerAccessManager.allPlayers.get(playerCommand2.getUniqueId().toString()).setAccess(args[2].trim(), Integer.parseInt(args[3].trim()));
+                }else {
+                    PlayerAccessManager m = new PlayerAccessManager(playerCommand2);
+                    m.setAccess(args[2].trim(), Integer.parseInt(args[3].trim()));
+                }
                 player.sendMessage(CC.translate("&aAcceso agregado."));
                 break;
             case "addaccess":
@@ -99,12 +115,20 @@ public class RegionCommands extends BaseCommand {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
                         return;
                     }
-                    PlayerAccessManager accessManager3 = new PlayerAccessManager(playerCommand3);
-                    accessManager3.grantAccess(args[2].toUpperCase().trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    if(PlayerAccessManager.allPlayers.containsKey(playerCommand3.getUniqueId().toString())) {
+                        PlayerAccessManager.allPlayers.get(playerCommand3.getUniqueId().toString()).addAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    }else {
+                        PlayerAccessManager m = new PlayerAccessManager(playerCommand3);
+                        m.addAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
+                    }
                     return;
                 }
-                PlayerAccessManager accessManager3 = new PlayerAccessManager(playerCommand3);
-                accessManager3.grantAccess(args[2].toUpperCase().trim(), Integer.parseInt(args[3].trim()));
+                if(PlayerAccessManager.allPlayers.containsKey(playerCommand3.getUniqueId().toString())) {
+                    PlayerAccessManager.allPlayers.get(playerCommand3.getUniqueId().toString()).addAccess(args[2].trim(), Integer.parseInt(args[3].trim()));
+                }else {
+                    PlayerAccessManager m = new PlayerAccessManager(playerCommand3);
+                    m.addAccess(args[2].trim(), Integer.parseInt(args[3].trim()));
+                }
                 player.sendMessage(CC.translate("&aAcceso agregado."));
                 break;
             case "getremainingtime":
@@ -123,6 +147,22 @@ public class RegionCommands extends BaseCommand {
                     playerRemaining.sendMessage(CC.translate("&aTienes " + timeLeft + " restantes"));
                 }else playerRemaining.sendMessage(CC.translate("&cNo tienes tiempo restante en esa region"));
                 break;
+            case "setpermanentaccess":
+                if(args.length < 3) {
+                    player.sendMessage(CC.translate("&cUso correcto: /regionmanager setPermanentAccess (nick) (nombre de region)"));
+                    return;
+                }
+                Player playerCommand4 = Bukkit.getPlayer(args[1]);
+                if(playerCommand4 == null || !playerCommand4.isOnline()) {
+                    player.sendMessage(CC.translate("&cEl jugador " + args[1] + " no existe o no está conectado"));
+                    return;
+                }
+                if(PlayerAccessManager.allPlayers.containsKey(playerCommand4.getUniqueId().toString())) {
+                    PlayerAccessManager.allPlayers.get(playerCommand4.getUniqueId().toString()).setPermanentAccess(args[2]);
+                }else {
+                    PlayerAccessManager m = new PlayerAccessManager(playerCommand4);
+                    m.setPermanentAccess(args[2]);
+                }
             default:
                 sendUsage(player);
         }
@@ -139,6 +179,8 @@ public class RegionCommands extends BaseCommand {
         player.sendMessage(CC.translate("&eNOTA: &6el tiempo de espera es un parámetro opcional, sirve para regiones con acceso temporal que se reestablece, por ejemplo, una región donde el jugador pueda ir 1 hora y luego tenga que esperar 6 horas."));
         player.sendMessage(CC.translate("&e---------------------"));
         player.sendMessage(CC.translate("&6/regionmanager getRemainingTime (nick) (nombre de region) &e-> &6Le dice al jugador cuanto tiempo restante tiene en cierta region"));
+        player.sendMessage(CC.translate("&e---------------------"));
+        player.sendMessage(CC.translate("&6/regionmanager setPermanentAccess (nick) (nombre de region) &e-> &6Proporciona acceso permanente a un jugador para cierta región"));
         player.sendMessage(CC.translate("&e---------------------"));
     }
 }

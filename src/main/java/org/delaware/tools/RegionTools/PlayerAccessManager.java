@@ -143,6 +143,10 @@ public class PlayerAccessManager {
     public void setAccess(String regionName, int durationInSeconds) {
         setAccess(regionName, durationInSeconds, -1);
     }
+    public void setAccess(String regionName) {
+        setAccess(regionName, 10);
+        setPermanentAccess(regionName);
+    }
     public void setAccess(String regionName, int durationInSeconds, int refreshDurationInSeconds) {
         for(PlayerAccessRecord record : accessRecords) {
             if(record.getRegionName().equalsIgnoreCase(regionName)) {
@@ -179,13 +183,22 @@ public class PlayerAccessManager {
         if(!hasRecord) return true;
         return hasAccess(regionName);
     }
+    //Sets permanent access to a region
+    public void setPermanentAccess(String regionName) {
+        for(PlayerAccessRecord record : accessRecords) {
+            if(record.getRegionName().equalsIgnoreCase(regionName)) {
+                record.setMaxDuration(-10);
+                save();
+            }
+        }
+    }
     public void save() {
         allPlayers.put(uuid, this);
     }
     private boolean hasAccess(String regionName) {
-        //Instant now = Instant.now();
         for(PlayerAccessRecord record : accessRecords) {
             if(record.getRegionName().equalsIgnoreCase(regionName)) {
+                if(record.getMaxDuration() == -10) return true;
                 return record.getTimeElapsed() < record.getMaxDuration();
             }
         }
