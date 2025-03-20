@@ -3,6 +3,7 @@ package org.delaware.tools;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ public class RegionUtils {
     private WorldGuardPlugin wgPlugin;
     private static HashMap<UUID, Instant> cooldowns = new HashMap<> ( );
     public static List<String> restrictedRegions = new ArrayList<> ( );
+    public static final Map<String, Set<String>> regionAccess = new HashMap<>();
 
     public static ProtectedRegion findRegionInAnyWorld ( String regionName ) {
         WorldGuardPlugin wg = WorldGuardPlugin.inst ( );
@@ -87,7 +89,31 @@ public class RegionUtils {
             }
         }.runTaskLater ( Main.instance, 60 * 60 * 20 );
     }
+    public static void getRegionFlags(Player player, String regionName) {
+        WorldGuardPlugin wg = WorldGuardPlugin.inst();
+        RegionManager regionManager = wg.getRegionContainer().get(player.getWorld());
 
+        if (regionManager == null) {
+            player.sendMessage("§cNo se pudo obtener el gestor de regiones.");
+            return;
+        }
+
+        ProtectedRegion region = regionManager.getRegion(regionName);
+        if (region == null) {
+            player.sendMessage("§cLa región no fue encontrada.");
+            return;
+        }
+
+        Map<Flag<?>, Object> flags = region.getFlags();
+        if (flags.isEmpty()) {
+            player.sendMessage("§eNo hay flags establecidas en esta región.");
+            return;
+        }
+
+        player.sendMessage("§aFlags de la región " + regionName + ":");
+        for (Map.Entry<Flag<?>, Object> entry : flags.entrySet()) {
+        }
+    }
     public ProtectedRegion getRegionAtLocation ( org.bukkit.Location location ) {
         if (location == null) return null;
 
@@ -112,10 +138,19 @@ public class RegionUtils {
         }
         region.getMembers ( ).addPlayer ( player.getName ( ) );
         cooldowns.put ( player.getUniqueId ( ), Instant.now ( ).plus ( Duration.ofHours ( 24 ) ) );
+        regionAccess.computeIfAbsent(regionName, k -> new HashSet<>()).add(player.getName());
+
         new BukkitRunnable ( ) {
             @Override
             public void run () {
                 region.getMembers ( ).removePlayer ( player.getName ( ) );
+                Set<String> players = regionAccess.get(regionName);
+                if (players != null) {
+                    players.remove(player.getName());
+                    if (players.isEmpty()) {
+                        regionAccess.remove(regionName);
+                    }
+                }
                 player.sendMessage ( "§cTu acceso ha expirado, puedes volver en 24 horas." );
             }
         }.runTaskLater ( Main.instance, 60 * 60 * 20 );

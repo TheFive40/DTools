@@ -1,5 +1,7 @@
 package org.delaware;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import kamkeel.npcdbc.api.event.IDBCEvent;
 import kamkeel.npcdbc.scripted.DBCPlayerEvent;
 import net.luckperms.api.LuckPerms;
@@ -17,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.delaware.DBCEvents.DBCDamageEvent;
-import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
@@ -39,6 +40,8 @@ import org.delaware.tools.model.entities.TP;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -47,10 +50,11 @@ import static org.delaware.tools.CustomItems.CustomItems.items;
 import static org.delaware.tools.CustomItems.PlayerBonusesData.bonusData;
 import static org.delaware.commands.TPSCommand.tps;
 import static org.delaware.tools.RegionTools.PlayerAccessManager.allPlayers;
+import static org.delaware.tools.RegionUtils.regionAccess;
 
 
 public class Main extends JavaPlugin {
-    DamageEvent dmgEventInstance;
+    //DamageEvent dmgEventInstance;
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
@@ -112,8 +116,8 @@ public class Main extends JavaPlugin {
 
         //Spacey
         //CustomNPCS events
-        dmgEventInstance = new DamageEvent();
-        Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
+        //dmgEventInstance = new DamageEvent();
+        //Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
         //CustomNPCS events
         loadCustomItems();
         loadCustomBonuses();
@@ -216,10 +220,22 @@ public class Main extends JavaPlugin {
         //Spacey
         disableCustomItems();
         //CustomNPCS events
-        DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
+        //DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
         //CustomNPCS events
         //Spacey
+        for (Map.Entry<String, Set<String>> entry : regionAccess.entrySet()) {
+            String regionName = entry.getKey();
+            Set<String> players = entry.getValue();
+            WorldGuardPlugin wg = WorldGuardPlugin.inst ( );
 
+            ProtectedRegion region = wg.getRegionManager(Bukkit.getWorld("trainingoculto")).getRegion(regionName);
+            if (region != null) {
+                for (String playerName : players) {
+                    region.getMembers().removePlayer(playerName);
+                }
+            }
+        }
+        regionAccess.clear();
         playerStats.forEach ( ( k, v ) -> {
             IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( k ).getDBCPlayer ( );
             idbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( General.STR, v.getSTR ( ) );
