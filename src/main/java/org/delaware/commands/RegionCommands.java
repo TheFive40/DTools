@@ -85,6 +85,7 @@ public class RegionCommands extends BaseCommand {
                         PlayerAccessManager m = new PlayerAccessManager(playerCommand2);
                         m.setAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
                     }
+                    player.sendMessage(CC.translate("&aAcceso agregado."));
                     return;
                 }
                 if(PlayerAccessManager.allPlayers.containsKey(playerCommand2.getUniqueId().toString())) {
@@ -121,6 +122,7 @@ public class RegionCommands extends BaseCommand {
                         PlayerAccessManager m = new PlayerAccessManager(playerCommand3);
                         m.addAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
                     }
+                    player.sendMessage(CC.translate("&aAcceso agregado."));
                     return;
                 }
                 if(PlayerAccessManager.allPlayers.containsKey(playerCommand3.getUniqueId().toString())) {
