@@ -38,6 +38,10 @@ public class RegionCommands extends BaseCommand {
                     player.sendMessage("&cEl tiempo debe ser un numero entero!");
                     return;
                 }
+                if(Integer.parseInt(args[3].trim()) <= 0) {
+                    player.sendMessage("&cEl tiempo debe ser mayor que 0!");
+                    return;
+                }
                 if(args.length >= 5) {
                     if(!General.isConvertibleToInt(args[4].trim())) {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
@@ -72,6 +76,10 @@ public class RegionCommands extends BaseCommand {
                 }
                 if(!General.isConvertibleToInt(args[3].trim())) {
                     player.sendMessage("&cEl tiempo debe ser un numero entero!");
+                    return;
+                }
+                if(Integer.parseInt(args[3].trim()) <= 0) {
+                    player.sendMessage("&cEl tiempo debe ser mayor que 0!");
                     return;
                 }
                 if(args.length >= 5) {
@@ -109,6 +117,10 @@ public class RegionCommands extends BaseCommand {
                 }
                 if(!General.isConvertibleToInt(args[3].trim())) {
                     player.sendMessage("&cEl tiempo debe ser un numero entero!");
+                    return;
+                }
+                if(Integer.parseInt(args[3].trim()) <= 0) {
+                    player.sendMessage("&cEl tiempo debe ser mayor que 0!");
                     return;
                 }
                 if(args.length >= 5) {
