@@ -22,6 +22,7 @@ public class KnockoutEvent implements Listener {
         Player damager = Bukkit.getPlayer(damagedUUID);
         if(handler.getPlayerRegions(player) == null) return;
         for(ProtectedRegion region : handler.getPlayerRegions(player)) {
+            if(handler.getFlagValue(region, "pvp") == null) continue;
             if(handler.getFlagValue(region, "pvp").equalsIgnoreCase("DENY")) {
                 event.setCanceled(true);
                 damager.sendMessage(CC.translate("&cNo puedes hacer PvP en esta zona!"));

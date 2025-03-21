@@ -20,6 +20,7 @@ public class DamageEvent implements Listener {
         RegionHandler handler = new RegionHandler();
         if(handler.getPlayerRegions(player) == null) return;
         for(ProtectedRegion region : handler.getPlayerRegions(player)) {
+            if(handler.getFlagValue(region, "pvp") == null) continue;
             if(handler.getFlagValue(region, "pvp").equalsIgnoreCase("DENY")) {
                 event.setCanceled(true);
                 break;
