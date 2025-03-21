@@ -1,5 +1,6 @@
 package org.delaware.DBCEvents.Listeners;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,9 +18,12 @@ public class DamageEvent implements Listener {
         UUID uuid = UUID.fromString(event.getPlayer().getUniqueID());
         Player player = Bukkit.getPlayer(uuid);
         RegionHandler handler = new RegionHandler();
-        if(handler.getPlayerRegion(player) == null) return;
-        if(handler.getFlagValue(handler.getPlayerRegion(player), "pvp").equalsIgnoreCase("DENY")) {
-            event.setCanceled(true);
+        if(handler.getPlayerRegions(player) == null) return;
+        for(ProtectedRegion region : handler.getPlayerRegions(player)) {
+            if(handler.getFlagValue(region, "pvp").equalsIgnoreCase("DENY")) {
+                event.setCanceled(true);
+                break;
+            }
         }
     }
 }

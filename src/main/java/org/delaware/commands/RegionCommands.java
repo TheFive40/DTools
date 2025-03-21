@@ -177,6 +177,7 @@ public class RegionCommands extends BaseCommand {
                     PlayerAccessManager m = new PlayerAccessManager(playerCommand4);
                     m.setPermanentAccess(args[2]);
                 }
+                player.sendMessage(CC.translate("&aAcceso agregado."));
                 break;
             default:
                 sendUsage(player);

@@ -9,8 +9,6 @@ import org.delaware.tools.CC;
 import org.delaware.tools.RegionTools.PlayerAccessManager;
 import org.delaware.tools.RegionTools.RegionHandler;
 
-import java.time.Instant;
-
 @Getter
 public class RegionCheckRunnable {
     public static BukkitRunnable regionCheckRunnable = new BukkitRunnable() {
@@ -19,12 +17,12 @@ public class RegionCheckRunnable {
             for(Player player : Bukkit.getServer().getOnlinePlayers()) {
                 if(!PlayerAccessManager.allPlayers.containsKey(player.getUniqueId().toString())) continue;
                 RegionHandler regionHandler = new RegionHandler();
-                ProtectedRegion region = regionHandler.getPlayerRegion(player);
-                if(region != null) {
+                if(regionHandler.getPlayerRegions(player) == null) continue;
+                for(ProtectedRegion region : regionHandler.getPlayerRegions(player)) {
                     String regionName = region.getId();
                     PlayerAccessManager manager = PlayerAccessManager.allPlayers.get(player.getUniqueId().toString());
                     if(!manager.hasRecord(regionName)) {
-                        continue; //no record for this region,continuing...
+                        continue; //no record for this region, continuing...
                     }
                     if(!manager.canEnterRegion(regionName)) {
                         if(manager.regionCooldownCheck(regionName)) {

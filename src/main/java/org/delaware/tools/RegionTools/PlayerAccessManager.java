@@ -35,6 +35,7 @@ public class PlayerAccessManager {
     public void addTimeElapsed(String regionName, int time) {
         for(PlayerAccessRecord record : accessRecords) {
             if(record.getRegionName().equalsIgnoreCase(regionName)) {
+                if(record.getMaxDuration() == -10) continue;
                 int timeElapsed = record.getTimeElapsed();
                 record.setTimeElapsed((timeElapsed + time));
                 save();
