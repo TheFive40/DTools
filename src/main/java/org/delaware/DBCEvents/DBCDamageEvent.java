@@ -3,7 +3,7 @@ package org.delaware.DBCEvents;
 import kamkeel.npcdbc.api.event.IDBCEvent;
 import lombok.Getter;
 import noppes.npcs.api.IDamageSource;
-import noppes.npcs.api.event.IPlayerEvent;
+import noppes.npcs.api.entity.IPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -15,7 +15,9 @@ public class DBCDamageEvent extends Event {
     private final float type;
     private final boolean isDamageSourceKiAttack;
     private final IDBCEvent.DamagedEvent event;
+    private final IPlayer<?> player;
     public DBCDamageEvent(IDBCEvent.DamagedEvent event) {
+        this.player = event.getPlayer();
         this.damage = event.getDamage();
         this.damageSource = event.getDamageSource();
         this.type = event.getType();

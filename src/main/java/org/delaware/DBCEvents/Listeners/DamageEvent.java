@@ -12,8 +12,9 @@ import java.util.UUID;
 public class DamageEvent implements Listener {
     @EventHandler
     public void onDamage(DBCDamageEvent event) {
-        if(event.getDamageSource().getTrueSource().getType() != 1) return;
-        UUID uuid = UUID.fromString(event.getDamageSource().getTrueSource().getUniqueID());
+        if(event.getDamageSource() == null || event.getDamageSource().getTrueSource() == null) return;
+        if(event.getDamageSource().getTrueSource().getType() != 1 || !event.isDamageSourceKiAttack()) return;
+        UUID uuid = UUID.fromString(event.getPlayer().getUniqueID());
         Player player = Bukkit.getPlayer(uuid);
         RegionHandler handler = new RegionHandler();
         if(handler.getPlayerRegion(player) == null) return;
