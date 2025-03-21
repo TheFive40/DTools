@@ -10,6 +10,7 @@ import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
 import noppes.npcs.api.IDamageSource;
 import noppes.npcs.api.entity.IDBCPlayer;
+import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.delaware.DBCEvents.DBCDamageEvent;
 import org.delaware.DBCEvents.DBCKnockoutEvent;
 import org.delaware.DBCEvents.Listeners.DamageEvent;
+import org.delaware.DBCEvents.Listeners.KnockoutEvent;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
@@ -52,6 +54,7 @@ import static org.delaware.tools.RegionTools.PlayerAccessManager.allPlayers;
 
 public class Main extends JavaPlugin {
     DamageEvent dmgEventInstance;
+    KnockoutEvent koEventInstance;
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
@@ -115,6 +118,8 @@ public class Main extends JavaPlugin {
         //CustomNPCS events
         dmgEventInstance = new DamageEvent();
         Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
+        koEventInstance = new KnockoutEvent();
+        Bukkit.getPluginManager().registerEvents(koEventInstance, this);
         //CustomNPCS events
         loadCustomItems();
         loadCustomBonuses();
@@ -218,6 +223,7 @@ public class Main extends JavaPlugin {
         disableCustomItems();
         //CustomNPCS events
         DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
+        DBCKnockoutEvent.getHandlerList().unregister(koEventInstance);
         //CustomNPCS events
         //Spacey
 
