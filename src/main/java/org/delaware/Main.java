@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.delaware.DBCEvents.DBCDamageEvent;
+import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.interactWithGift;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
@@ -54,7 +55,7 @@ import static org.delaware.tools.RegionUtils.regionAccess;
 
 
 public class Main extends JavaPlugin {
-    //DamageEvent dmgEventInstance;
+    DamageEvent dmgEventInstance;
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
@@ -116,8 +117,8 @@ public class Main extends JavaPlugin {
 
         //Spacey
         //CustomNPCS events
-        //dmgEventInstance = new DamageEvent();
-        //Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
+        dmgEventInstance = new DamageEvent();
+        Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
         //CustomNPCS events
         loadCustomItems();
         loadCustomBonuses();
@@ -220,7 +221,7 @@ public class Main extends JavaPlugin {
         //Spacey
         disableCustomItems();
         //CustomNPCS events
-        //DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
+        DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
         //CustomNPCS events
         //Spacey
         for (Map.Entry<String, Set<String>> entry : regionAccess.entrySet()) {

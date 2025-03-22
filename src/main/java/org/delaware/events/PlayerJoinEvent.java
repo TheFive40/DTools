@@ -34,7 +34,7 @@ public class PlayerJoinEvent implements Listener {
             Main.instance.getServer().broadcastMessage("");
             Main.instance.getServer().broadcastMessage(CC.translate("&6&l&m---------------------------------------------"));
             for(Player playerOnline : player.getServer().getOnlinePlayers()){
-                playerOnline.playSound(playerOnline.getLocation(), Sound.WITHER_DEATH,10f,5f);
+                playerOnline.playSound(playerOnline.getLocation(), "random.orb",1.0F,1.0F);
             }
         }else if(General.isHakaishin ( player )){
             Main.instance.getServer().broadcastMessage(CC.translate("&5&l&m---------------------------------------------"));
@@ -44,6 +44,9 @@ public class PlayerJoinEvent implements Listener {
             Main.instance.getServer().broadcastMessage(CC.translate("&d¡Inclínense ante su presencia y sientan su poder divino!"));
             Main.instance.getServer().broadcastMessage("");
             Main.instance.getServer().broadcastMessage(CC.translate("&5&l&m---------------------------------------------"));
+            for(Player playerOnline : player.getServer().getOnlinePlayers()){
+                playerOnline.playSound(playerOnline.getLocation(), "random.levelup",0.7F,0.7F);
+            }
         }
     }
 }
