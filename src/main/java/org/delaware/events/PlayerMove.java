@@ -13,14 +13,15 @@ import org.delaware.tools.RegionUtils;
 import static org.delaware.commands.CommandFrooze.playersFrooze;
 import static org.delaware.commands.CommandTransform.entities;
 import static org.delaware.commands.CommandTransform.entitiesBukkit;
+import static org.delaware.tools.RegionUtils.restrictedRegions;
 
 public class PlayerMove implements Listener {
     @EventHandler
     public void onPlayerMove ( PlayerMoveEvent event ) {
         RegionUtils regionUtils = new RegionUtils ( );
         Player player = event.getPlayer ( );
-        if (regionUtils.isInRestrictedRegion(player) && !General.hasStaffParent ( player )) {
-            if (!regionUtils.isMemberOfRegion ( player, regionUtils.getRegionAtLocation ( player.getLocation () ).getId () )) {
+        if (restrictedRegions.contains ( regionUtils.getRegionAtLocation ( player.getLocation () ).getId () )  && !General.hasStaffParent ( player )) {
+            if (!regionUtils.hasAccess ( player.getName (), regionUtils.getRegionAtLocation ( player.getLocation () ).getId () )) {
                 player.sendMessage ( CC.translate ( "&cNo puedes entrar en esta zona." ) );
                 player.performCommand ( "warp spawn" );
                 event.setCancelled ( true );

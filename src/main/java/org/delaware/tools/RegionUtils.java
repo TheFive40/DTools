@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.Main;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -35,7 +36,15 @@ public class RegionUtils {
     private WorldGuardPlugin wgPlugin;
     private static HashMap<UUID, Instant> cooldowns = new HashMap<> ( );
     public static List<String> restrictedRegions = new ArrayList<> ( );
-    public static final Map<String, Set<String>> regionAccess = new HashMap<>();
+    public static final Map<String, Set<String>> regionAccess = new HashMap<> ( );
+
+    public boolean hasAccess ( String playerName, String regionName ) {
+        if (restrictedRegions.contains ( regionName )) {
+            return false;
+        }
+        Set<String> players = regionAccess.get ( regionName );
+        return players != null && players.contains ( playerName );
+    }
 
     public static ProtectedRegion findRegionInAnyWorld ( String regionName ) {
         WorldGuardPlugin wg = WorldGuardPlugin.inst ( );
@@ -89,31 +98,33 @@ public class RegionUtils {
             }
         }.runTaskLater ( Main.instance, 60 * 60 * 20 );
     }
-    public static void getRegionFlags(Player player, String regionName) {
-        WorldGuardPlugin wg = WorldGuardPlugin.inst();
-        RegionManager regionManager = wg.getRegionContainer().get(player.getWorld());
+
+    public static void getRegionFlags ( Player player, String regionName ) {
+        WorldGuardPlugin wg = WorldGuardPlugin.inst ( );
+        RegionManager regionManager = wg.getRegionContainer ( ).get ( player.getWorld ( ) );
 
         if (regionManager == null) {
-            player.sendMessage("§cNo se pudo obtener el gestor de regiones.");
+            player.sendMessage ( "§cNo se pudo obtener el gestor de regiones." );
             return;
         }
 
-        ProtectedRegion region = regionManager.getRegion(regionName);
+        ProtectedRegion region = regionManager.getRegion ( regionName );
         if (region == null) {
-            player.sendMessage("§cLa región no fue encontrada.");
+            player.sendMessage ( "§cLa región no fue encontrada." );
             return;
         }
 
-        Map<Flag<?>, Object> flags = region.getFlags();
-        if (flags.isEmpty()) {
-            player.sendMessage("§eNo hay flags establecidas en esta región.");
+        Map<Flag<?>, Object> flags = region.getFlags ( );
+        if (flags.isEmpty ( )) {
+            player.sendMessage ( "§eNo hay flags establecidas en esta región." );
             return;
         }
 
-        player.sendMessage("§aFlags de la región " + regionName + ":");
-        for (Map.Entry<Flag<?>, Object> entry : flags.entrySet()) {
+        player.sendMessage ( "§aFlags de la región " + regionName + ":" );
+        for (Map.Entry<Flag<?>, Object> entry : flags.entrySet ( )) {
         }
     }
+
     public ProtectedRegion getRegionAtLocation ( org.bukkit.Location location ) {
         if (location == null) return null;
 
@@ -138,17 +149,17 @@ public class RegionUtils {
         }
         region.getMembers ( ).addPlayer ( player.getName ( ) );
         cooldowns.put ( player.getUniqueId ( ), Instant.now ( ).plus ( Duration.ofHours ( 24 ) ) );
-        regionAccess.computeIfAbsent(regionName, k -> new HashSet<>()).add(player.getName());
+        regionAccess.computeIfAbsent ( regionName, k -> new HashSet<> ( ) ).add ( player.getName ( ) );
 
         new BukkitRunnable ( ) {
             @Override
             public void run () {
                 region.getMembers ( ).removePlayer ( player.getName ( ) );
-                Set<String> players = regionAccess.get(regionName);
+                Set<String> players = regionAccess.get ( regionName );
                 if (players != null) {
-                    players.remove(player.getName());
-                    if (players.isEmpty()) {
-                        regionAccess.remove(regionName);
+                    players.remove ( player.getName ( ) );
+                    if (players.isEmpty ( )) {
+                        regionAccess.remove ( regionName );
                     }
                 }
                 player.sendMessage ( "§cTu acceso ha expirado, puedes volver en 24 horas." );
@@ -298,7 +309,7 @@ public class RegionUtils {
 
     public static void saveData () {
         if (!dataDir.exists ( )) dataDir.mkdirs ( );
-        if (cooldowns.isEmpty () || restrictedRegions.isEmpty ()) return;
+        if (cooldowns.isEmpty ( ) || restrictedRegions.isEmpty ( )) return;
         try (FileWriter writer = new FileWriter ( RESTRICTED_REGION_FILE )) {
             GSON.toJson ( restrictedRegions, writer );
         } catch (IOException e) {
@@ -317,7 +328,7 @@ public class RegionUtils {
 
         if (COLDOWN_FILE.exists ( )) {
             try (FileReader reader = new FileReader ( COLDOWN_FILE )) {
-                Type type = new TypeToken< HashMap<UUID, Instant>> ( ) {
+                Type type = new TypeToken<HashMap<UUID, Instant>> ( ) {
                 }.getType ( );
                 HashMap<UUID, Instant> loadedData = GSON.fromJson ( reader, type );
                 if (loadedData != null) cooldowns = loadedData;
@@ -337,36 +348,40 @@ public class RegionUtils {
             }
         }
     }
-    public static void setRegionTimeLimit(Player player, ProtectedRegion region, String time) {
-        long delayTicks = parseTimeToTicks(time);
+
+    public static void setRegionTimeLimit ( Player player, ProtectedRegion region, String time ) {
+        long delayTicks = parseTimeToTicks ( time );
         if (delayTicks <= 0) {
-            player.sendMessage("&cFormato de tiempo inválido. Usa '10m', '10s' o '10h'.");
+            player.sendMessage ( "&cFormato de tiempo inválido. Usa '10m', '10s' o '10h'." );
             return;
         }
 
-        new BukkitRunnable() {
+        new BukkitRunnable ( ) {
             @Override
-            public void run() {
-                region.getMembers().removePlayer(player.getName());
-                player.sendMessage("&cTu acceso ha expirado, puedes volver en 24 horas.");
+            public void run () {
+                region.getMembers ( ).removePlayer ( player.getName ( ) );
+                player.sendMessage ( "&cTu acceso ha expirado, puedes volver en 24 horas." );
             }
-        }.runTaskLater(Main.instance, delayTicks);
+        }.runTaskLater ( Main.instance, delayTicks );
     }
 
-    private static long parseTimeToTicks(String time) {
-        if (time == null || time.isEmpty()) return -1;
-        time = time.toLowerCase().trim();
-        Pattern pattern = Pattern.compile("(\\d+)([smh])");
-        Matcher matcher = pattern.matcher(time);
+    private static long parseTimeToTicks ( String time ) {
+        if (time == null || time.isEmpty ( )) return -1;
+        time = time.toLowerCase ( ).trim ( );
+        Pattern pattern = Pattern.compile ( "(\\d+)([smh])" );
+        Matcher matcher = pattern.matcher ( time );
 
-        if (matcher.matches()) {
-            int value = Integer.parseInt(matcher.group(1));
-            String unit = matcher.group(2);
+        if (matcher.matches ( )) {
+            int value = Integer.parseInt ( matcher.group ( 1 ) );
+            String unit = matcher.group ( 2 );
 
             switch (unit) {
-                case "s": return value * 20L;
-                case "m": return value * 60L * 20L;
-                case "h": return value * 3600L * 20L;
+                case "s":
+                    return value * 20L;
+                case "m":
+                    return value * 60L * 20L;
+                case "h":
+                    return value * 3600L * 20L;
             }
         }
         return -1;
