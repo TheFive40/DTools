@@ -38,6 +38,10 @@ public class RegionCommands extends BaseCommand {
                     player.sendMessage("&cEl tiempo debe ser un numero entero!");
                     return;
                 }
+                if(Integer.parseInt(args[3].trim()) <= 0) {
+                    player.sendMessage("&cEl tiempo debe ser mayor que 0!");
+                    return;
+                }
                 if(args.length >= 5) {
                     if(!General.isConvertibleToInt(args[4].trim())) {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
@@ -74,6 +78,10 @@ public class RegionCommands extends BaseCommand {
                     player.sendMessage("&cEl tiempo debe ser un numero entero!");
                     return;
                 }
+                if(Integer.parseInt(args[3].trim()) <= 0) {
+                    player.sendMessage("&cEl tiempo debe ser mayor que 0!");
+                    return;
+                }
                 if(args.length >= 5) {
                     if(!General.isConvertibleToInt(args[4].trim())) {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
@@ -85,6 +93,7 @@ public class RegionCommands extends BaseCommand {
                         PlayerAccessManager m = new PlayerAccessManager(playerCommand2);
                         m.setAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
                     }
+                    player.sendMessage(CC.translate("&aAcceso agregado."));
                     return;
                 }
                 if(PlayerAccessManager.allPlayers.containsKey(playerCommand2.getUniqueId().toString())) {
@@ -110,6 +119,10 @@ public class RegionCommands extends BaseCommand {
                     player.sendMessage("&cEl tiempo debe ser un numero entero!");
                     return;
                 }
+                if(Integer.parseInt(args[3].trim()) <= 0) {
+                    player.sendMessage("&cEl tiempo debe ser mayor que 0!");
+                    return;
+                }
                 if(args.length >= 5) {
                     if(!General.isConvertibleToInt(args[4].trim())) {
                         player.sendMessage("&cEl tiempo de espera debe ser un numero entero!");
@@ -121,6 +134,7 @@ public class RegionCommands extends BaseCommand {
                         PlayerAccessManager m = new PlayerAccessManager(playerCommand3);
                         m.addAccess(args[2].trim(), Integer.parseInt(args[3].trim()), Integer.parseInt(args[4].trim()));
                     }
+                    player.sendMessage(CC.translate("&aAcceso agregado."));
                     return;
                 }
                 if(PlayerAccessManager.allPlayers.containsKey(playerCommand3.getUniqueId().toString())) {
@@ -163,6 +177,8 @@ public class RegionCommands extends BaseCommand {
                     PlayerAccessManager m = new PlayerAccessManager(playerCommand4);
                     m.setPermanentAccess(args[2]);
                 }
+                player.sendMessage(CC.translate("&aAcceso agregado."));
+                break;
             default:
                 sendUsage(player);
         }

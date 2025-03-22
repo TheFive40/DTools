@@ -59,7 +59,9 @@ public class RegionHandler {
         }
         return null;
     }
-    //Returns the region the player is standing in
+    //Returns the region the player is standing in || null if not standing in a region
+    //DEPRECATED - use getPlayerRegions instead
+    @Deprecated
     public ProtectedRegion getPlayerRegion(Player player) {
         RegionManager regionManager = getRegionManager(player);
         if(regionManager == null) return null;
@@ -70,6 +72,19 @@ public class RegionHandler {
         }
         Iterator<ProtectedRegion> it = set.iterator();
         return it.next();
+    }
+    //Returns all the regions the player's standing in || null if standing in none
+    public Set<ProtectedRegion> getPlayerRegions(Player player) {
+        RegionManager regionManager = getRegionManager(player);
+        if(regionManager == null) return null;
+        Location playerLocation = player.getLocation();
+        ApplicableRegionSet set = regionManager.getApplicableRegions(playerLocation);
+        if (set.size() == 0) {
+            return null;
+        }
+        return set.getRegions();
+        //Iterator<ProtectedRegion> it = set.iterator();
+        //return it.next();
     }
     private RegionManager getRegionManager(Player player) {
         if(wg == null) return null;
