@@ -30,7 +30,7 @@ public class BonusAttributes {
         if(operation.equals("+") || operation.equals("-")) {
             IDBCAddon cnpcPlayer = (IDBCAddon) player;
             int race = player.getRace();
-            if(stat.equals("CON") || stat.equals("SPI")) {
+            if(stat.equalsIgnoreCase("CON") || stat.equalsIgnoreCase("SPI")) {
                 bonus(stat, bonusID, operation, Math.floor(value * getMultiplierByStat(stat.toUpperCase(), race)), endOfLine);
             }
             else {
