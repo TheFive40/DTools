@@ -3,10 +3,11 @@ package org.delaware.tools.RegionTools;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -83,15 +84,26 @@ public class RegionHandler {
             return null;
         }
         return set.getRegions();
-        //Iterator<ProtectedRegion> it = set.iterator();
-        //return it.next();
     }
     private RegionManager getRegionManager(Player player) {
         if(wg == null) return null;
         RegionContainer container = wg.getRegionContainer();
         return container.get(player.getWorld());
     }
+    //Returns a set of all regions within a world that have PvP off flag
+    public Set<ProtectedRegion> getPvPOffRegions(World world) {
+        RegionManager manager = wg.getRegionContainer().get(world);
+        if(manager == null) return null;
+        Set<ProtectedRegion> pvpOffRegions = new HashSet<>();
+        for(ProtectedRegion region : manager.getRegions().values()) {
+            if(region.getFlag(DefaultFlag.PVP) == StateFlag.State.DENY) {
+                pvpOffRegions.add(region);
+            }
+        }
+        return pvpOffRegions;
+    }
     //STATIC
+    @Deprecated
     public static ProtectedRegion getRegion(Player player) {
         WorldGuardPlugin wg = WorldGuardPlugin.inst();
         if(wg == null) return null;
@@ -105,6 +117,14 @@ public class RegionHandler {
         }
         Iterator<ProtectedRegion> it = set.iterator();
         return it.next();
+    }
+    //Returns a map with all regions within a world
+    public static Map<String, ProtectedRegion> getAllRegions(World world) {
+        WorldGuardPlugin wg = WorldGuardPlugin.inst();
+        if(wg == null) return null;
+        RegionManager manager = wg.getRegionContainer().get(world);
+        if(manager == null) return null;
+        return manager.getRegions();
     }
     //STATIC
 }

@@ -16,9 +16,15 @@ import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.delaware.CombatTag.CommandCancel;
+import org.delaware.CombatTag.PlayerLeaveEvent;
+import org.delaware.CombatTag.TagListener;
 import org.delaware.DBCEvents.DBCDamageEvent;
 import org.delaware.DBCEvents.DBCKnockoutEvent;
 import org.delaware.DBCEvents.Listeners.DamageEvent;
@@ -60,6 +66,9 @@ import static org.delaware.tools.RegionUtils.regionAccess;
 public class Main extends JavaPlugin {
     DamageEvent dmgEventInstance;
     KnockoutEvent koEventInstance;
+    TagListener tagEvent;
+    CommandCancel commandEvent;
+    PlayerLeaveEvent leaveEvent;
     public static HashMap<String, Integer> scytheConfig = new HashMap<>();
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
@@ -125,12 +134,19 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
         koEventInstance = new KnockoutEvent();
         Bukkit.getPluginManager().registerEvents(koEventInstance, this);
+        tagEvent = new TagListener();
+        Bukkit.getPluginManager().registerEvents(tagEvent, this);
+        commandEvent = new CommandCancel();
+        Bukkit.getPluginManager().registerEvents(commandEvent, this);
+        leaveEvent = new PlayerLeaveEvent();
+        Bukkit.getPluginManager().registerEvents(leaveEvent, this);
         //CustomNPCS events
         loadCustomItems();
         loadCustomBonuses();
         loadScytheConfig();
         loadRegionData();
         RegionCheckRunnable.regionCheckRunnable.runTaskTimer(this, 60, 60);
+        TagListener.clearExpireTagsTask.runTaskTimer(this, 20L, 20L);
         //Spacey
 
     }
@@ -229,6 +245,10 @@ public class Main extends JavaPlugin {
         //CustomNPCS events
         DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
         DBCKnockoutEvent.getHandlerList().unregister(koEventInstance);
+        TagListener.clearExpireTagsTask.cancel();
+        EntityDamageByEntityEvent.getHandlerList().unregister(tagEvent);
+        PlayerCommandPreprocessEvent.getHandlerList().unregister(commandEvent);
+        PlayerQuitEvent.getHandlerList().unregister(leaveEvent);
         //CustomNPCS events
         //Spacey
         for (Map.Entry<String, Set<String>> entry : regionAccess.entrySet()) {
