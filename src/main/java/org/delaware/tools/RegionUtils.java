@@ -36,15 +36,12 @@ public class RegionUtils {
     private WorldGuardPlugin wgPlugin;
     private static HashMap<UUID, Instant> cooldowns = new HashMap<> ( );
     public static List<String> restrictedRegions = new ArrayList<> ( );
-    public static final Map<String, Set<String>> regionAccess = new HashMap<> ( );
+    public static Map<String, Set<String>> regionAccess = new HashMap<> ( );
 
     public boolean hasAccess ( String playerName, String regionName ) {
-        if (restrictedRegions.contains ( regionName )) {
-            return false;
-        }
-        Set<String> players = regionAccess.get ( regionName );
-        return players != null && players.contains ( playerName );
+        return regionAccess.containsKey ( regionName ) && regionAccess.get ( regionName ).contains ( playerName );
     }
+
 
     public static ProtectedRegion findRegionInAnyWorld ( String regionName ) {
         WorldGuardPlugin wg = WorldGuardPlugin.inst ( );
@@ -149,20 +146,24 @@ public class RegionUtils {
         }
         region.getMembers ( ).addPlayer ( player.getName ( ) );
         cooldowns.put ( player.getUniqueId ( ), Instant.now ( ).plus ( Duration.ofHours ( 24 ) ) );
-        regionAccess.computeIfAbsent ( regionName, k -> new HashSet<> ( ) ).add ( player.getName ( ) );
-
+        if (!regionAccess.containsKey ( regionName )) {
+            HashSet<String> players = new HashSet<> ( );
+            players.add ( player.getName ( ) );
+            regionAccess.put ( regionName, players );
+        }
+        Set<String> players = regionAccess.get ( regionName );
+        players.add ( player.getName ( ) );
+        regionAccess.put ( regionName, players );
         new BukkitRunnable ( ) {
             @Override
             public void run () {
-                region.getMembers ( ).removePlayer ( player.getName ( ) );
                 Set<String> players = regionAccess.get ( regionName );
                 if (players != null) {
                     players.remove ( player.getName ( ) );
-                    if (players.isEmpty ( )) {
-                        regionAccess.remove ( regionName );
-                    }
                 }
+                regionAccess.put ( regionName, players );
                 player.sendMessage ( "§cTu acceso ha expirado, puedes volver en 24 horas." );
+                region.getMembers ( ).removePlayer ( player.getName ( ) );
             }
         }.runTaskLater ( Main.instance, 60 * 60 * 20 );
     }

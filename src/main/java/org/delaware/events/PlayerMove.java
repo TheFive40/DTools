@@ -1,5 +1,6 @@
 package org.delaware.events;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,8 +21,22 @@ public class PlayerMove implements Listener {
     public void onPlayerMove ( PlayerMoveEvent event ) {
         RegionUtils regionUtils = new RegionUtils ( );
         Player player = event.getPlayer ( );
-        if (restrictedRegions.contains ( regionUtils.getRegionAtLocation ( player.getLocation () ).getId () )  && !General.hasStaffParent ( player )) {
-            if (!regionUtils.hasAccess ( player.getName (), regionUtils.getRegionAtLocation ( player.getLocation () ).getId () )) {
+        Location location = player.getLocation ( );
+
+        if (location == null) return;
+
+        ProtectedRegion region = regionUtils.getRegionAtLocation ( location );
+
+        if (region == null) {
+            return;
+        }
+
+        if (restrictedRegions == null) {
+            return;
+        }
+
+        if (restrictedRegions.contains ( regionUtils.getRegionAtLocation ( player.getLocation ( ) ).getId ( ) ) && !General.hasStaffParent ( player )) {
+            if (!regionUtils.hasAccess ( player.getName ( ), "trainingoculto" )) {
                 player.sendMessage ( CC.translate ( "&cNo puedes entrar en esta zona." ) );
                 player.performCommand ( "warp spawn" );
                 event.setCancelled ( true );
@@ -36,7 +51,7 @@ public class PlayerMove implements Listener {
         Location to = event.getTo ( );
         if (entities.containsKey ( player.getName ( ) )) {
             Entity entity = entitiesBukkit.get ( player.getName ( ) );
-            Location location = entity.getLocation ( );
+            location = entity.getLocation ( );
             location.setX ( to.getX ( ) - 1 );
             location.setY ( to.getY ( ) );
             location.setZ ( to.getZ ( ) );
