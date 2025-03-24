@@ -24,7 +24,7 @@ public class KnockoutEvent implements Listener {
         for(ProtectedRegion region : handler.getPlayerRegions(player)) {
             if(handler.getFlagValue(region, "pvp") == null) continue;
             if(handler.getFlagValue(region, "pvp").equalsIgnoreCase("DENY")) {
-                event.setCanceled(true);
+                event.setCancelled(true);
                 damager.sendMessage(CC.translate("&cNo puedes hacer PvP en esta zona!"));
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "jrmcse set KO 0.1 " + damager.getName());
                 break;
