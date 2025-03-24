@@ -22,7 +22,7 @@ public class DBCKnockoutEvent extends Event {
         this.damageSource = event.getDamageSource();
         this.player = event.getPlayer();
     }
-    public void setCanceled(boolean cancel) {
+    public void setCancelled(boolean cancel) {
         if(cancel) {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "jrmcse set KO 0 " + player.getName());
             startRunnable(player.getDBCPlayer(), event.getPlayer().getDBCPlayer().getRelease());

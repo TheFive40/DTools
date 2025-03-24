@@ -27,7 +27,7 @@ public class DBCDamageEvent extends Event {
     public void setDamage(float dmg) {
         this.event.setDamage(dmg);
     }
-    public void setCanceled(boolean cancel) {
+    public void setCancelled(boolean cancel) {
         if(cancel) setDamage(0);
     }
     @Override
