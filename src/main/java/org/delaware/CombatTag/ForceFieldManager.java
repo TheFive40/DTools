@@ -25,6 +25,8 @@ public class ForceFieldManager {
         for(ProtectedRegion region : regions) {
             Location minPoint = new Location(player.getWorld(), region.getMinimumPoint().getX(), region.getMinimumPoint().getY(), region.getMinimumPoint().getZ());
             Location maxPoint = new Location(player.getWorld(), region.getMaximumPoint().getX(), region.getMaximumPoint().getY(), region.getMaximumPoint().getZ());
+            if(minPoint.distance(maxPoint) > 250) continue; //if region is too big, it won't place the forcefield (due to lag)
+            if(player.getLocation().distance(minPoint) > 750 || player.getLocation().distance(maxPoint) > 750) continue; //if player is out of 750 blocks range, it won't place the forcefield (again, due to lag)
             for (double x = minPoint.getX(); x <= maxPoint.getX(); x++) { //Bottom and top from the wall
                 for (double z = minPoint.getZ(); z <= maxPoint.getZ(); z++) {
                     //Top
