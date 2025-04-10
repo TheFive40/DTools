@@ -3,7 +3,6 @@ package org.delaware.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.delaware.events.interactWithGift;
 import org.delaware.tools.CC;
 import org.delaware.tools.commands.BaseCommand;
 import org.delaware.tools.commands.Command;

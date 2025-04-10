@@ -1,4 +1,5 @@
 package org.delaware.tools.BoosterHandler;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
@@ -6,7 +7,9 @@ import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
 import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import org.delaware.Main;
+import org.delaware.tools.Boosters.PBooster;
 import org.delaware.tools.Boosters.VIPBooster;
+
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.UUID;
@@ -15,77 +18,106 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter
 @Setter
-public class BoosterDataHandler implements Serializable{
+public class BoosterDataHandler implements Serializable {
     // Handle booster data
     @Getter
     @Setter
     private static ConcurrentHashMap<String, Double> boostMultiplier = new ConcurrentHashMap<> ( );
     @Getter
     @Setter
+    private static ConcurrentHashMap<UUID, PBooster> boosterPMultiplier = new ConcurrentHashMap<> ( );
+
+    @Getter
+    @Setter
     private static CopyOnWriteArrayList<VIPBooster> boosterData = new CopyOnWriteArrayList<> ( );
-    private static final  Gson GSON = new GsonBuilder ().setPrettyPrinting().create();
-    private static final File rootDir = new File( Main.instance.getDataFolder(), "DTools");
-    private static final File dataDir = new File(rootDir, "data");
-    private static final File MULTIPLIER_FILE = new File(dataDir, "pvboost_multiplier.json");
-    private static final File BOOSTERS_FILE = new File(dataDir, "pvboost_boosters.json");
+    private static final Gson GSON = new GsonBuilder ( ).setPrettyPrinting ( ).create ( );
+    private static final File rootDir = new File ( Main.instance.getDataFolder ( ), "DTools" );
+    private static final File dataDir = new File ( rootDir, "data" );
+    private static final File MULTIPLIER_FILE = new File ( dataDir, "pvboost_multiplier.json" );
+    private static final File PMULTIPLIER_FILE = new File ( dataDir, "pvboost_pmultiplier.json" );
+    private static final File BOOSTERS_FILE = new File ( dataDir, "pvboost_boosters.json" );
 
-    public static void saveData() {
-        if (!dataDir.exists()) dataDir.mkdirs();
-        if (boostMultiplier.isEmpty () || boosterData.isEmpty () ) return;
-        try (FileWriter writer = new FileWriter(MULTIPLIER_FILE)) {
-            GSON.toJson(boostMultiplier, writer);
+    public static void saveData () {
+        if (!dataDir.exists ( )) dataDir.mkdirs ( );
+        if (boostMultiplier.isEmpty ( ) || boosterData.isEmpty ( )) return;
+        try (FileWriter writer = new FileWriter ( MULTIPLIER_FILE )) {
+            GSON.toJson ( boostMultiplier, writer );
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ( );
         }
-
-        try (FileWriter writer = new FileWriter(BOOSTERS_FILE)) {
-            GSON.toJson(boosterData, writer);
+        try (FileWriter writer = new FileWriter ( PMULTIPLIER_FILE )) {
+            GSON.toJson ( boosterPMultiplier, writer );
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ( );
+        }
+        try (FileWriter writer = new FileWriter ( BOOSTERS_FILE )) {
+            GSON.toJson ( boosterData, writer );
+        } catch (IOException e) {
+            e.printStackTrace ( );
         }
     }
-    public static VIPBooster getBoosterByPlayer(UUID playerUUID) {
-        if (boosterData == null || boosterData.isEmpty()) {
+
+    public static VIPBooster getBoosterByPlayer ( UUID playerUUID ) {
+        if (boosterData == null || boosterData.isEmpty ( )) {
             return null;
         }
 
-        return boosterData.stream()
-                .filter(booster -> booster.getPlayerUUID().equals(playerUUID) && booster.isActive())
-                .findFirst()
-                .orElse(null);
+        return boosterData.stream ( )
+                .filter ( booster -> booster.getPlayerUUID ( ).equals ( playerUUID ) && booster.isActive ( ) )
+                .findFirst ( )
+                .orElse ( null );
     }
-    public static void loadData() {
-        if (!dataDir.exists()) dataDir.mkdirs();
 
-        // Cargar boostMultiplier
-        if (MULTIPLIER_FILE.exists()) {
-            try (FileReader reader = new FileReader(MULTIPLIER_FILE)) {
-                Type type = new TypeToken<ConcurrentHashMap<String, Double>>() {}.getType();
-                ConcurrentHashMap<String, Double> loadedData = GSON.fromJson(reader, type);
+    public static void loadData () {
+        if (!dataDir.exists ( )) dataDir.mkdirs ( );
+
+        // Cargar boostMultiplier de los rangos
+        if (MULTIPLIER_FILE.exists ( )) {
+            try (FileReader reader = new FileReader ( MULTIPLIER_FILE )) {
+                Type type = new TypeToken<ConcurrentHashMap<String, Double>> ( ) {
+                }.getType ( );
+                ConcurrentHashMap<String, Double> loadedData = GSON.fromJson ( reader, type );
                 if (loadedData != null) boostMultiplier = loadedData;
             } catch (IOException | JsonSyntaxException e) {
-                e.printStackTrace();
+                e.printStackTrace ( );
             }
         }
-
+        // Cargar boostMultiplier de los jugadores
+        if (PMULTIPLIER_FILE.exists ( )) {
+            try (FileReader reader = new FileReader ( PMULTIPLIER_FILE )) {
+                Type type = new TypeToken<ConcurrentHashMap<UUID, PBooster>> ( ) {
+                }.getType ( );
+                ConcurrentHashMap<UUID, PBooster> loadedData = GSON.fromJson ( reader, type );
+                if (loadedData != null) boosterPMultiplier = loadedData;
+            } catch (IOException | JsonSyntaxException e) {
+                e.printStackTrace ( );
+            }
+        }
         // Cargar boosterData
-        if (BOOSTERS_FILE.exists()) {
-            try (FileReader reader = new FileReader(BOOSTERS_FILE)) {
-                Type type = new TypeToken<CopyOnWriteArrayList<VIPBooster>>() {}.getType();
-                CopyOnWriteArrayList<VIPBooster> loadedBoosters = GSON.fromJson(reader, type);
+        if (BOOSTERS_FILE.exists ( )) {
+            try (FileReader reader = new FileReader ( BOOSTERS_FILE )) {
+                Type type = new TypeToken<CopyOnWriteArrayList<VIPBooster>> ( ) {
+                }.getType ( );
+                CopyOnWriteArrayList<VIPBooster> loadedBoosters = GSON.fromJson ( reader, type );
                 if (loadedBoosters != null) boosterData = loadedBoosters;
             } catch (IOException | JsonSyntaxException e) {
-                e.printStackTrace();
+                e.printStackTrace ( );
             }
         }
     }
 
 
     // Add booster data to the map
-    public void addBoosterData ( String rank, Double booster ) {
+    public void addRankBooster ( String rank, Double booster ) {
         boostMultiplier.put ( rank, booster );
     }
 
+    public void addPlayerBooster ( UUID playerUUID, PBooster booster ) {
+        boosterPMultiplier.put ( playerUUID, booster );
+    }
+    public static void removeBoosterPlayer(UUID playerUUID){
+        boosterPMultiplier.remove ( playerUUID );
+    }
     // Remove booster data from the map
     public void removeBoosterData ( String rank ) {
         boostMultiplier.remove ( rank );
