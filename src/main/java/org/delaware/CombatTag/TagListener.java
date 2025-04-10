@@ -1,5 +1,8 @@
 package org.delaware.CombatTag;
 
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,8 +65,15 @@ public class TagListener implements Listener {
         if(event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
             Player attacker = (Player) event.getDamager();
             Player victim = (Player) event.getEntity();
-            tagPlayer(attacker);
-            tagPlayer(victim);
+            RegionHandler regionHandler = new RegionHandler();
+            if(regionHandler.getPlayerRegions(attacker) == null) return;
+            for(ProtectedRegion region : regionHandler.getPlayerRegions(attacker)) {
+                if(region.getFlag(DefaultFlag.PVP) == StateFlag.State.ALLOW) {
+                    tagPlayer(attacker);
+                    tagPlayer(victim);
+                    break;
+                }
+            }
         }
     }
 }
