@@ -3,16 +3,13 @@ package org.delaware;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import kamkeel.npcdbc.api.event.IDBCEvent;
-import kamkeel.npcdbc.scripted.DBCPlayerEvent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.util.com.google.gson.Gson;
 import net.minecraft.util.com.google.gson.GsonBuilder;
 import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
-import noppes.npcs.api.IDamageSource;
 import noppes.npcs.api.entity.IDBCPlayer;
-import noppes.npcs.api.entity.IPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,6 +37,7 @@ import org.delaware.tools.CustomItems.PlayerBonusesData;
 import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
 import org.delaware.tools.General;
+import org.delaware.tools.Permissions.PermissionsManager;
 import org.delaware.tools.RegionTools.PlayerAccessManager;
 import org.delaware.tools.RegionTools.Runnable.RegionCheckRunnable;
 import org.delaware.tools.RegionUtils;
@@ -360,6 +358,9 @@ public class Main extends JavaPlugin {
         //Region
         PlayerAccessManager.saveToConfig();
         RegionCheckRunnable.regionCheckRunnable.cancel();
+    }
+    public PermissionsManager getPermissionsManager() {
+        return new PermissionsManager();
     }
     //DBC EVENTS
     public void damagedEvent(IDBCEvent.DamagedEvent event) {
