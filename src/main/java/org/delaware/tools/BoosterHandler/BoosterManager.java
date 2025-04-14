@@ -40,7 +40,7 @@ public class BoosterManager {
                 pBoosters.forEach ( e-> {
                     if (e.getActivationTime ( ) != null){
                         Duration elapsedTime = Duration.between ( e.getActivationTime ( ), LocalDateTime.now ( ) );
-                        if(elapsedTime.toDays ()>=31 || elapsedTime.toDays () < 0 || elapsedTime.toMinutes () >= 44640 ){
+                        if(elapsedTime.toDays ()>=30 || elapsedTime.toMinutes () >= 43200 ){
                             BoosterDataHandler.removeBoosterPlayer ( e.getPlayerId () );
                         }
                     }

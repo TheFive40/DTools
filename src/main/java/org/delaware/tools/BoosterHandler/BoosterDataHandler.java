@@ -12,6 +12,8 @@ import org.delaware.tools.Boosters.VIPBooster;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,22 +41,26 @@ public class BoosterDataHandler implements Serializable {
 
     public static void saveData () {
         if (!dataDir.exists ( )) dataDir.mkdirs ( );
-        if (boostMultiplier.isEmpty ( ) || boosterData.isEmpty ( )) return;
-        try (FileWriter writer = new FileWriter ( MULTIPLIER_FILE )) {
-            GSON.toJson ( boostMultiplier, writer );
-        } catch (IOException e) {
-            e.printStackTrace ( );
+        if (!boostMultiplier.isEmpty ( )) {
+            try (FileWriter writer = new FileWriter ( MULTIPLIER_FILE )) {
+                GSON.toJson ( boostMultiplier, writer );
+            } catch (IOException e) {
+                e.printStackTrace ( );
+            }
         }
         try (FileWriter writer = new FileWriter ( PMULTIPLIER_FILE )) {
             GSON.toJson ( boosterPMultiplier, writer );
         } catch (IOException e) {
             e.printStackTrace ( );
         }
+
+
         try (FileWriter writer = new FileWriter ( BOOSTERS_FILE )) {
             GSON.toJson ( boosterData, writer );
         } catch (IOException e) {
             e.printStackTrace ( );
         }
+        
     }
 
     public static VIPBooster getBoosterByPlayer ( UUID playerUUID ) {
@@ -115,9 +121,34 @@ public class BoosterDataHandler implements Serializable {
     public void addPlayerBooster ( UUID playerUUID, PBooster booster ) {
         boosterPMultiplier.put ( playerUUID, booster );
     }
-    public static void removeBoosterPlayer(UUID playerUUID){
+
+    public static void removeBoosterPlayer ( UUID playerUUID ) {
         boosterPMultiplier.remove ( playerUUID );
     }
+
+    public String getRemainingBoosterTime ( UUID playerUUID ) {
+        PBooster booster = getPlayerBooster ( playerUUID );
+        if (booster == null) return "No tiene booster activo.";
+
+        LocalDateTime now = LocalDateTime.now ( );
+        LocalDateTime expiration = booster.getActivationTime ( ).plusDays ( 30 );
+
+        if (now.isAfter ( expiration )) {
+            return "El booster ha expirado.";
+        }
+
+        Duration remaining = Duration.between ( now, expiration );
+        long totalSeconds = remaining.getSeconds ( );
+
+        long days = totalSeconds / (24 * 60 * 60);
+        long hours = (totalSeconds % (24 * 60 * 60)) / (60 * 60);
+        long minutes = (totalSeconds % (60 * 60)) / 60;
+        long seconds = totalSeconds % 60;
+
+        return String.format ( "%d días, %d horas, %d minutos y %d segundos restantes.", days, hours, minutes, seconds );
+    }
+
+
     // Remove booster data from the map
     public void removeBoosterData ( String rank ) {
         boostMultiplier.remove ( rank );
@@ -147,6 +178,14 @@ public class BoosterDataHandler implements Serializable {
         CopyOnWriteArrayList<VIPBooster> boosters = BoosterDataHandler.getBoosterData ( );
         VIPBooster comparableBooster = new VIPBooster ( uuid );
         return boosters.contains ( comparableBooster );
+    }
+
+    public boolean hasPlayerBooster ( UUID playerUUID ) {
+        return boosterPMultiplier.containsKey ( playerUUID );
+    }
+
+    public PBooster getPlayerBooster ( UUID playerUUID ) {
+        return boosterPMultiplier.get ( playerUUID );
     }
 
     public VIPBooster findBooster ( UUID playerUUID ) {

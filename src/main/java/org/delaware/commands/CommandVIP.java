@@ -147,7 +147,7 @@ public class CommandVIP extends BaseCommand {
                                                     vipBooster.setMultiplier ( multiplier );
                                                     vipBooster.setPlayerRank ( rank );
                                                     if (!vipBooster.isCooldownActive ( )) {
-                                                        player.sendMessage ( CC.translate ( "&aYou have activated your personal weekly booster!" ) );
+                                                        player.sendMessage ( CC.translate ( "&aYou have activated your personal daily booster!" ) );
                                                         vipBooster.setActivationTime ( LocalDateTime.now ( ) );
                                                         vipBooster.setActive ( true );
                                                         player.playSound ( player.getLocation ( ), Sound.valueOf ( "LEVEL_UP" ), 1.0f, 1.0f );

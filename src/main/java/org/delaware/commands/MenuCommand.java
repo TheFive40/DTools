@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MenuCommand extends BaseCommand {
-    @Command(name = "future", aliases = {"future","dbfuture"})
+    @Command(name = "future", aliases = {"future", "dbfuture"})
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         SmartInventory INVENTORY = SmartInventory.builder ( )
@@ -38,58 +38,146 @@ public class MenuCommand extends BaseCommand {
                         trainingMeta.setDisplayName ( CC.translate ( "&4&lSistema de Trainings" ) );
                         trainings.setItemMeta ( trainingMeta );
                         inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.RED.getData ( ) ) ) );
-                        inventoryContents.set ( 1, 2, ClickableItem.of ( trainings, e -> {
-                            SmartInventory trainingInventory = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSistema de Trainings" ) )
+                        inventoryContents.set ( 3, 2, ClickableItem.of ( trainings, e -> {
+                            SmartInventory selectTrainingType = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSistema de Trainings" ) )
                                     .type ( InventoryType.CHEST )
                                     .provider ( new InventoryProvider ( ) {
                                         @Override
                                         public void init ( Player player, InventoryContents inventoryContents ) {
                                             inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            ItemStack t1 = new ItemStack ( 4980 );
-                                            ItemMeta t1Meta = t1.getItemMeta ( );
-                                            t1Meta.setDisplayName ( CC.translate ( "&4Training 1" ) );
-                                            t1.setItemMeta ( t1Meta );
-                                            inventoryContents.set ( 1, 2, ClickableItem.of ( t1, e -> {
-                                                player.performCommand ( "warp t1" );
-                                            } ) );
-                                            ItemStack t2 = new ItemStack ( 4970 );
-                                            ItemMeta t2Meta = t2.getItemMeta ( );
-                                            t2Meta.setDisplayName ( CC.translate ( "&4Training 2" ) );
-                                            t2.setItemMeta ( t2Meta );
-                                            inventoryContents.set ( 1, 4, ClickableItem.of ( t2, e -> {
-                                                player.performCommand ( "warp t2" );
+                                            ItemStack tWarriors = new ItemStack ( 176 );
+                                            ItemMeta t1Meta = tWarriors.getItemMeta ( );
+                                            t1Meta.setDisplayName ( CC.translate ( "&4Guerreros" ) );
+                                            tWarriors.setItemMeta ( t1Meta );
+                                            inventoryContents.set ( 1, 3, ClickableItem.of ( tWarriors, e -> {
+                                                SmartInventory trainingInventory = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSistema de Trainings" ) )
+                                                        .type ( InventoryType.CHEST )
+                                                        .provider ( new InventoryProvider ( ) {
+                                                            @Override
+                                                            public void init ( Player player, InventoryContents inventoryContents ) {
+                                                                inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                                                ItemStack t1 = new ItemStack ( 4980 );
+                                                                ItemMeta t1Meta = t1.getItemMeta ( );
+                                                                t1Meta.setDisplayName ( CC.translate ( "&4Training 1" ) );
+                                                                t1.setItemMeta ( t1Meta );
+                                                                inventoryContents.set ( 1, 2, ClickableItem.of ( t1, e -> {
+                                                                    player.performCommand ( "warp t1" );
+                                                                } ) );
+                                                                ItemStack t2 = new ItemStack ( 4970 );
+                                                                ItemMeta t2Meta = t2.getItemMeta ( );
+                                                                t2Meta.setDisplayName ( CC.translate ( "&4Training 2" ) );
+                                                                t2.setItemMeta ( t2Meta );
+                                                                inventoryContents.set ( 1, 4, ClickableItem.of ( t2, e -> {
+                                                                    player.performCommand ( "warp t2" );
 
-                                            } ) );
-                                            ItemStack t3 = new ItemStack ( 4977 );
-                                            ItemMeta t3Meta = t3.getItemMeta ( );
-                                            t3Meta.setDisplayName ( CC.translate ( "&4Training 3" ) );
-                                            t3.setItemMeta ( t3Meta );
-                                            inventoryContents.set ( 1, 6, ClickableItem.of ( t3, e -> {
-                                                player.performCommand ( "warp t3" );
+                                                                } ) );
+                                                                ItemStack t3 = new ItemStack ( 4977 );
+                                                                ItemMeta t3Meta = t3.getItemMeta ( );
+                                                                t3Meta.setDisplayName ( CC.translate ( "&4Training 3" ) );
+                                                                t3.setItemMeta ( t3Meta );
+                                                                inventoryContents.set ( 1, 6, ClickableItem.of ( t3, e -> {
+                                                                    player.performCommand ( "warp t3" );
 
-                                            } ) );
-                                            ItemStack t4 = new ItemStack ( 4975 );
-                                            ItemMeta t4Meta = t4.getItemMeta ( );
-                                            t4Meta.setDisplayName ( CC.translate ( "&4Training 4" ) );
-                                            t4.setItemMeta ( t4Meta );
-                                            inventoryContents.set ( 3, 2, ClickableItem.of ( t4, e -> {
-                                                player.performCommand ( "warp t4" );
+                                                                } ) );
+                                                                ItemStack t4 = new ItemStack ( 4975 );
+                                                                ItemMeta t4Meta = t4.getItemMeta ( );
+                                                                t4Meta.setDisplayName ( CC.translate ( "&4Training 4" ) );
+                                                                t4.setItemMeta ( t4Meta );
+                                                                inventoryContents.set ( 3, 2, ClickableItem.of ( t4, e -> {
+                                                                    player.performCommand ( "warp t4" );
 
-                                            } ) );
-                                            ItemStack t5 = new ItemStack ( 4973 );
-                                            ItemMeta t5Meta = t5.getItemMeta ( );
-                                            t5Meta.setDisplayName ( CC.translate ( "&4Training 5" ) );
-                                            t5.setItemMeta ( t5Meta );
-                                            inventoryContents.set ( 3, 4, ClickableItem.of ( t5, e -> {
-                                                player.performCommand ( "warp t5" );
+                                                                } ) );
+                                                                ItemStack t5 = new ItemStack ( 4973 );
+                                                                ItemMeta t5Meta = t5.getItemMeta ( );
+                                                                t5Meta.setDisplayName ( CC.translate ( "&4Training 5" ) );
+                                                                t5.setItemMeta ( t5Meta );
+                                                                inventoryContents.set ( 3, 4, ClickableItem.of ( t5, e -> {
+                                                                    player.performCommand ( "warp t5" );
 
+                                                                } ) );
+                                                                ItemStack t6 = new ItemStack ( 5161 );
+                                                                ItemMeta t6Meta = t6.getItemMeta ( );
+                                                                t6Meta.setDisplayName ( CC.translate ( "&4Training 6" ) );
+                                                                t6.setItemMeta ( t6Meta );
+                                                                inventoryContents.set ( 3, 6, ClickableItem.of ( t6, e -> {
+                                                                    player.performCommand ( "warp t6" );
+                                                                } ) );
+                                                            }
+
+                                                            @Override
+                                                            public void update ( Player player, InventoryContents inventoryContents ) {
+                                                                inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                                            }
+                                                        } ).id ( "trainings" )
+                                                        .size ( 5, 9 ).build ( );
+                                                trainingInventory.open ( player );
                                             } ) );
-                                            ItemStack t6 = new ItemStack ( 4451 );
-                                            ItemMeta t6Meta = t6.getItemMeta ( );
-                                            t6Meta.setDisplayName ( CC.translate ( "&4Training &fNavidad" ) );
-                                            t6.setItemMeta ( t6Meta );
-                                            inventoryContents.set ( 3, 6, ClickableItem.of ( t6, e -> {
-                                                player.performCommand ( "warp tnavidad" );
+                                            ItemStack tSpiritualist = new ItemStack ( 4142 );
+                                            ItemMeta t2Meta = tSpiritualist.getItemMeta ( );
+                                            t2Meta.setDisplayName ( CC.translate ( "&bEspiritualistas" ) );
+                                            tSpiritualist.setItemMeta ( t2Meta );
+                                            inventoryContents.set ( 1, 5, ClickableItem.of ( tSpiritualist, e -> {
+                                                SmartInventory trainingInventory = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSistema de Trainings" ) )
+                                                        .type ( InventoryType.CHEST )
+                                                        .provider ( new InventoryProvider ( ) {
+                                                            @Override
+                                                            public void init ( Player player, InventoryContents inventoryContents ) {
+                                                                inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                                                ItemStack t1 = new ItemStack ( 4980 );
+                                                                ItemMeta t1Meta = t1.getItemMeta ( );
+                                                                t1Meta.setDisplayName ( CC.translate ( "&4Training 1" ) );
+                                                                t1.setItemMeta ( t1Meta );
+                                                                inventoryContents.set ( 1, 2, ClickableItem.of ( t1, e -> {
+                                                                    player.performCommand ( "warp t1e" );
+                                                                } ) );
+                                                                ItemStack t2 = new ItemStack ( 4970 );
+                                                                ItemMeta t2Meta = t2.getItemMeta ( );
+                                                                t2Meta.setDisplayName ( CC.translate ( "&4Training 2" ) );
+                                                                t2.setItemMeta ( t2Meta );
+                                                                inventoryContents.set ( 1, 4, ClickableItem.of ( t2, e -> {
+                                                                    player.performCommand ( "warp t2e" );
+
+                                                                } ) );
+                                                                ItemStack t3 = new ItemStack ( 4977 );
+                                                                ItemMeta t3Meta = t3.getItemMeta ( );
+                                                                t3Meta.setDisplayName ( CC.translate ( "&4Training 3" ) );
+                                                                t3.setItemMeta ( t3Meta );
+                                                                inventoryContents.set ( 1, 6, ClickableItem.of ( t3, e -> {
+                                                                    player.performCommand ( "warp t3e" );
+
+                                                                } ) );
+                                                                ItemStack t4 = new ItemStack ( 4975 );
+                                                                ItemMeta t4Meta = t4.getItemMeta ( );
+                                                                t4Meta.setDisplayName ( CC.translate ( "&4Training 4" ) );
+                                                                t4.setItemMeta ( t4Meta );
+                                                                inventoryContents.set ( 3, 2, ClickableItem.of ( t4, e -> {
+                                                                    player.performCommand ( "warp t4e" );
+
+                                                                } ) );
+                                                                ItemStack t5 = new ItemStack ( 4973 );
+                                                                ItemMeta t5Meta = t5.getItemMeta ( );
+                                                                t5Meta.setDisplayName ( CC.translate ( "&4Training 5" ) );
+                                                                t5.setItemMeta ( t5Meta );
+                                                                inventoryContents.set ( 3, 4, ClickableItem.of ( t5, e -> {
+                                                                    player.performCommand ( "warp t5e" );
+
+                                                                } ) );
+                                                                ItemStack t6 = new ItemStack ( 5161 );
+                                                                ItemMeta t6Meta = t6.getItemMeta ( );
+                                                                t6Meta.setDisplayName ( CC.translate ( "&4Training &fNavidad" ) );
+                                                                t6.setItemMeta ( t6Meta );
+                                                                inventoryContents.set ( 3, 6, ClickableItem.of ( t6, e -> {
+                                                                    player.performCommand ( "warp t6e" );
+                                                                } ) );
+                                                            }
+
+                                                            @Override
+                                                            public void update ( Player player, InventoryContents inventoryContents ) {
+                                                                inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                                            }
+                                                        } ).id ( "trainingsE" )
+                                                        .size ( 5, 9 ).build ( );
+                                                trainingInventory.open ( player );
                                             } ) );
                                         }
 
@@ -97,9 +185,10 @@ public class MenuCommand extends BaseCommand {
                                         public void update ( Player player, InventoryContents inventoryContents ) {
                                             inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
                                         }
-                                    } ).id ( "trainings" )
-                                    .size ( 5, 9 ).build ( );
-                            trainingInventory.open ( player );
+                                    } ).id ( "selectTraining" )
+                                    .size ( 3, 9 ).build ( );
+                            selectTrainingType.open ( player );
+
                         } ) );
                         ItemStack zonas = new ItemStack ( 2, 1 );
                         ItemMeta zonasMeta = zonas.getItemMeta ( );
@@ -144,12 +233,12 @@ public class MenuCommand extends BaseCommand {
                                                 player.performCommand ( "warp tienda" );
 
                                             } ) );
-                                            ItemStack farming = new ItemStack ( 4441 );
-                                            ItemMeta farmingItemMeta = farming.getItemMeta ( );
-                                            farmingItemMeta.setDisplayName ( CC.translate ( "&eFarming" ) );
-                                            farming.setItemMeta ( farmingItemMeta );
-                                            inventoryContents.set ( 2, 4, ClickableItem.of ( farming, e -> {
-                                                player.performCommand ( "warp farming" );
+                                            ItemStack talubias = new ItemStack ( 4461 );
+                                            ItemMeta talubiasItemMeta = talubias.getItemMeta ( );
+                                            talubiasItemMeta.setDisplayName ( CC.translate ( "&eTraining Alubias" ) );
+                                            talubias.setItemMeta ( talubiasItemMeta );
+                                            inventoryContents.set ( 2, 4, ClickableItem.of ( talubias, e -> {
+                                                player.performCommand ( "warp talubias" );
 
                                             } ) );
                                             ItemStack parcelas = new ItemStack ( 44 );
@@ -188,10 +277,10 @@ public class MenuCommand extends BaseCommand {
 
                                             ItemStack torneo = new ItemStack ( 4419 );
                                             ItemMeta torneoItemMeta = torneo.getItemMeta ( );
-                                            torneoItemMeta.setDisplayName ( CC.translate ( "&cTorneo &4Fuerza" ) );
+                                            torneoItemMeta.setDisplayName ( CC.translate ( "&cTorneo" ) );
                                             torneo.setItemMeta ( torneoItemMeta );
                                             inventoryContents.set ( 4, 2, ClickableItem.of ( torneo, e -> {
-                                                player.performCommand ( "warp torneofuerza" );
+                                                player.performCommand ( "warp torneo" );
 
                                             } ) );
                                             ItemStack reglas = new ItemStack ( 4411 );

@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.delaware.Main;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.BoosterHandler.BoosterManager;
+import org.delaware.tools.Boosters.PBooster;
 import org.delaware.tools.Boosters.VIPBooster;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
@@ -27,17 +28,17 @@ public class PlayerConsumeTP implements Listener {
         // TODO: Add your custom logic here, e.g., save TP to a database or log it.
         Player player = Main.instance.getServer ( ).getPlayer ( event.dbcPlayer ( ).player ( ).getUniqueId ( ) );
         VIPBooster booster = boosterHandler.findBooster ( player.getUniqueId ( ) );
-        ConcurrentHashMap<UUID, Double> pMultiplier = BoosterDataHandler.getBoosterPMultiplier ( );
-        if (booster == null && !pMultiplier.containsKey ( player.getUniqueId ( ) )) return;
+        ConcurrentHashMap<UUID, PBooster> pMultiplier = BoosterDataHandler.getBoosterPMultiplier ( );
         IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
         if (booster != null) {
-            if (!booster.isActive ( )) return;
-            int bonus = (int) (tp * booster.getMultiplier ( ));
-            idbcPlayer.setTP ( event.dbcPlayer ( ).tps ( ) + bonus );
-            idbcPlayer.sendMessage ( CC.translate ( "&6+" + formatter.format ( bonus ) + " (Booster Pasivo)" ) );
+            if (booster.isActive ( )){
+                int bonus = (int) (tp * booster.getMultiplier ( ));
+                idbcPlayer.setTP ( event.dbcPlayer ( ).tps ( ) + bonus );
+                idbcPlayer.sendMessage ( CC.translate ( "&6+" + formatter.format ( bonus ) + " (Booster Pasivo)" ) );
+            }
         }
         if (pMultiplier.containsKey ( player.getUniqueId ( ) )) {
-            double multiplier = pMultiplier.get ( player.getUniqueId ( ) );
+            double multiplier = pMultiplier.get ( player.getUniqueId ( ) ).getMultiplier ( );
             idbcPlayer.setTP ( event.dbcPlayer ( ).tps ( ) + (int) (tp * multiplier) );
             idbcPlayer.sendMessage ( CC.translate ( "&6+" + formatter.format ( tp * multiplier ) + " (Booster Pasivo)" ) );
         }
