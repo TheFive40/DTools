@@ -1,5 +1,6 @@
 package org.delaware.commands;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.Boosters.PBooster;
@@ -15,10 +16,11 @@ public class CommandBosterMultiplier extends BaseCommand {
     private static final String VERSION = "1.0.1";
     private BoosterDataHandler boosterHandler = new BoosterDataHandler ( );
 
-    @Command(name = "pvboost", aliases = {"pvboost","pvbooster"}, permission = "dtools.pvboost")
+    @Command(name = "pvboost", aliases = {"pvboost","pvbooster"}, permission = "dtools.pvboost",
+    inGameOnly = false)
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
-        Player player = command.getPlayer();
+        CommandSender player = command.getSender ();
         if (command.length() < 2) {
             player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------------");
             player.sendMessage(ChatColor.GOLD + "✦ PVBooster Plugin " + ChatColor.YELLOW + "v" + VERSION);

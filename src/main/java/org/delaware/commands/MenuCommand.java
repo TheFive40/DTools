@@ -38,7 +38,7 @@ public class MenuCommand extends BaseCommand {
                         trainingMeta.setDisplayName ( CC.translate ( "&4&lSistema de Trainings" ) );
                         trainings.setItemMeta ( trainingMeta );
                         inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.RED.getData ( ) ) ) );
-                        inventoryContents.set ( 3, 2, ClickableItem.of ( trainings, e -> {
+                        inventoryContents.set ( 1, 2, ClickableItem.of ( trainings, e -> {
                             SmartInventory selectTrainingType = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSistema de Trainings" ) )
                                     .type ( InventoryType.CHEST )
                                     .provider ( new InventoryProvider ( ) {
@@ -243,10 +243,10 @@ public class MenuCommand extends BaseCommand {
                                             } ) );
                                             ItemStack parcelas = new ItemStack ( 44 );
                                             ItemMeta parcelasItemMeta = parcelas.getItemMeta ( );
-                                            parcelasItemMeta.setDisplayName ( CC.translate ( "&fParcelas" ) );
+                                            parcelasItemMeta.setDisplayName ( CC.translate ( "&fCapital del Oeste" ) );
                                             parcelas.setItemMeta ( parcelasItemMeta );
                                             inventoryContents.set ( 2, 6, ClickableItem.of ( parcelas, e -> {
-                                                player.performCommand ( "warp parcelas" );
+                                                player.performCommand ( "warp capital" );
                                             } ) );
 
 

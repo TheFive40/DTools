@@ -1,5 +1,4 @@
 package org.delaware.events;
-
 import JinRyuu.JRMCore.JRMCoreH;
 import lombok.NonNull;
 import net.minecraft.entity.player.EntityPlayer;

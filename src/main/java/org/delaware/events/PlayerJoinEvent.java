@@ -25,6 +25,7 @@ public class PlayerJoinEvent implements Listener {
         int messageWidth = welcomeStaff.length();
         int spacesToAdd = (int) ((60 - messageWidth) / 2);
         String centeredMessage01 = new String(new char[spacesToAdd]).replace("\0", " ");
+
         if (General.hasStaffParent ( player)){
             Main.instance.getServer().broadcastMessage(CC.translate("&6&l&m---------------------------------------------"));
             Main.instance.getServer().broadcastMessage("");
@@ -34,9 +35,13 @@ public class PlayerJoinEvent implements Listener {
             Main.instance.getServer().broadcastMessage("");
             Main.instance.getServer().broadcastMessage(CC.translate("&6&l&m---------------------------------------------"));
             for(Player playerOnline : player.getServer().getOnlinePlayers()){
-                playerOnline.playSound(playerOnline.getLocation(), "random.orb",1.0F,1.0F);
+                if (player.getName ().equalsIgnoreCase ( "DelawareX" )){
+                    playerOnline.playSound(playerOnline.getLocation(), "dbctools:KingdomHearts",1.0F,1.0F);
+                }else{
+                    playerOnline.playSound(playerOnline.getLocation(), "random.orb",1.0F,1.0F);
+                }
             }
-        }else if(General.isHakaishin ( player )){
+        } else if(General.isHakaishin ( player )){
             Main.instance.getServer().broadcastMessage(CC.translate("&5&l&m---------------------------------------------"));
             Main.instance.getServer().broadcastMessage("");
             Main.instance.getServer().broadcastMessage(CC.translate("&d⚡ &5&l¡UN DIOS HA DESCENDIDO! &d⚡"));

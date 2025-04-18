@@ -111,7 +111,9 @@ public class ConfigMenu implements InventoryProvider {
         PlayerInput input = new PlayerInput(player, Main.instance);
         input.waitForPlayerInput(40, "&cTiempo de espera agotado", pastebinUrl -> {
             Bukkit.getScheduler().runTaskAsynchronously(Main.instance, () -> {
-                List<String> newLore = PastebinReader.getFromPastebin(pastebinUrl);
+
+                List<String> newLore = PastebinReader.getPrivatePasteContent("nZfOLVZrEQvtwVspptzr8VJTvMvdAyC6", PastebinReader.getUserKey("nZfOLVZrEQvtwVspptzr8VJTvMvdAyC6","DelawareX","Jeanfranco123")
+                ,pastebinUrl);
                 Bukkit.getScheduler().runTask(Main.instance, () -> {
                     if(newLore == null) {
                         player.sendMessage(CC.translate("&cHa ocurrido un error al descargar el texto!"));
