@@ -24,22 +24,23 @@ public class CommandRainItems extends BaseCommand {
     private int spacesToAdd = (60 - messageWidth) / 2;
     String centeredMessage01 = new String ( new char[spacesToAdd] ).replace ( "\0", " " );
 
-    @Command(name = "DBCFuture.rain", aliases = "lluvia", permission = "DBCFuture.lluvia")
+    @Command(name = "DBCFuture.rain", aliases = "lluvia", permission = "DBCFuture.lluvia",
+    inGameOnly = false)
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         if (!(command.getArgs ( ).length > 2)) {
-            command.getPlayer ( ).sendMessage ( CC.translate ( "&3Prueba utilizando &7/lluvia <itemId> <tiempo> <nombre>" ) );
+            command.getSender ( ).sendMessage ( CC.translate ( "&3Prueba utilizando &7/lluvia <itemId> <tiempo> <nombre>" ) );
             return;
         }
         centeredMessage01 += centeredMessage01 + centeredMessage01;
         if (Integer.parseInt ( command.getArgs ( 1 ) ) <= 0) {
-            command.getPlayer ( ).sendMessage ( CC.translate ( "&c¡No puedes utilizar segundos negativos ni iguales a cero!" ) );
+            command.getSender ( ).sendMessage ( CC.translate ( "&c¡No puedes utilizar segundos negativos ni iguales a cero!" ) );
             return;
         }
         String name = command.getArgs ( 2 );
-        Server server = command.getPlayer ( ).getServer ( );
+        Server server = command.getSender ( ).getServer ( );
         server.broadcastMessage ( CC.translate ( "&6&m" + message ) );
-        server.broadcastMessage ( CC.translate ( " &a➤ &bDrop de &e" + name + " &bactivado por &e" + command.getPlayer ( ).getName ( ) ) );
+        server.broadcastMessage ( CC.translate ( " &a➤ &bDrop de &e" + name + " &bactivado por &e" + command.getSender ( ).getName ( ) ) );
         server.broadcastMessage ( CC.translate ( "&6&m" + message ) );
         for (Player onlinePlayer : server.getOnlinePlayers ( ))
             onlinePlayer.playSound ( onlinePlayer.getLocation ( ), Sound.WITHER_SHOOT, 20F, 20F );
