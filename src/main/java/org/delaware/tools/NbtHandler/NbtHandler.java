@@ -64,6 +64,18 @@ public class NbtHandler {
         }else compound.setShort(key, value);
         item.setTag(compound);
     }
+    public void addCompound(String key) {
+        NBTTagCompound newComp = new NBTTagCompound();
+        setCompound(key, newComp);
+    }
+    public void setCompound(String key, NBTTagCompound compound) {
+        if(this.compound == null) {
+            NBTTagCompound comp = new NBTTagCompound();
+            comp.set(key, compound);
+            this.compound = comp;
+        }else this.compound.set(key, compound);
+        this.item.setTag(this.compound);
+    }
     public void changeDamage(int damage) {
         if(this.compound == null) this.compound = new NBTTagCompound();
         NBTTagList modifiers = new NBTTagList();
@@ -88,8 +100,15 @@ public class NbtHandler {
     public boolean getBoolean(String key) {
         return compound.getBoolean(key);
     }
+    public NBTTagCompound getCompound(String compound) {
+        if(this.compound.getCompound(compound) == null) return null;
+        return this.compound.getCompound(compound);
+    }
     public ItemStack getItemStack() {
         return CraftItemStack.asBukkitCopy(item);
+    }
+    public boolean containsCompound(String compound) {
+        return this.compound.getCompound(compound) != null;
     }
     //STATIC METHODS
     public static NBTTagCompound getCompoundFromString(String sNBT) {
