@@ -1,16 +1,23 @@
 package org.delaware.commands;
 
+import net.minecraft.server.v1_7_R4.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.delaware.tools.CC;
 import org.delaware.tools.CustomItems.CustomItems;
+import org.delaware.tools.NbtHandler.NbtHandler;
 import org.delaware.tools.commands.BaseCommand;
 import org.delaware.tools.commands.Command;
 import org.delaware.tools.commands.CommandArgs;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 public class CustomItemsCommands extends BaseCommand {
-    @Command(name = "dbCustomItems", aliases = {"itemscustom", "itemcustom"}, permission = "DBFUTURE.CUSTOMITEMS", usage = "&cCorrect usage:" +
+    @Command(name = "dbCustomItems", inGameOnly = false, aliases = {"itemscustom", "itemcustom"}, permission = "DBFUTURE.CUSTOMITEMS", usage = "&cCorrect usage:" +
             " /dbCustomItems <action> | actions can be add, update, remove, list")
     @Override
     public void onCommand(CommandArgs command) {
@@ -39,6 +46,46 @@ public class CustomItemsCommands extends BaseCommand {
         }
         String action = args[0];
         switch(action.toLowerCase().trim()) {
+            //dbcustomitems give (nick) (id) (expiration)
+            case "give":
+                if(args.length < 3) {
+                    command.getSender().sendMessage("Incorrect usage... Please use /dbcustomitems (nick) (id) (expiration)");
+                    return;
+                }
+                if(Bukkit.getPlayer(args[1]) == null) {
+                    command.getSender().sendMessage("Player doesn't exist");
+                    return;
+                }
+                Player givePlayer = Bukkit.getPlayer(args[1]);
+                if(!givePlayer.isOnline()) {
+                    command.getSender().sendMessage("Player " + givePlayer.getName() + " is not online");
+                    return;
+                }
+                if(!CustomItems.items.containsKey(args[2].toUpperCase().trim())) {
+                    command.getSender().sendMessage("Item with ID " + args[2].toUpperCase() + " doesn't exist");
+                    return;
+                }
+                NbtHandler nbtHandler = new NbtHandler(CustomItems.getCustomItem(args[2].toUpperCase().trim()).toItemStack());
+                if(args.length > 3) {
+                    try {
+                        int delay = Integer.parseInt(args[3].trim());
+                        if(delay <= 0) {
+                            command.getSender().sendMessage("Expiration must be higher than 0");
+                            return;
+                        }
+                        Instant timeStamp = Instant.now();
+                        Instant date = timeStamp.plus(delay, ChronoUnit.SECONDS);
+                        NBTTagCompound comp = new NBTTagCompound();
+                        comp.setLong("expiration", date.toEpochMilli());
+                        nbtHandler.setCompound("Gohan", comp);
+                    }catch(NumberFormatException exception) {
+                        command.getSender().sendMessage("Expiration time must be a number! ( seconds )");
+                        return;
+                    }
+                }
+                givePlayer.getInventory().addItem(nbtHandler.getItemStack());
+                command.getSender().sendMessage("Given item " + args[2].toUpperCase().trim() + " to player " + givePlayer.getName());
+                break;
             case "add":
                 if(player.getItemInHand().getType().equals(Material.AIR)) {
                     player.sendMessage(CC.translate("&cYou must be holding an item!"));

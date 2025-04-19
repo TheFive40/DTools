@@ -37,6 +37,7 @@ import org.delaware.tools.CustomItems.PlayerBonusesData;
 import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
 import org.delaware.tools.General;
+import org.delaware.tools.Permissions.PermissionsManager;
 import org.delaware.tools.RegionTools.PlayerAccessManager;
 import org.delaware.tools.RegionTools.Runnable.RegionCheckRunnable;
 import org.delaware.tools.RegionUtils;
@@ -357,6 +358,9 @@ public class Main extends JavaPlugin {
         //Region
         PlayerAccessManager.saveToConfig();
         RegionCheckRunnable.regionCheckRunnable.cancel();
+    }
+    public PermissionsManager getPermissionsManager() {
+        return new PermissionsManager();
     }
     //DBC EVENTS
     public void damagedEvent(IDBCEvent.DamagedEvent event) {

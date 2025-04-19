@@ -15,6 +15,7 @@ public class CommandCancel implements Listener {
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
+        if(player.isOp()) return;
         if(TagListener.isTagged(player)) {
             String command = event.getMessage().substring(1).split(" ")[0].toLowerCase();
             if(!allowedCommands.contains(command)) {
