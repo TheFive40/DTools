@@ -1,5 +1,4 @@
 package org.delaware.events;
-import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,7 +15,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class interactWithGift implements Listener {
+public class InteractWithGiftsEvent implements Listener {
     public static HashMap<String, Integer> contadorRegalos = new HashMap<>();
     public static HashMap<String, ArrayList<Localizaciones>> regalosEncontrados = new HashMap<>();
     public static int reward = 3000000;

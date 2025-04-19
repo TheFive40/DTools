@@ -27,7 +27,7 @@ import org.delaware.DBCEvents.DBCKnockoutEvent;
 import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.DBCEvents.Listeners.KnockoutEvent;
 import org.delaware.commands.CommandAddGift;
-import org.delaware.events.interactWithGift;
+import org.delaware.events.InteractWithGiftsEvent;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.BoosterHandler.BoosterManager;
 import org.delaware.tools.ClassesRegistration;
@@ -159,9 +159,9 @@ public class Main extends JavaPlugin {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonGift = gson.toJson(new Gift(
                 CommandAddGift.itemStackHashMap,
-                interactWithGift.contadorRegalos,
-                interactWithGift.regalosEncontrados,
-                interactWithGift.misionCompletada
+                InteractWithGiftsEvent.contadorRegalos,
+                InteractWithGiftsEvent.regalosEncontrados,
+                InteractWithGiftsEvent.misionCompletada
         ));
         File file = new File(dataDir, "gifts.json");
         try (FileWriter writer = new FileWriter(file)) {
@@ -194,9 +194,9 @@ public class Main extends JavaPlugin {
             Gson gson = new Gson();
             Gift gift = gson.fromJson(reader, Gift.class);
             CommandAddGift.itemStackHashMap = gift.getItemStackHashMap();
-            interactWithGift.contadorRegalos = gift.getContadorRegalos();
-            interactWithGift.misionCompletada = gift.getMisionCompletada();
-            interactWithGift.regalosEncontrados = gift.getRegalosEncontrados();
+            InteractWithGiftsEvent.contadorRegalos = gift.getContadorRegalos();
+            InteractWithGiftsEvent.misionCompletada = gift.getMisionCompletada();
+            InteractWithGiftsEvent.regalosEncontrados = gift.getRegalosEncontrados();
 
             // Restaurar los regalos en el menú
             for (Localizaciones localizaciones : CommandAddGift.itemStackHashMap) {

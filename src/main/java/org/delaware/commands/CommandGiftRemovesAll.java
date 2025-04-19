@@ -6,7 +6,7 @@ import org.delaware.tools.commands.CommandArgs;
 
 import java.io.IOException;
 
-import static org.delaware.events.interactWithGift.*;
+import static org.delaware.events.InteractWithGiftsEvent.*;
 
 public class CommandGiftRemovesAll extends BaseCommand {
     @Command(name = "removegiftAll", description = "Remueve todos los regalos registrados", permission = "dtools.giftremoveall", aliases = "removegiftAll")

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.Main;
+import org.delaware.tools.Boosters.PBooster;
 import org.delaware.tools.Boosters.VIPBooster;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
@@ -24,6 +25,7 @@ public class BoosterManager {
             @Override
             public void run () {
                 List<VIPBooster> boosters = BoosterDataHandler.getBoosterData ( );
+                Collection<PBooster> pBoosters = BoosterDataHandler.getBoosterPMultiplier ().values ();
                 for (VIPBooster booster : boosters) {
                     if (booster.isActive ( ) && booster.getActivationTime ( ) != null) {
                         Duration elapsedTime = Duration.between ( booster.getActivationTime ( ), LocalDateTime.now ( ) );
@@ -35,6 +37,15 @@ public class BoosterManager {
                         }
                     }
                 }
+                pBoosters.forEach ( e-> {
+                    if (e.getActivationTime ( ) != null){
+                        Duration elapsedTime = Duration.between ( e.getActivationTime ( ), LocalDateTime.now ( ) );
+                        if(elapsedTime.toDays ()>=31 || elapsedTime.toDays () < 0 || elapsedTime.toMinutes () >= 44640 ){
+                            BoosterDataHandler.removeBoosterPlayer ( e.getPlayerId () );
+                        }
+                    }
+                });
+                BoosterDataHandler.saveData ();
             }
         }.runTaskTimerAsynchronously ( Main.instance, 0L, 5 * 20L );
     }
