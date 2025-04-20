@@ -98,6 +98,11 @@ public class CustomItemsCommands extends BaseCommand {
                         return;
                     }
                 }
+                if(player.getInventory().firstEmpty() == -1) {
+                    command.getSender().sendMessage("Couldn't give item " + args[2].toUpperCase().trim() + " to player " + givePlayer.getName() + " because his inventory was full.");
+                    givePlayer.sendMessage(CC.translate("&cTu inventario estaba lleno a la hora de intentar entregarte un item!."));
+                    return;
+                }
                 givePlayer.getInventory().addItem(nbtHandler.getItemStack());
                 command.getSender().sendMessage("Given item " + args[2].toUpperCase().trim() + " to player " + givePlayer.getName());
                 break;
