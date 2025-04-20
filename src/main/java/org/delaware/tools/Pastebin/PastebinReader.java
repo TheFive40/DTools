@@ -31,7 +31,6 @@ public class PastebinReader {
             URL url = new URL(pastebinUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-            //connection.setRequestProperty("Referer", "https://pastebin.com/");
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
