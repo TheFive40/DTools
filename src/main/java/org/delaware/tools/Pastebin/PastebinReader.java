@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +27,21 @@ public class PastebinReader {
         List<String> text = new ArrayList<>();
         try {
             URL url = new URL(pastebinUrl);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    text.add(line);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+            int responseCode = connection.getResponseCode();
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        text.add(line);
+                    }
                 }
+                return text;
+            }else {
+                Bukkit.getLogger().log(Level.SEVERE, "Pastebin Error!... Server returned HTTP code: " + responseCode + " for URL: " + pastebinUrl);
+                return null;
             }
-            return text;
         } catch (Exception e) {
             Bukkit.getLogger().log(Level.SEVERE, "Error getting pastebin link!, send log to Spacey", e);
             return null;
