@@ -16,11 +16,12 @@ import org.delaware.tools.General;
 import org.delaware.tools.Pastebin.PastebinReader;
 import org.delaware.tools.input.PlayerInput;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigMenu implements InventoryProvider {
-    private CustomItems item;
-    private String itemID;
+    private final CustomItems item;
+    private final String itemID;
     public ConfigMenu(CustomItems item) {
         this.item = item;
         this.itemID = CustomItems.getLinkedCustomItem(item.toItemStack());
@@ -32,7 +33,16 @@ public class ConfigMenu implements InventoryProvider {
         inventoryContents.set(4, 7, ClickableItem.empty(new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 11)));
         inventoryContents.set(5, 0, null);
         inventoryContents.set(5, 8, null);
-        inventoryContents.set(0, 4, ClickableItem.empty(item.toItemStack()));
+        ItemStack itemCopy = item.toItemStack();
+        ItemMeta metaCopy = itemCopy.getItemMeta();
+        List<String> lore = metaCopy.getLore();
+        if(lore == null) {
+            lore = new ArrayList<>();
+            lore.add(CC.translate("&6ID: " + this.itemID));
+        }else lore.add(CC.translate("&6ID: " + this.itemID));
+        metaCopy.setLore(lore);
+        itemCopy.setItemMeta(metaCopy);
+        inventoryContents.set(0, 4, ClickableItem.empty(itemCopy));
         ItemStack changeName = new ItemStack(Material.BOOK_AND_QUILL);
         ItemMeta metaName = changeName.getItemMeta();
         metaName.setDisplayName(CC.translate("&eCambiar nombre"));
