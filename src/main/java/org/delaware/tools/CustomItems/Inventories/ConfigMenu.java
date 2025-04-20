@@ -38,8 +38,8 @@ public class ConfigMenu implements InventoryProvider {
         List<String> lore = metaCopy.getLore();
         if(lore == null) {
             lore = new ArrayList<>();
-            lore.add(CC.translate("&6ID: " + this.itemID));
-        }else lore.add(CC.translate("&6ID: " + this.itemID));
+            lore.add(CC.translate("&6ID: &e" + this.itemID));
+        }else lore.add(CC.translate("&6ID: &e" + this.itemID));
         metaCopy.setLore(lore);
         itemCopy.setItemMeta(metaCopy);
         inventoryContents.set(0, 4, ClickableItem.empty(itemCopy));
