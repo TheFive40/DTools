@@ -158,6 +158,9 @@ public class CustomItems {
         this.effect = new ArrayList<>();
         items.put(itemID, this);
     }
+    public String getID() {
+        return getLinkedCustomItem(this.toItemStack());
+    }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
         try {
