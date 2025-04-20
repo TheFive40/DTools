@@ -37,6 +37,8 @@ public class CustomItemsCommands extends BaseCommand {
             player.sendMessage(CC.translate("&6dbCustomItems clone <ID> -> &eCopies a custom item's data to your item in hand (DO NOT USE UNLESS YOU KNOW WHAT YOU'RE DOING)"));
             player.sendMessage(CC.translate("&6dbCustomItems info <ID> -> &eShows information about a registered item"));
             player.sendMessage(CC.translate("&6dbCustomItems changeMaterial <newID> -> &eChanges the item in your hand to the new specified ID"));
+            player.sendMessage(CC.translate("&6dbCustomItems give <nick> <ID> <OPTIONAL: expiration in seconds> -> &eGives an item to the specified player"));
+            player.sendMessage(CC.translate("&6dbCustomItems getLinkedID -> &eUse to check what custom item ID is linked with your item in hand, if any"));
             player.sendMessage(CC.translate("&6dbCustomItems addPermission <ID> <Permission> -> &eAdds a required permission to <ID>"));
             player.sendMessage(CC.translate("&6dbCustomItems removePermission <ID> -> &eRemoves the last applied permission from <ID>"));
             player.sendMessage(CC.translate("&6dbCustomItems addBoost -> &eUse for bonus attributes, for help type /dbCustomItems addBoost"));
@@ -46,10 +48,23 @@ public class CustomItemsCommands extends BaseCommand {
         }
         String action = args[0];
         switch(action.toLowerCase().trim()) {
+            case "getlinkedid":
+                if(player.getItemInHand().getType().equals(Material.AIR)) {
+                    player.sendMessage(CC.translate("&cYou must be holding an item!"));
+                    return;
+                }
+                if(CustomItems.getLinkedCustomItem(player.getItemInHand()) != null) {
+                    String ID = CustomItems.getLinkedCustomItem(player.getItemInHand());
+                    player.sendMessage(CC.translate("&6Your item in hand is linked to CustomItem with ID: &e" + ID));
+                    player.sendMessage(CC.translate("&6For more information, use &e/dbCustomItems info " + ID));
+                }else if(CustomItems.getLinkedCustomItem(player.getItemInHand()) == null) {
+                    player.sendMessage(CC.translate("&cThis item doesn't have any linked CustomItem (Basically, it's not registered)"));
+                }
+                break;
             //dbcustomitems give (nick) (id) (expiration)
             case "give":
                 if(args.length < 3) {
-                    command.getSender().sendMessage("Incorrect usage... Please use /dbcustomitems (nick) (id) (expiration)");
+                    command.getSender().sendMessage("Incorrect usage... Please use /dbcustomitems give (nick) (id) (expiration)");
                     return;
                 }
                 if(Bukkit.getPlayer(args[1]) == null) {
