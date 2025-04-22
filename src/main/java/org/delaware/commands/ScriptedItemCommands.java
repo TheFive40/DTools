@@ -40,6 +40,7 @@ public class ScriptedItemCommands extends BaseCommand {
                 ScriptedItemManager texture = new ScriptedItemManager(player.getItemInHand());
                 texture.setTexture(args[1].trim());
                 player.setItemInHand(texture.getItem());
+                player.sendMessage(CC.translate("&aCambios realizados exitosamente"));
                 break;
             case "changecolor":
                 if(player.getItemInHand().getType().equals(Material.AIR)) {
@@ -59,6 +60,7 @@ public class ScriptedItemCommands extends BaseCommand {
                 ScriptedItemManager color = new ScriptedItemManager(player.getItemInHand());
                 color.setColor(Integer.parseInt(args[1].trim()));
                 player.setItemInHand(color.getItem());
+                player.sendMessage(CC.translate("&aCambios realizados exitosamente"));
                 break;
             case "changescale":
                 if(player.getItemInHand().getType().equals(Material.AIR)) {
@@ -80,6 +82,7 @@ public class ScriptedItemCommands extends BaseCommand {
                 ScriptedItemManager scale = new ScriptedItemManager(player.getItemInHand());
                 scale.setScale(Integer.parseInt(args[1].trim()), Integer.parseInt(args[2].trim()), Integer.parseInt(args[3].trim()));
                 player.setItemInHand(scale.getItem());
+                player.sendMessage(CC.translate("&aCambios realizados exitosamente"));
                 break;
             case "changestacksize":
                 if(player.getItemInHand().getType().equals(Material.AIR)) {
@@ -99,6 +102,7 @@ public class ScriptedItemCommands extends BaseCommand {
                 ScriptedItemManager stackSize = new ScriptedItemManager(player.getItemInHand());
                 stackSize.setMaxStackSize(Integer.parseInt(args[1].trim()));
                 player.setItemInHand(stackSize.getItem());
+                player.sendMessage(CC.translate("&aCambios realizados exitosamente"));
                 break;
         }
     }
