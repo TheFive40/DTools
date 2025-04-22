@@ -108,6 +108,7 @@ public class NbtHandler {
         return CraftItemStack.asBukkitCopy(item);
     }
     public boolean containsCompound(String compound) {
+        if(this.compound == null) return false;
         return this.compound.getCompound(compound) != null;
     }
     //STATIC METHODS
