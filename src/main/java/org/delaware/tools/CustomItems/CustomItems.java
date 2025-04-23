@@ -102,13 +102,15 @@ public class CustomItems {
         itemStack.addEnchantments(enchantments);
         if(this.displayName != null) {
             ItemMeta meta = itemStack.getItemMeta();
+            if(meta != null) meta.setDisplayName(CC.translate(this.displayName));
+            else Bukkit.getLogger().warning("Item " + itemStack.getType() + " has null meta?? (shouldn't happen)");
+        }
+        if(this.lore != null) {
+            ItemMeta meta = itemStack.getItemMeta();
             if(meta != null) {
-                meta.setDisplayName(CC.translate(this.displayName));
-                if(this.lore != null) meta.setLore(CC.translate(this.lore));
+                meta.setLore(CC.translate(this.lore));
                 itemStack.setItemMeta(meta);
-            }else {
-                Bukkit.getLogger().warning("Item " + itemStack.getType() + " has null meta?? (shouldn't happen)");
-            }
+            }else Bukkit.getLogger().warning("Item " + itemStack.getType() + " has null meta?? (shouldn't happen)");
         }
         return itemStack;
     }
@@ -157,6 +159,9 @@ public class CustomItems {
         this.level = new ArrayList<>();
         this.effect = new ArrayList<>();
         items.put(itemID, this);
+    }
+    public String getID() {
+        return getLinkedCustomItem(this.toItemStack());
     }
     //STATIC METHODS
     public static CustomItems getCustomItem(String key) {
