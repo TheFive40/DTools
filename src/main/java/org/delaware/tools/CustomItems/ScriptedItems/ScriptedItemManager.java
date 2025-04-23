@@ -49,6 +49,12 @@ public class ScriptedItemManager {
     public int getScaleY() {return new NbtHandler(this.item).getCompound("ItemData").getInt("ScaleY");}
     public int getScaleZ() {return new NbtHandler(this.item).getCompound("ItemData").getInt("ScaleZ");}
     public int getMaxStackSize() {return new NbtHandler(this.item).getCompound("ItemData").getInt("MaxStackSize");}
+    public boolean getDurabilityShow() {return new NbtHandler(this.item).getCompound("ItemData").getBoolean("DurabilityShow");}
+    public int getMaxItemUseDuration() {return new NbtHandler(this.item).getCompound("ItemData").getInt("MaxItemUseDuration");}
+    public boolean isTool() {return new NbtHandler(this.item).getCompound("ItemData").getBoolean("IsTool");}
+    public int getDigSpeed() {return new NbtHandler(this.item).getCompound("ItemData").getInt("DigSpeed");}
+    public int getEnchantability() {return new NbtHandler(this.item).getCompound("ItemData").getInt("Enchantability");}
+    public int getArmorType() {return new NbtHandler(this.item).getCompound("ItemData").getInt("ArmorType");}
 
     public void setTexture(String newTexture) {
         NbtHandler handler = new NbtHandler(this.item);
@@ -58,11 +64,7 @@ public class ScriptedItemManager {
         this.item = handler.getItemStack();
     }
     public void setColor(int newColor) {
-        NbtHandler handler = new NbtHandler(this.item);
-        NBTTagCompound comp = handler.getCompound("ItemData");
-        comp.setInt("ItemColor", newColor);
-        handler.setCompound("ItemData", comp);
-        this.item = handler.getItemStack();
+        setInt("ItemColor", newColor);
     }
     public void setScale(int X, int Y, int Z) {
         NbtHandler handler = new NbtHandler(this.item);
@@ -74,9 +76,40 @@ public class ScriptedItemManager {
         this.item = handler.getItemStack();
     }
     public void setMaxStackSize(int newSize) {
+        setInt("MaxStackSize", newSize);
+    }
+    public void setDurabilityShow(boolean dur) {
         NbtHandler handler = new NbtHandler(this.item);
         NBTTagCompound comp = handler.getCompound("ItemData");
-        comp.setInt("MaxStackSize", newSize);
+        comp.setBoolean("DurabilityShow", dur);
+        handler.setCompound("ItemData", comp);
+        this.item = handler.getItemStack();
+    }
+    public void setMaxItemUseDuration(int newDuration) {
+        setInt("MaxItemUseDuration", newDuration);
+    }
+    public void setDigSpeed(int newDigSpeed) {
+        setInt("DigSpeed", newDigSpeed);
+    }
+    public void setEnchantability(int value) {
+        setInt("Enchantability", value);
+    }
+    public void setArmorType(int type) {
+        setInt("ArmorType", type);
+    }
+    public void setIsTool(boolean value) {
+        NbtHandler handler = new NbtHandler(this.item);
+        NBTTagCompound comp = handler.getCompound("ItemData");
+        comp.setBoolean("IsTool", value);
+        handler.setCompound("ItemData", comp);
+        this.item = handler.getItemStack();
+    }
+
+
+    private void setInt(String key, int value) {
+        NbtHandler handler = new NbtHandler(this.item);
+        NBTTagCompound comp = handler.getCompound("ItemData");
+        comp.setInt(key, value);
         handler.setCompound("ItemData", comp);
         this.item = handler.getItemStack();
     }
