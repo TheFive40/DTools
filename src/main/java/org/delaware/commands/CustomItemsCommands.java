@@ -4,6 +4,7 @@ import net.minecraft.server.v1_7_R4.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.delaware.tools.CC;
@@ -22,28 +23,32 @@ public class CustomItemsCommands extends BaseCommand {
     @Override
     public void onCommand(CommandArgs command) {
         String[] args = command.getArgs();
-        Player player = command.getPlayer();
+        CommandSender sender = command.getSender ();
+        Player player = null;
+        if(sender instanceof Player ){
+            player = command.getPlayer ();
+        }
         if(args.length < 1) {
-            player.sendMessage(CC.translate("&7---------------------------------------------------"));
-            player.sendMessage(CC.translate("&6Available Commands:"));
-            player.sendMessage(CC.translate("&6dbCustomItems add <ID> -> &eAdds the item the player's holding to the config"));
-            player.sendMessage(CC.translate("&6dbCustomItems removeBoost <ID> -> &eRemoves the last applied boost to <ID>"));
-            player.sendMessage(CC.translate("&6dbCustomItems removeEffect <ID> -> &eRemoves effects applied to <ID>"));
-            player.sendMessage(CC.translate("&6dbCustomItems list -> &eShows all currently registered items"));
-            player.sendMessage(CC.translate("&6dbCustomItems get <ID> -> &eGives the player an item registered"));
-            player.sendMessage(CC.translate("&6dbCustomItems remove <ID> -> &eRemoves an item"));
-            player.sendMessage(CC.translate("&6dbCustomItems makeUnbreakable -> &eAdds the item the player's holding to the config"));
-            player.sendMessage(CC.translate("&6dbCustomItems setDamage <Damage> -> &eChanges the item's damage"));
-            player.sendMessage(CC.translate("&6dbCustomItems clone <ID> -> &eCopies a custom item's data to your item in hand (DO NOT USE UNLESS YOU KNOW WHAT YOU'RE DOING)"));
-            player.sendMessage(CC.translate("&6dbCustomItems info <ID> -> &eShows information about a registered item"));
-            player.sendMessage(CC.translate("&6dbCustomItems changeMaterial <newID> -> &eChanges the item in your hand to the new specified ID"));
-            player.sendMessage(CC.translate("&6dbCustomItems give <nick> <ID> <OPTIONAL: expiration in seconds> -> &eGives an item to the specified player"));
-            player.sendMessage(CC.translate("&6dbCustomItems getLinkedID -> &eUse to check what custom item ID is linked with your item in hand, if any"));
-            player.sendMessage(CC.translate("&6dbCustomItems addPermission <ID> <Permission> -> &eAdds a required permission to <ID>"));
-            player.sendMessage(CC.translate("&6dbCustomItems removePermission <ID> -> &eRemoves the last applied permission from <ID>"));
-            player.sendMessage(CC.translate("&6dbCustomItems addBoost -> &eUse for bonus attributes, for help type /dbCustomItems addBoost"));
-            player.sendMessage(CC.translate("&6dbCustomItems addEffect -> &eFor adding set effects, for help type /dbCustomItems addEffect"));
-            player.sendMessage(CC.translate("&7---------------------------------------------------"));
+            sender.sendMessage(CC.translate("&7---------------------------------------------------"));
+            sender.sendMessage(CC.translate("&6Available Commands:"));
+            sender.sendMessage(CC.translate("&6dbCustomItems add <ID> -> &eAdds the item the player's holding to the config"));
+            sender.sendMessage(CC.translate("&6dbCustomItems removeBoost <ID> -> &eRemoves the last applied boost to <ID>"));
+            sender.sendMessage(CC.translate("&6dbCustomItems removeEffect <ID> -> &eRemoves effects applied to <ID>"));
+            sender.sendMessage(CC.translate("&6dbCustomItems list -> &eShows all currently registered items"));
+            sender.sendMessage(CC.translate("&6dbCustomItems get <ID> -> &eGives the player an item registered"));
+            sender.sendMessage(CC.translate("&6dbCustomItems remove <ID> -> &eRemoves an item"));
+            sender.sendMessage(CC.translate("&6dbCustomItems makeUnbreakable -> &eAdds the item the player's holding to the config"));
+            sender.sendMessage(CC.translate("&6dbCustomItems setDamage <Damage> -> &eChanges the item's damage"));
+            sender.sendMessage(CC.translate("&6dbCustomItems clone <ID> -> &eCopies a custom item's data to your item in hand (DO NOT USE UNLESS YOU KNOW WHAT YOU'RE DOING)"));
+            sender.sendMessage(CC.translate("&6dbCustomItems info <ID> -> &eShows information about a registered item"));
+            sender.sendMessage(CC.translate("&6dbCustomItems changeMaterial <newID> -> &eChanges the item in your hand to the new specified ID"));
+            sender.sendMessage(CC.translate("&6dbCustomItems give <nick> <ID> <OPTIONAL: expiration in seconds> -> &eGives an item to the specified player"));
+            sender.sendMessage(CC.translate("&6dbCustomItems getLinkedID -> &eUse to check what custom item ID is linked with your item in hand, if any"));
+            sender.sendMessage(CC.translate("&6dbCustomItems addPermission <ID> <Permission> -> &eAdds a required permission to <ID>"));
+            sender.sendMessage(CC.translate("&6dbCustomItems removePermission <ID> -> &eRemoves the last applied permission from <ID>"));
+            sender.sendMessage(CC.translate("&6dbCustomItems addBoost -> &eUse for bonus attributes, for help type /dbCustomItems addBoost"));
+            sender.sendMessage(CC.translate("&6dbCustomItems addEffect -> &eFor adding set effects, for help type /dbCustomItems addEffect"));
+            sender.sendMessage(CC.translate("&7---------------------------------------------------"));
             return;
         }
         String action = args[0];
