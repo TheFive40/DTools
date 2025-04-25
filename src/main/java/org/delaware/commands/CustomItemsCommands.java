@@ -22,12 +22,9 @@ public class CustomItemsCommands extends BaseCommand {
             " /dbCustomItems <action> | actions can be add, update, remove, list")
     @Override
     public void onCommand(CommandArgs command) {
+        Player player = command.getPlayer();
         String[] args = command.getArgs();
-        CommandSender sender = command.getSender ();
-        Player player = null;
-        if(sender instanceof Player ){
-            player = command.getPlayer ();
-        }
+        CommandSender sender = command.getSender();
         if(args.length < 1) {
             sender.sendMessage(CC.translate("&7---------------------------------------------------"));
             sender.sendMessage(CC.translate("&6Available Commands:"));
@@ -103,7 +100,7 @@ public class CustomItemsCommands extends BaseCommand {
                         return;
                     }
                 }
-                if(player.getInventory().firstEmpty() == -1) {
+                if(givePlayer.getInventory().firstEmpty() == -1) {
                     command.getSender().sendMessage("Couldn't give item " + args[2].toUpperCase().trim() + " to player " + givePlayer.getName() + " because his inventory was full.");
                     givePlayer.sendMessage(CC.translate("&cTu inventario estaba lleno a la hora de intentar entregarte un item!."));
                     return;
