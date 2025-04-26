@@ -13,7 +13,8 @@ import java.io.IOException;
 import static org.delaware.commands.CommandFrooze.playersFrooze;
 
 public class CommandUnFrooze extends BaseCommand {
-    @Command ( name = "unfrooze",aliases = {"unfrooze","descongelar"}, permission = "dtools.unfrooze")
+    @Command ( name = "unfrooze",aliases = {"unfrooze","descongelar"}, permission = "dtools.unfrooze"
+    , inGameOnly = false)
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         Player sender = command.getPlayer();

@@ -14,7 +14,8 @@ import java.util.ArrayList;
 public class CommandFrooze extends BaseCommand {
     public static ArrayList<Player> playersFrooze = new ArrayList<> ( );
 
-    @Command(name = "frooze", aliases = {"frooze", "congelar"}, permission = "dtools.frooze")
+    @Command(name = "frooze", aliases = {"frooze", "congelar"}, permission = "dtools.frooze",
+    inGameOnly = false)
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         Player sender = command.getPlayer();
