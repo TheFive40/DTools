@@ -102,7 +102,10 @@ public class CustomItems {
         itemStack.addEnchantments(enchantments);
         if(this.displayName != null) {
             ItemMeta meta = itemStack.getItemMeta();
-            if(meta != null) meta.setDisplayName(CC.translate(this.displayName));
+            if(meta != null) {
+                meta.setDisplayName(CC.translate(this.displayName));
+                itemStack.setItemMeta(meta);
+            }
             else Bukkit.getLogger().warning("Item " + itemStack.getType() + " has null meta?? (shouldn't happen)");
         }
         if(this.lore != null) {
