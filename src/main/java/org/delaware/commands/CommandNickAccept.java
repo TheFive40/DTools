@@ -15,17 +15,23 @@ public class CommandNickAccept extends BaseCommand {
             permission = "dtools.nickaccept")
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
-        if (!command.isPlayer ( )) {
+        if (!command.isPlayer()) {
             return;
         }
-        if (command.getArgs ( ).length < 1) {
-            command.getPlayer ( ).sendMessage ( CC.translate ( "&8[&6✦&8] &cUsage: &e/nickAccept <player>" ) );
-            command.getPlayer ( ).sendMessage ( CC.translate ( "&7Approve a player's nickname change request." ) );
+
+        if (command.getArgs().length < 1) {
+            command.getPlayer().sendMessage(CC.translate("&8[&6✦&8] &cUso: &e/nickAccept <jugador>"));
+            command.getPlayer().sendMessage(CC.translate("&7Aprueba la solicitud de cambio de nickname de un jugador."));
             return;
         }
-        Player player = Main.instance.getServer ( ).getPlayer ( command.getArgs ( 0 ) );
-        Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "enick " + player.getName ( ) + " " + CommandNick.nicknames.get ( player )  );
-        player.sendMessage ( CC.translate ( "&aYour nickname has been accepted by &c" + command.getPlayer ( ).getName ( ) ) );
-        command.getPlayer().sendMessage(CC.translate("&aYou have accepted the nickname change for &c" + player.getName() + " &ato &e" + CommandNick.nicknames.get ( player ) ));
+
+        Player player = Main.instance.getServer().getPlayer(command.getArgs(0));
+
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+                "enick " + player.getName() + " " + CommandNick.nicknames.get(player));
+
+        player.sendMessage(CC.translate("&aTu nickname ha sido aprobado por &c" + command.getPlayer().getName()));
+        command.getPlayer().sendMessage(CC.translate("&aHas aprobado el cambio de nickname para &c" + player.getName() +
+                " &aa &e" + CommandNick.nicknames.get(player)));
     }
 }

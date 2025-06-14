@@ -1,6 +1,10 @@
 package org.delaware.events;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import kamkeel.npcdbc.constants.DBCForm;
+import kamkeel.npcdbc.constants.DBCRace;
+import noppes.npcs.api.entity.IDBCPlayer;
+import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -19,8 +23,10 @@ import static org.delaware.tools.RegionUtils.restrictedRegions;
 public class PlayerMove implements Listener {
     @EventHandler
     public void onPlayerMove ( PlayerMoveEvent event ) {
+
         RegionUtils regionUtils = new RegionUtils ( );
         Player player = event.getPlayer ( );
+
         Location location = player.getLocation ( );
 
         if (location == null) return;

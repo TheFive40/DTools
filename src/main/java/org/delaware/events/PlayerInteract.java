@@ -1,4 +1,5 @@
 package org.delaware.events;
+
 import JinRyuu.JRMCore.JRMCoreH;
 import lombok.NonNull;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,10 +14,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.delaware.commands.GlobalBoosterCommand;
+import org.delaware.tools.CC;
 import org.delaware.tools.model.entities.TP;
 
+import java.text.DecimalFormat;
 import java.util.*;
+
 import static org.delaware.commands.CommandTransform.entities;
+import static org.delaware.commands.GlobalBoosterCommand.boosterActive;
+import static org.delaware.commands.GlobalBoosterCommand.boosterMultiplier;
 import static org.delaware.commands.TPSCommand.findTP;
 
 public class PlayerInteract implements Listener {
@@ -25,9 +32,9 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onPlayerInteract ( PlayerInteractEvent event ) {
         Player player = event.getPlayer ( );
-        if(player.getItemInHand () == null) return;
-        if(player.getItemInHand ().getType () == Material.TNT){
-            player.setItemInHand ( new ItemStack(Material.DIRT) );
+        if (player.getItemInHand ( ) == null) return;
+        if (player.getItemInHand ( ).getType ( ) == Material.TNT) {
+            player.setItemInHand ( new ItemStack ( Material.DIRT ) );
         }
         if (entities.containsKey ( player.getName ( ) )) {
             IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
@@ -57,14 +64,22 @@ public class PlayerInteract implements Listener {
             if (tp == null) return;
             int amount = itemInHand.getAmount ( );
             int reward = tp.getValue ( ) * amount;
-            Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "dbcadmin givetps " + player.getName ( ) + " "
-                    + reward );
+            if (boosterActive) {
+                reward = (int) (reward * boosterMultiplier);
+            }
+            IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
+            idbcPlayer.setTP ( reward );
+            DecimalFormat df = new DecimalFormat ( "#.##" );
+            DecimalFormat tpsFormat = new DecimalFormat("#,###.##");
 
-
+            player.sendMessage ( CC.translate ( "&e+&6 " + tpsFormat.format ( ((long) tp.getValue ( ) * amount) ) ) );
+            int booster = reward - tp.getValue ( ) * amount;
+            if (boosterActive)
+                player.sendMessage ( CC.translate ( "&e+&6 " + tpsFormat.format ( Math.round ( booster ) ) )
+                        +  CC.translate ( " &a(Booster " + GlobalBoosterCommand.getBoosterMultiplierPercent () + "&a)" ) );
             player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
             player.setItemInHand ( null );
         }
-        //TPS SYSTEM
     }
 
     public static void attributeBonus ( @NonNull String stat, @NonNull String value, IDBCPlayer player ) {

@@ -65,16 +65,16 @@ public class ComandTopPlayer extends BaseCommand {
                         sortedEntries.forEach(entry -> {
                             String name = entry.getKey();
                             if (name == null || name.isEmpty()) return;
-                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name); // Soporte para jugadores offline
+                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(name);
                             Player playerLVL = offlinePlayer.getPlayer();
                             if (playerLVL == null) return;
                             int lvl = getLVL ( playerLVL );
-                            int str = General.getSTAT(Stat.STR, playerLVL);
-                            int dex = General.getSTAT(Stat.DEX, playerLVL);
-                            int con = General.getSTAT(Stat.CON, playerLVL);
-                            int wil = General.getSTAT(Stat.WIL, playerLVL);
-                            int mnd = General.getSTAT(Stat.MND, playerLVL);
-                            int spi = General.getSTAT(Stat.SPI, playerLVL);
+                            int str = General.getSTAT("STR", playerLVL);
+                            int dex = General.getSTAT("DEX", playerLVL);
+                            int con = General.getSTAT("CON", playerLVL);
+                            int wil = General.getSTAT("WIL", playerLVL);
+                            int mnd = General.getSTAT("MND", playerLVL);
+                            int spi = General.getSTAT("SPI", playerLVL);
 
                             ArrayList<String> lore = new ArrayList<>();
                             lore.add(CC.translate("&c✷ STR: " + formatter.format(str)));
@@ -94,9 +94,6 @@ public class ComandTopPlayer extends BaseCommand {
                             }
                             clickableItem[i.getAndIncrement()] = ClickableItem.empty(skullPlayer);
                         });
-
-
-
                         ItemStack previous = new ItemStack ( Material.ARROW );
                         ItemMeta itemMeta = previous.getItemMeta ( );
                         itemMeta.setDisplayName ( CC.translate ( "&c&lAtrás" ) );

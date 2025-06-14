@@ -17,20 +17,24 @@ public class CommandNickDecline extends BaseCommand {
         if (!command.isPlayer()) {
             return;
         }
+
         if (command.getArgs().length < 1) {
-            command.getPlayer().sendMessage( CC.translate("&8[&6✦&8] &cUsage: &e/nickDecline <player>"));
-            command.getPlayer().sendMessage(CC.translate("&7Reject a player's nickname change request."));
+            command.getPlayer().sendMessage(CC.translate("&8[&6✦&8] &cUso: &e/nickDecline <jugador>"));
+            command.getPlayer().sendMessage(CC.translate("&7Rechaza la solicitud de cambio de nickname de un jugador."));
             return;
         }
 
         Player player = Main.instance.getServer().getPlayer(command.getArgs(0));
+
         if (player == null || !CommandNick.nicknames.containsKey(player)) {
-            command.getPlayer().sendMessage(CC.translate("&cThat player doesn't have a pending nickname request."));
+            command.getPlayer().sendMessage(CC.translate("&cEse jugador no tiene una solicitud de nickname pendiente."));
             return;
         }
+
         CommandNick.nicknames.remove(player);
-        player.sendMessage(CC.translate("&cYour nickname request has been declined by &e" + command.getPlayer().getName()));
-        command.getPlayer().sendMessage(CC.translate("&aYou have declined the nickname change request from &c" + player.getName()));
+
+        player.sendMessage(CC.translate("&cTu solicitud de cambio de nickname ha sido rechazada por &e" + command.getPlayer().getName()));
+        command.getPlayer().sendMessage(CC.translate("&aHas rechazado la solicitud de cambio de nickname de &c" + player.getName()));
     }
 
 }

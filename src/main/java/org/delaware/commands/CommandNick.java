@@ -17,21 +17,25 @@ public class CommandNick extends BaseCommand {
     @Command(name = "apodo", aliases = {"apodo","name"}, permission = "dtools.nick")
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
-        Player player = command.getPlayer ( );
-        if (command.getArgs ( ).length == 0) {
-            player.sendMessage(CC.translate("&8[&6✦&8] &cCorrect usage: &e/name <nickname>"));
+        Player player = command.getPlayer();
+
+        if (command.getArgs().length == 0) {
+            player.sendMessage(CC.translate("&8[&6✦&8] &cUso correcto: &e/name <nickname>"));
             return;
         }
-        General.getStaffs ( ).forEach ( e -> {
-            e.sendMessage(CC.translate("&8[&e⚠ Warning&8] &c" + player.getName() +
-                    " &ehas requested a nickname change to:"));
-            e.sendMessage ( CC.translate ( "&8[&e⚠ Warning&8]&c " + command.getArgs ( 0 ) ) );
-            e.sendMessage(CC.translate("&8[&6✦&8] &7Use &a/nickAccept &7to approve the change."));
 
-            e.playSound ( e.getLocation (), Sound.CAT_MEOW, 1.0f,1.0f );
-        } );
-        nicknames.put ( player, command.getArgs ( 0 ) );
-        player.sendMessage(CC.translate("&7You have requested to change your nickname to: &e" + command.getArgs ( 0 )));
-        player.sendMessage(CC.translate("&7Please wait for a staff member to approve it."));
+        General.getStaffs().forEach(e -> {
+            e.sendMessage(CC.translate("&8[&e⚠ Advertencia&8] &c" + player.getName() +
+                    " &eha solicitado cambiar su nickname a:"));
+            e.sendMessage(CC.translate("&8[&e⚠ Advertencia&8]&c " + command.getArgs(0)));
+            e.sendMessage(CC.translate("&8[&6✦&8] &7Usa &a/nickAccept &7para aprobar el cambio."));
+
+            e.playSound(e.getLocation(), Sound.CAT_MEOW, 1.0f, 1.0f);
+        });
+
+        nicknames.put(player, command.getArgs(0));
+
+        player.sendMessage(CC.translate("&7Has solicitado cambiar tu nickname a: &e" + command.getArgs(0)));
+        player.sendMessage(CC.translate("&7Por favor espera a que un miembro del staff lo apruebe."));
     }
 }

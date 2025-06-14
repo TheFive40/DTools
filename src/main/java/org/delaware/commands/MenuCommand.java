@@ -19,14 +19,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MenuCommand extends BaseCommand {
-    @Command(name = "future", aliases = {"future", "dbfuture"})
+    @Command(name = "zenkai", aliases = {"zenkai", "zenkai"})
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         SmartInventory INVENTORY = SmartInventory.builder ( )
-                .size ( 5, 9 )
-                .id ( "future" )
+                .size ( 6, 9 )
+                .id ( "zenkai" )
                 .type ( InventoryType.CHEST )
-                .title ( CC.translate ( "&6&lDBC Future" ) )
+                .title ( CC.translate ( "&bDragon Block Zenkai" ) )
                 .provider ( new InventoryProvider ( ) {
                     @Override
                     public void init ( Player player, InventoryContents inventoryContents ) {
@@ -37,8 +37,32 @@ public class MenuCommand extends BaseCommand {
                         trainingMeta.setLore ( loreTraining );
                         trainingMeta.setDisplayName ( CC.translate ( "&4&lSistema de Trainings" ) );
                         trainings.setItemMeta ( trainingMeta );
-                        inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.RED.getData ( ) ) ) );
-                        inventoryContents.set ( 1, 2, ClickableItem.of ( trainings, e -> {
+                        inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 3, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 5, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 2, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 3, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 4, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 5, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 6, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 2, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 4, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 6, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 2, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 3, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 4, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 5, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 6, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+
+                        inventoryContents.set ( 2, 2, ClickableItem.of ( trainings, e -> {
                             SmartInventory selectTrainingType = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSistema de Trainings" ) )
                                     .type ( InventoryType.CHEST )
                                     .provider ( new InventoryProvider ( ) {
@@ -56,60 +80,64 @@ public class MenuCommand extends BaseCommand {
                                                             @Override
                                                             public void init ( Player player, InventoryContents inventoryContents ) {
                                                                 inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                                                ItemStack t1 = new ItemStack ( 4980 );
+                                                                for (int row = 1; row <= 4; row++) {
+                                                                    for (int col = 1; col <= 7; col++) {
+                                                                        if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
+                                                                            continue;
+                                                                        }
+                                                                        inventoryContents.set(row, col, ClickableItem.empty(
+                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
+                                                                        ));
+                                                                    }
+                                                                }
+                                                                ItemStack t1 = new ItemStack ( 4977 );
                                                                 ItemMeta t1Meta = t1.getItemMeta ( );
                                                                 t1Meta.setDisplayName ( CC.translate ( "&4Training 1" ) );
                                                                 t1.setItemMeta ( t1Meta );
-                                                                inventoryContents.set ( 1, 2, ClickableItem.of ( t1, e -> {
+                                                                inventoryContents.set ( 2, 2, ClickableItem.of ( t1, e -> {
                                                                     player.performCommand ( "warp t1" );
                                                                 } ) );
-                                                                ItemStack t2 = new ItemStack ( 4970 );
+                                                                ItemStack t2 = new ItemStack ( 4975 );
                                                                 ItemMeta t2Meta = t2.getItemMeta ( );
                                                                 t2Meta.setDisplayName ( CC.translate ( "&4Training 2" ) );
                                                                 t2.setItemMeta ( t2Meta );
-                                                                inventoryContents.set ( 1, 4, ClickableItem.of ( t2, e -> {
+                                                                inventoryContents.set ( 2, 4, ClickableItem.of ( t2, e -> {
                                                                     player.performCommand ( "warp t2" );
 
                                                                 } ) );
-                                                                ItemStack t3 = new ItemStack ( 4977 );
+                                                                ItemStack t3 = new ItemStack ( 4973 );
                                                                 ItemMeta t3Meta = t3.getItemMeta ( );
                                                                 t3Meta.setDisplayName ( CC.translate ( "&4Training 3" ) );
                                                                 t3.setItemMeta ( t3Meta );
-                                                                inventoryContents.set ( 1, 6, ClickableItem.of ( t3, e -> {
+                                                                inventoryContents.set ( 2, 6, ClickableItem.of ( t3, e -> {
                                                                     player.performCommand ( "warp t3" );
 
                                                                 } ) );
-                                                                ItemStack t4 = new ItemStack ( 4975 );
+                                                                ItemStack t4 = new ItemStack ( 4960 );
                                                                 ItemMeta t4Meta = t4.getItemMeta ( );
                                                                 t4Meta.setDisplayName ( CC.translate ( "&4Training 4" ) );
                                                                 t4.setItemMeta ( t4Meta );
-                                                                inventoryContents.set ( 3, 2, ClickableItem.of ( t4, e -> {
+                                                                inventoryContents.set ( 4, 4, ClickableItem.of ( t4, e -> {
                                                                     player.performCommand ( "warp t4" );
-
-                                                                } ) );
-                                                                ItemStack t5 = new ItemStack ( 4973 );
-                                                                ItemMeta t5Meta = t5.getItemMeta ( );
-                                                                t5Meta.setDisplayName ( CC.translate ( "&4Training 5" ) );
-                                                                t5.setItemMeta ( t5Meta );
-                                                                inventoryContents.set ( 3, 4, ClickableItem.of ( t5, e -> {
-                                                                    player.performCommand ( "warp t5" );
-
-                                                                } ) );
-                                                                ItemStack t6 = new ItemStack ( 5161 );
-                                                                ItemMeta t6Meta = t6.getItemMeta ( );
-                                                                t6Meta.setDisplayName ( CC.translate ( "&4Training 6" ) );
-                                                                t6.setItemMeta ( t6Meta );
-                                                                inventoryContents.set ( 3, 6, ClickableItem.of ( t6, e -> {
-                                                                    player.performCommand ( "warp t6" );
                                                                 } ) );
                                                             }
 
                                                             @Override
                                                             public void update ( Player player, InventoryContents inventoryContents ) {
                                                                 inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                                                for (int row = 1; row <= 4; row++) {
+                                                                    for (int col = 1; col <= 7; col++) {
+                                                                        if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
+                                                                            continue;
+                                                                        }
+                                                                        inventoryContents.set(row, col, ClickableItem.empty(
+                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
+                                                                        ));
+                                                                    }
+                                                                }
                                                             }
                                                         } ).id ( "trainings" )
-                                                        .size ( 5, 9 ).build ( );
+                                                        .size ( 6, 9 ).build ( );
                                                 trainingInventory.open ( player );
                                             } ) );
                                             ItemStack tSpiritualist = new ItemStack ( 4142 );
@@ -123,60 +151,64 @@ public class MenuCommand extends BaseCommand {
                                                             @Override
                                                             public void init ( Player player, InventoryContents inventoryContents ) {
                                                                 inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                                                ItemStack t1 = new ItemStack ( 4980 );
+                                                                for (int row = 1; row <= 4; row++) {
+                                                                    for (int col = 1; col <= 7; col++) {
+                                                                        if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
+                                                                            continue;
+                                                                        }
+                                                                        inventoryContents.set(row, col, ClickableItem.empty(
+                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
+                                                                        ));
+                                                                    }
+                                                                }
+                                                                ItemStack t1 = new ItemStack ( 4977 );
                                                                 ItemMeta t1Meta = t1.getItemMeta ( );
                                                                 t1Meta.setDisplayName ( CC.translate ( "&4Training 1" ) );
                                                                 t1.setItemMeta ( t1Meta );
-                                                                inventoryContents.set ( 1, 2, ClickableItem.of ( t1, e -> {
+                                                                inventoryContents.set ( 2, 2, ClickableItem.of ( t1, e -> {
                                                                     player.performCommand ( "warp t1e" );
                                                                 } ) );
-                                                                ItemStack t2 = new ItemStack ( 4970 );
+                                                                ItemStack t2 = new ItemStack ( 4975 );
                                                                 ItemMeta t2Meta = t2.getItemMeta ( );
                                                                 t2Meta.setDisplayName ( CC.translate ( "&4Training 2" ) );
                                                                 t2.setItemMeta ( t2Meta );
-                                                                inventoryContents.set ( 1, 4, ClickableItem.of ( t2, e -> {
+                                                                inventoryContents.set ( 2, 4, ClickableItem.of ( t2, e -> {
                                                                     player.performCommand ( "warp t2e" );
 
                                                                 } ) );
-                                                                ItemStack t3 = new ItemStack ( 4977 );
+                                                                ItemStack t3 = new ItemStack ( 4973 );
                                                                 ItemMeta t3Meta = t3.getItemMeta ( );
                                                                 t3Meta.setDisplayName ( CC.translate ( "&4Training 3" ) );
                                                                 t3.setItemMeta ( t3Meta );
-                                                                inventoryContents.set ( 1, 6, ClickableItem.of ( t3, e -> {
+                                                                inventoryContents.set ( 2, 6, ClickableItem.of ( t3, e -> {
                                                                     player.performCommand ( "warp t3e" );
 
                                                                 } ) );
-                                                                ItemStack t4 = new ItemStack ( 4975 );
+                                                                ItemStack t4 = new ItemStack ( 4960 );
                                                                 ItemMeta t4Meta = t4.getItemMeta ( );
                                                                 t4Meta.setDisplayName ( CC.translate ( "&4Training 4" ) );
                                                                 t4.setItemMeta ( t4Meta );
-                                                                inventoryContents.set ( 3, 2, ClickableItem.of ( t4, e -> {
+                                                                inventoryContents.set ( 4, 4, ClickableItem.of ( t4, e -> {
                                                                     player.performCommand ( "warp t4e" );
-
-                                                                } ) );
-                                                                ItemStack t5 = new ItemStack ( 4973 );
-                                                                ItemMeta t5Meta = t5.getItemMeta ( );
-                                                                t5Meta.setDisplayName ( CC.translate ( "&4Training 5" ) );
-                                                                t5.setItemMeta ( t5Meta );
-                                                                inventoryContents.set ( 3, 4, ClickableItem.of ( t5, e -> {
-                                                                    player.performCommand ( "warp t5e" );
-
-                                                                } ) );
-                                                                ItemStack t6 = new ItemStack ( 5161 );
-                                                                ItemMeta t6Meta = t6.getItemMeta ( );
-                                                                t6Meta.setDisplayName ( CC.translate ( "&4Training &fNavidad" ) );
-                                                                t6.setItemMeta ( t6Meta );
-                                                                inventoryContents.set ( 3, 6, ClickableItem.of ( t6, e -> {
-                                                                    player.performCommand ( "warp t6e" );
                                                                 } ) );
                                                             }
 
                                                             @Override
                                                             public void update ( Player player, InventoryContents inventoryContents ) {
                                                                 inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                                                for (int row = 1; row <= 4; row++) {
+                                                                    for (int col = 1; col <= 7; col++) {
+                                                                        if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
+                                                                            continue;
+                                                                        }
+                                                                        inventoryContents.set(row, col, ClickableItem.empty(
+                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
+                                                                        ));
+                                                                    }
+                                                                }
                                                             }
                                                         } ).id ( "trainingsE" )
-                                                        .size ( 5, 9 ).build ( );
+                                                        .size ( 6, 9 ).build ( );
                                                 trainingInventory.open ( player );
                                             } ) );
                                         }
@@ -195,7 +227,7 @@ public class MenuCommand extends BaseCommand {
                         zonasMeta.setLore ( loreTraining );
                         zonasMeta.setDisplayName ( CC.translate ( "&6&lZonas del Servidor" ) );
                         zonas.setItemMeta ( zonasMeta );
-                        inventoryContents.set ( 1, 4, ClickableItem.of ( zonas, e -> {
+                        inventoryContents.set ( 3, 3, ClickableItem.of ( zonas, e -> {
                             SmartInventory dbcInventory = SmartInventory.builder ( ).size ( 6, 9 )
                                     .type ( InventoryType.CHEST )
                                     .title ( CC.translate ( "&6&lZonas del Servidor" ) )
@@ -308,12 +340,12 @@ public class MenuCommand extends BaseCommand {
                                     .build ( );
                             dbcInventory.open ( player );
                         } ) );
-                        ItemStack dbc = new ItemStack ( 4697, 1 );
+                        ItemStack dbc = new ItemStack ( 5144, 1 );
                         ItemMeta dbcMeta = dbc.getItemMeta ( );
                         dbcMeta.setLore ( loreTraining );
                         dbcMeta.setDisplayName ( CC.translate ( "&e&lDragon Block C" ) );
                         dbc.setItemMeta ( dbcMeta );
-                        inventoryContents.set ( 1, 6, ClickableItem.of ( dbc, e -> {
+                        inventoryContents.set ( 2, 4, ClickableItem.of ( dbc, e -> {
                             SmartInventory dbcInventory = SmartInventory.builder ( ).size ( 6, 9 )
                                     .type ( InventoryType.CHEST )
                                     .title ( CC.translate ( "&e&lZonas DBC" ) )
@@ -422,20 +454,25 @@ public class MenuCommand extends BaseCommand {
                                         @Override
                                         public void update ( Player player, InventoryContents inventoryContents ) {
                                             inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.CYAN.getData ( ) ) ) );
+                                            for (int col = 0; col <= 8; col++) {
+                                                inventoryContents.set ( 0, col, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            }
+                                            inventoryContents.set ( 1, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 1, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 2, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 2, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 3, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 3, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 4, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            inventoryContents.set ( 4, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            for (int col = 0; col <= 8; col++) {
+                                                inventoryContents.set ( 5, col, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            }
+
                                         }
                                     } )
                                     .build ( );
                             dbcInventory.open ( player );
-                        } ) );
-                        ArrayList<String> loreSpawn = new ArrayList<> ( );
-                        loreSpawn.add ( CC.translate ( "&cClic derecho para ir" ) );
-                        ItemStack spawn = new ItemStack ( 345, 1 );
-                        ItemMeta spawnMeta = spawn.getItemMeta ( );
-                        spawnMeta.setLore ( loreSpawn );
-                        spawnMeta.setDisplayName ( CC.translate ( "&f&lSpawn" ) );
-                        spawn.setItemMeta ( spawnMeta );
-                        inventoryContents.set ( 2, 2, ClickableItem.of ( spawn, e -> {
-                            player.performCommand ( "warp spawn" );
                         } ) );
                         ArrayList<String> loreTienda = new ArrayList<> ( );
                         loreTienda.add ( CC.translate ( "&cProximamente" ) );
@@ -444,18 +481,8 @@ public class MenuCommand extends BaseCommand {
                         tiendaMeta.setLore ( loreTienda );
                         tiendaMeta.setDisplayName ( CC.translate ( "&6&lTienda" ) );
                         tienda.setItemMeta ( tiendaMeta );
-                        inventoryContents.set ( 2, 4, ClickableItem.of ( tienda, e -> {
+                        inventoryContents.set ( 2, 6, ClickableItem.of ( tienda, e -> {
                             player.sendMessage ( CC.translate ( "&cEstamos trabajando en eso..." ) );
-                        } ) );
-                        ArrayList<String> loreRedes = new ArrayList<> ( );
-                        loreRedes.add ( CC.translate ( "&cClic derecho para ver" ) );
-                        ItemStack redes = new ItemStack ( 4417, 1 );
-                        ItemMeta redesMeta = redes.getItemMeta ( );
-                        redesMeta.setLore ( loreRedes );
-                        redesMeta.setDisplayName ( CC.translate ( "&9&lRedes Sociales" ) );
-                        redes.setItemMeta ( redesMeta );
-                        inventoryContents.set ( 2, 6, ClickableItem.of ( redes, e -> {
-                            player.sendMessage ( CC.translate ( "&9&l➢ &9Discord: &ehttps://discord.gg/GN6z2KnnYk" ) );
                         } ) );
                         ArrayList<String> loreVIP = new ArrayList<> ( );
                         loreVIP.add ( CC.translate ( "&b¡Compra rango &c&lVIP &ben nuestra tienda!" ) );
@@ -466,14 +493,36 @@ public class MenuCommand extends BaseCommand {
                         vipMeta.setLore ( loreVIP );
                         vipMeta.setDisplayName ( CC.translate ( "&6&l&k::&c&lVIP&6&l&k::" ) );
                         vip.setItemMeta ( vipMeta );
-                        inventoryContents.set ( 3, 4, ClickableItem.of ( vip, e -> {
+                        inventoryContents.set ( 3, 5, ClickableItem.of ( vip, e -> {
                         } ) );
                     }
 
                     @Override
                     public void update ( Player player, InventoryContents inventoryContents ) {
-                        inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.RED.getData ( ) ) ) );
-
+                        inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 3, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 5, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 2, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 2, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 3, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 4, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 5, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 1, 6, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 1, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 2, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 4, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 6, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 3, 7, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 2, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 3, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 4, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 5, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
+                        inventoryContents.set ( 4, 6, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.BLUE.getData ( ) ) ) );
                     }
                 } )
                 .build ( );

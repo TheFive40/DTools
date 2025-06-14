@@ -3,6 +3,8 @@ package org.delaware;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import kamkeel.npcdbc.api.event.IDBCEvent;
+import kamkeel.npcdbc.constants.DBCForm;
+import kamkeel.npcdbc.constants.DBCRace;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.util.com.google.gson.Gson;
@@ -13,12 +15,14 @@ import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.delaware.CombatTag.CommandCancel;
 import org.delaware.CombatTag.PlayerLeaveEvent;
 import org.delaware.CombatTag.TagListener;
@@ -28,23 +32,23 @@ import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.DBCEvents.Listeners.KnockoutEvent;
 import org.delaware.commands.CommandAddGift;
 import org.delaware.events.InteractWithGiftsEvent;
+import org.delaware.tools.*;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.BoosterHandler.BoosterManager;
-import org.delaware.tools.ClassesRegistration;
+import org.delaware.tools.Boosters.ZenkaiExpansion;
 import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.CustomItems.CustomItemsRunnable;
 import org.delaware.tools.CustomItems.PlayerBonusesData;
 import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
-import org.delaware.tools.General;
 import org.delaware.tools.Permissions.PermissionsManager;
 import org.delaware.tools.RegionTools.PlayerAccessManager;
 import org.delaware.tools.RegionTools.Runnable.RegionCheckRunnable;
-import org.delaware.tools.RegionUtils;
 import org.delaware.tools.commands.CommandFramework;
 import org.delaware.tools.model.entities.Gift;
 import org.delaware.tools.model.entities.Localizaciones;
 import org.delaware.tools.model.entities.TP;
+
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -67,10 +71,11 @@ public class Main extends JavaPlugin {
     TagListener tagEvent;
     CommandCancel commandEvent;
     PlayerLeaveEvent leaveEvent;
-    public static HashMap<String, Integer> scytheConfig = new HashMap<>();
+    public static HashMap<String, Integer> scytheConfig = new HashMap<> ( );
     public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
-        static {
+
+    static {
         String ruta1 = System.getProperty ( "user.dir" ) + File.separator + "plugins";
         File file = new File ( ruta1, "DTools" );
         file.mkdir ( );
@@ -79,6 +84,7 @@ public class Main extends JavaPlugin {
         file2.mkdir ( );
 
     }
+
     private final CommandFramework commandFramework = new CommandFramework ( this );
     private final ClassesRegistration classesRegistration = new ClassesRegistration ( );
     public static Main instance;
@@ -93,7 +99,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable () {
         instance = this;
-        luckPermsAPI = LuckPermsProvider.get ();
+        luckPermsAPI = LuckPermsProvider.get ( );
         classesRegistration.loadCommands ( "org.delaware.commands" );
         classesRegistration.loadListeners ( "org.delaware.events" );
         System.out.println ( "Plugin successfully enabled" );
@@ -102,11 +108,11 @@ public class Main extends JavaPlugin {
         File rootDir = new File ( getDataFolder ( ), "DTools" );
         File dataDir = new File ( rootDir, "data" );
 
-        try{
+        try {
             //Five
-            BoosterDataHandler.loadData ();
-            BoosterManager.startBoosterCheckTask ();
-            loadGifts();
+            BoosterDataHandler.loadData ( );
+            BoosterManager.startBoosterCheckTask ( );
+            loadGifts ( );
             //Five
             try {
                 Type typeTps = new TypeToken<ConcurrentHashMap<Integer, TP>> ( ) {
@@ -120,103 +126,113 @@ public class Main extends JavaPlugin {
             } catch (IOException e) {
                 throw new RuntimeException ( e );
             }
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
+        BankManager.init ( this );
 
         //Five
-        RegionUtils.loadData ();
+        RegionUtils.loadData ( );
         //Five
-
+        if (Bukkit.getPluginManager ( ).getPlugin ( "PlaceholderAPI" ) != null) {
+            new ZenkaiExpansion ( ).register ( );
+            getLogger ( ).info ( "Expansion PlaceHolderZenkai registrada correctamente." );
+        } else {
+            getLogger ( ).warning ( "PlaceholderAPI no encontrada. No se registraron los placeholders de Zenkai." );
+        }
         //Spacey
         //CustomNPCS events
-        dmgEventInstance = new DamageEvent();
-        Bukkit.getPluginManager().registerEvents(dmgEventInstance, this);
-        koEventInstance = new KnockoutEvent();
-        Bukkit.getPluginManager().registerEvents(koEventInstance, this);
-        tagEvent = new TagListener();
-        Bukkit.getPluginManager().registerEvents(tagEvent, this);
-        commandEvent = new CommandCancel();
-        Bukkit.getPluginManager().registerEvents(commandEvent, this);
-        leaveEvent = new PlayerLeaveEvent();
-        Bukkit.getPluginManager().registerEvents(leaveEvent, this);
+        dmgEventInstance = new DamageEvent ( );
+        Bukkit.getPluginManager ( ).registerEvents ( dmgEventInstance, this );
+        koEventInstance = new KnockoutEvent ( );
+        Bukkit.getPluginManager ( ).registerEvents ( koEventInstance, this );
+        tagEvent = new TagListener ( );
+        Bukkit.getPluginManager ( ).registerEvents ( tagEvent, this );
+        commandEvent = new CommandCancel ( );
+        Bukkit.getPluginManager ( ).registerEvents ( commandEvent, this );
+        leaveEvent = new PlayerLeaveEvent ( );
+        Bukkit.getPluginManager ( ).registerEvents ( leaveEvent, this );
         //CustomNPCS events
-        loadCustomItems();
-        loadCustomBonuses();
-        loadScytheConfig();
-        loadRegionData();
-        RegionCheckRunnable.regionCheckRunnable.runTaskTimer(this, 60, 60);
-        TagListener.clearExpireTagsTask.runTaskTimer(this, 20L, 20L);
+        loadCustomItems ( );
+        loadCustomBonuses ( );
+        loadScytheConfig ( );
+        loadRegionData ( );
+        RegionCheckRunnable.regionCheckRunnable.runTaskTimer ( this, 60, 60 );
+        TagListener.clearExpireTagsTask.runTaskTimer ( this, 20L, 20L );
         //Spacey
-
+        arcosianTask();
     }
-    public void writeData(){
-        File rootDir = new File(getDataFolder(), "DTools");
-        File dataDir = new File(rootDir, "data");
 
-        if (!dataDir.exists()) {
-            dataDir.mkdirs();
+    public void writeData () {
+        File rootDir = new File ( getDataFolder ( ), "DTools" );
+        File dataDir = new File ( rootDir, "data" );
+
+        if (!dataDir.exists ( )) {
+            dataDir.mkdirs ( );
         }
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonGift = gson.toJson(new Gift(
+        Gson gson = new GsonBuilder ( ).setPrettyPrinting ( ).create ( );
+        String jsonGift = gson.toJson ( new Gift (
                 CommandAddGift.itemStackHashMap,
                 InteractWithGiftsEvent.contadorRegalos,
                 InteractWithGiftsEvent.regalosEncontrados,
                 InteractWithGiftsEvent.misionCompletada
-        ));
-        File file = new File(dataDir, "gifts.json");
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(jsonGift);
-            System.out.println("Datos guardados en: " + file.getAbsolutePath());
+        ) );
+        File file = new File ( dataDir, "gifts.json" );
+        try (FileWriter writer = new FileWriter ( file )) {
+            writer.write ( jsonGift );
+            System.out.println ( "Datos guardados en: " + file.getAbsolutePath ( ) );
         } catch (IOException e) {
-            throw new RuntimeException("Error al escribir el archivo JSON", e);
+            throw new RuntimeException ( "Error al escribir el archivo JSON", e );
         }
 
     }
-    public void loadGifts() {
-        File rootDir = new File(getDataFolder(), "DTools");
-        File dataDir = new File(rootDir, "data");
-        File file = new File(dataDir, "gifts.json");
-        if (!dataDir.exists()) {
-            if (dataDir.mkdirs()) {
-                System.out.println("Directorio creado exitosamente: " + dataDir.getAbsolutePath());
+
+    public void loadGifts () {
+        File rootDir = new File ( getDataFolder ( ), "DTools" );
+        File dataDir = new File ( rootDir, "data" );
+        File file = new File ( dataDir, "gifts.json" );
+        if (!dataDir.exists ( )) {
+            if (dataDir.mkdirs ( )) {
+                System.out.println ( "Directorio creado exitosamente: " + dataDir.getAbsolutePath ( ) );
             } else {
-                System.out.println("No se pudo crear el directorio.");
+                System.out.println ( "No se pudo crear el directorio." );
                 return;
             }
         }
 
-        if (!file.exists()) {
-            System.out.println("No hay datos previos de regalos para cargar.");
+        if (!file.exists ( )) {
+            System.out.println ( "No hay datos previos de regalos para cargar." );
             return;
         }
 
-        try (FileReader reader = new FileReader(file)) {
-            Gson gson = new Gson();
-            Gift gift = gson.fromJson(reader, Gift.class);
-            CommandAddGift.itemStackHashMap = gift.getItemStackHashMap();
-            InteractWithGiftsEvent.contadorRegalos = gift.getContadorRegalos();
-            InteractWithGiftsEvent.misionCompletada = gift.getMisionCompletada();
-            InteractWithGiftsEvent.regalosEncontrados = gift.getRegalosEncontrados();
+        try (FileReader reader = new FileReader ( file )) {
+            Gson gson = new Gson ( );
+            Gift gift = gson.fromJson ( reader, Gift.class );
+            CommandAddGift.itemStackHashMap = gift.getItemStackHashMap ( );
+            InteractWithGiftsEvent.contadorRegalos = gift.getContadorRegalos ( );
+            InteractWithGiftsEvent.misionCompletada = gift.getMisionCompletada ( );
+            InteractWithGiftsEvent.regalosEncontrados = gift.getRegalosEncontrados ( );
 
             // Restaurar los regalos en el menú
             for (Localizaciones localizaciones : CommandAddGift.itemStackHashMap) {
-                ItemStack regalo = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-                SkullMeta skullMeta = (SkullMeta) regalo.getItemMeta();
-                skullMeta.setOwner("defib");
-                CommandAddGift.setItemInMenu(regalo, skullMeta, localizaciones);
+                ItemStack regalo = new ItemStack ( Material.SKULL_ITEM, 1, (short) 3 );
+                SkullMeta skullMeta = (SkullMeta) regalo.getItemMeta ( );
+                skullMeta.setOwner ( "defib" );
+                CommandAddGift.setItemInMenu ( regalo, skullMeta, localizaciones );
             }
 
-            System.out.println("Datos de regalos cargados correctamente.");
+            System.out.println ( "Datos de regalos cargados correctamente." );
         } catch (IOException e) {
-            throw new RuntimeException("Error al leer el archivo JSON", e);
+            throw new RuntimeException ( "Error al leer el archivo JSON", e );
         } catch (JsonSyntaxException e) {
-            throw new RuntimeException("Error en el formato del archivo JSON", e);
+            throw new RuntimeException ( "Error en el formato del archivo JSON", e );
         }
     }
+
     @Override
     public void onDisable () {
         System.out.println ( "Plugin successfully deactivated" );
-        writeData ();
+        writeData ( );
         Gson gson = new GsonBuilder ( ).setPrettyPrinting ( ).create ( );
         String jsonTps = gson.toJson ( tps );
         File rootDir = new File ( getDataFolder ( ), "DTools" );
@@ -225,7 +241,7 @@ public class Main extends JavaPlugin {
             dataDir.mkdirs ( );
         }
         //Five
-        BoosterDataHandler.saveData ();
+        BoosterDataHandler.saveData ( );
         //Five
         try {
             FileWriter writerTps = new FileWriter ( new File ( dataDir, "tps.json" ) );
@@ -234,34 +250,35 @@ public class Main extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException ( "Error al guardar los archivos JSON", e );
         }
+        BankManager.saveAll ( );
         //Five
-        RegionUtils.saveData ();
+        RegionUtils.saveData ( );
         //Five
 
         //Spacey
-        disableCustomItems();
+        disableCustomItems ( );
         //CustomNPCS events
-        DBCDamageEvent.getHandlerList().unregister(dmgEventInstance);
-        DBCKnockoutEvent.getHandlerList().unregister(koEventInstance);
-        TagListener.clearExpireTagsTask.cancel();
-        EntityDamageByEntityEvent.getHandlerList().unregister(tagEvent);
-        PlayerCommandPreprocessEvent.getHandlerList().unregister(commandEvent);
-        PlayerQuitEvent.getHandlerList().unregister(leaveEvent);
+        DBCDamageEvent.getHandlerList ( ).unregister ( dmgEventInstance );
+        DBCKnockoutEvent.getHandlerList ( ).unregister ( koEventInstance );
+        TagListener.clearExpireTagsTask.cancel ( );
+        EntityDamageByEntityEvent.getHandlerList ( ).unregister ( tagEvent );
+        PlayerCommandPreprocessEvent.getHandlerList ( ).unregister ( commandEvent );
+        PlayerQuitEvent.getHandlerList ( ).unregister ( leaveEvent );
         //CustomNPCS events
         //Spacey
-        for (Map.Entry<String, Set<String>> entry : regionAccess.entrySet()) {
-            String regionName = entry.getKey();
-            Set<String> players = entry.getValue();
+        for (Map.Entry<String, Set<String>> entry : regionAccess.entrySet ( )) {
+            String regionName = entry.getKey ( );
+            Set<String> players = entry.getValue ( );
             WorldGuardPlugin wg = WorldGuardPlugin.inst ( );
 
-            ProtectedRegion region = wg.getRegionManager(Bukkit.getWorld("trainingoculto")).getRegion(regionName);
+            ProtectedRegion region = wg.getRegionManager ( Bukkit.getWorld ( "trainingoculto" ) ).getRegion ( regionName );
             if (region != null) {
                 for (String playerName : players) {
-                    region.getMembers().removePlayer(playerName);
+                    region.getMembers ( ).removePlayer ( playerName );
                 }
             }
         }
-        regionAccess.clear();
+        regionAccess.clear ( );
         playerStats.forEach ( ( k, v ) -> {
             IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( k ).getDBCPlayer ( );
             idbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( General.STR, v.getSTR ( ) );
@@ -280,96 +297,132 @@ public class Main extends JavaPlugin {
     public ClassesRegistration getClassesRegistration () {
         return classesRegistration;
     }
+
     //Spacey
-    private void loadCustomItems() {
-        CustomItemsRunnable.getBukkitRunnable().runTaskTimer(instance, (20 * 5), (20 * 5));
-        WriteRunnable.getRunnable().runTaskTimer(instance, 100, (20 * 300));
+    private void loadCustomItems () {
+        CustomItemsRunnable.getBukkitRunnable ( ).runTaskTimer ( instance, (20 * 5), (20 * 5) );
+        WriteRunnable.getRunnable ( ).runTaskTimer ( instance, 100, (20 * 300) );
         try {
-            File rootDir = new File (getDataFolder(), "DTools");
-            File dataDir = new File (rootDir, "data");
+            File rootDir = new File ( getDataFolder ( ), "DTools" );
+            File dataDir = new File ( rootDir, "data" );
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
             FileReader readerCustomItems = new FileReader ( new File ( dataDir, "CustomItems.json" ) );
-            Type typeItems = new TypeToken<HashMap<String, CustomItems>>(){}.getType();
-            Gson gson = new Gson();
-            items = gson.fromJson(readerCustomItems, typeItems);
-            readerCustomItems.close();
-        }catch(IOException | JsonSyntaxException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "CustomItems.json doesn't exist!", e);
+            Type typeItems = new TypeToken<HashMap<String, CustomItems>> ( ) {
+            }.getType ( );
+            Gson gson = new Gson ( );
+            items = gson.fromJson ( readerCustomItems, typeItems );
+            readerCustomItems.close ( );
+        } catch (IOException | JsonSyntaxException e) {
+            Bukkit.getLogger ( ).log ( Level.SEVERE, "CustomItems.json doesn't exist!", e );
         }
     }
-    private void loadCustomBonuses() {
+
+    public void arcosianTask () {
+        BukkitRunnable runnable = new BukkitRunnable ( ) {
+            @Override
+            public void run () {
+                for (Player player : Main.instance.getServer ( ).getOnlinePlayers ( )) {
+                    IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
+                    if (idbcPlayer.getRace ( ) == DBCRace.ARCOSIAN) {
+                        if (DBCForm.ThirdForm == idbcPlayer.getForm ( ) && !idbcPlayer.hasFinishedQuest ( 319 )) {
+                            idbcPlayer.setForm ( (byte) DBCForm.FirstForm );
+                            player.sendMessage ( CC.translate ( "&cNecesitas desbloquear la tercera forma" ) );
+                        }
+                        if (DBCForm.FinalForm == idbcPlayer.getForm ( ) && !idbcPlayer.hasFinishedQuest ( 320 )) {
+                            idbcPlayer.setForm ( (byte) DBCForm.FirstForm );
+                            player.sendMessage ( CC.translate ( "&cNecesitas desbloquear la cuarta forma" ) );
+                        }
+                    }
+                }
+            }
+        };
+        runnable.runTaskTimer ( this, 20L, 20L );
+
+
+    }
+
+    private void loadCustomBonuses () {
         try {
-            File rootDir = new File (getDataFolder(), "DTools");
-            File dataDir = new File (rootDir, "data");
+            File rootDir = new File ( getDataFolder ( ), "DTools" );
+            File dataDir = new File ( rootDir, "data" );
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
-            FileReader readerCustomBonuses = new FileReader(new File(dataDir, "PlayerBonusesData.json"));
-            Type typeBonuses = new TypeToken<HashMap<String, PlayerBonusesData>>(){}.getType();
-            Gson gson = new Gson();
-            bonusData = gson.fromJson(readerCustomBonuses, typeBonuses);
-            readerCustomBonuses.close();
-        }catch(IOException | JsonSyntaxException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "PlayerBonusesData.json doesn't exist!", e);
+            FileReader readerCustomBonuses = new FileReader ( new File ( dataDir, "PlayerBonusesData.json" ) );
+            Type typeBonuses = new TypeToken<HashMap<String, PlayerBonusesData>> ( ) {
+            }.getType ( );
+            Gson gson = new Gson ( );
+            bonusData = gson.fromJson ( readerCustomBonuses, typeBonuses );
+            readerCustomBonuses.close ( );
+        } catch (IOException | JsonSyntaxException e) {
+            Bukkit.getLogger ( ).log ( Level.SEVERE, "PlayerBonusesData.json doesn't exist!", e );
         }
     }
-    private void loadScytheConfig() {
-        ScytheRunnable.getRun().runTaskTimer(instance, 20, (20 * 5));
+
+    private void loadScytheConfig () {
+        ScytheRunnable.getRun ( ).runTaskTimer ( instance, 20, (20 * 5) );
         try {
-            File rootDir = new File (getDataFolder(), "DTools");
-            File dataDir = new File (rootDir, "data");
+            File rootDir = new File ( getDataFolder ( ), "DTools" );
+            File dataDir = new File ( rootDir, "data" );
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
-            FileReader readerScytheConfig = new FileReader(new File(dataDir, "ScytheConfig.json"));
-            Type typeScythe = new TypeToken<HashMap<String, Integer>>(){}.getType();
-            Gson gson = new Gson();
-            scytheConfig = gson.fromJson(readerScytheConfig, typeScythe);
-            readerScytheConfig.close();
-        }catch(IOException | JsonSyntaxException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "ScytheConfig.json doesn't exist!", e);
+            FileReader readerScytheConfig = new FileReader ( new File ( dataDir, "ScytheConfig.json" ) );
+            Type typeScythe = new TypeToken<HashMap<String, Integer>> ( ) {
+            }.getType ( );
+            Gson gson = new Gson ( );
+            scytheConfig = gson.fromJson ( readerScytheConfig, typeScythe );
+            readerScytheConfig.close ( );
+        } catch (IOException | JsonSyntaxException e) {
+            Bukkit.getLogger ( ).log ( Level.SEVERE, "ScytheConfig.json doesn't exist!", e );
         }
     }
-    private void loadRegionData() {
+
+    private void loadRegionData () {
         try {
-            File rootDir = new File (getDataFolder(), "DTools");
-            File dataDir = new File (rootDir, "data");
+            File rootDir = new File ( getDataFolder ( ), "DTools" );
+            File dataDir = new File ( rootDir, "data" );
             if (!dataDir.exists ( )) {
                 dataDir.mkdirs ( );
             }
-            FileReader readerPlayerAccessData = new FileReader(new File(dataDir, "PlayerAccessData.json"));
-            Type typeAccessData = new TypeToken<HashMap<String, PlayerAccessManager>>(){}.getType();
-            Gson gson = new Gson();
-            allPlayers = gson.fromJson(readerPlayerAccessData, typeAccessData);
-            readerPlayerAccessData.close();
-        }catch(IOException | JsonSyntaxException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "PlayerAccessData.json doesn't exist!", e);
+            FileReader readerPlayerAccessData = new FileReader ( new File ( dataDir, "PlayerAccessData.json" ) );
+            Type typeAccessData = new TypeToken<HashMap<String, PlayerAccessManager>> ( ) {
+            }.getType ( );
+            Gson gson = new Gson ( );
+            allPlayers = gson.fromJson ( readerPlayerAccessData, typeAccessData );
+            readerPlayerAccessData.close ( );
+        } catch (IOException | JsonSyntaxException e) {
+            Bukkit.getLogger ( ).log ( Level.SEVERE, "PlayerAccessData.json doesn't exist!", e );
         }
     }
-    private void disableCustomItems() {
-        CustomItemsRunnable.getBukkitRunnable().cancel();
-        WriteRunnable.getRunnable().cancel();
-        ScytheRunnable.getRun().cancel();
-        CustomItems.saveToConfig();
-        PlayerBonusesData.saveToConfig();
-        PlayerAccessManager.saveToConfig();
+
+    private void disableCustomItems () {
+        CustomItemsRunnable.getBukkitRunnable ( ).cancel ( );
+        WriteRunnable.getRunnable ( ).cancel ( );
+        ScytheRunnable.getRun ( ).cancel ( );
+        CustomItems.saveToConfig ( );
+        PlayerBonusesData.saveToConfig ( );
+        PlayerAccessManager.saveToConfig ( );
         //Region
-        PlayerAccessManager.saveToConfig();
-        RegionCheckRunnable.regionCheckRunnable.cancel();
+        PlayerAccessManager.saveToConfig ( );
+        RegionCheckRunnable.regionCheckRunnable.cancel ( );
     }
-    public PermissionsManager getPermissionsManager() {
-        return new PermissionsManager();
+
+    public PermissionsManager getPermissionsManager () {
+        return new PermissionsManager ( );
     }
+
     //DBC EVENTS
-    public void damagedEvent(IDBCEvent.DamagedEvent event) {
-        DBCDamageEvent dmgEvent = new DBCDamageEvent(event);
-        Bukkit.getPluginManager().callEvent(dmgEvent);
+    public void damagedEvent ( IDBCEvent.DamagedEvent event ) {
+        DBCDamageEvent dmgEvent = new DBCDamageEvent ( event );
+        Bukkit.getPluginManager ( ).callEvent ( dmgEvent );
     }
-    public void koEvent(IDBCEvent.DBCKnockout event) {
-        DBCKnockoutEvent koEvent = new DBCKnockoutEvent(event);
-        Bukkit.getPluginManager().callEvent(koEvent);
+
+    public void koEvent ( IDBCEvent.DBCKnockout event ) {
+        DBCKnockoutEvent koEvent = new DBCKnockoutEvent ( event );
+        Bukkit.getPluginManager ( ).callEvent ( koEvent );
     }
     //DBC EVENTS
     //Spacey
