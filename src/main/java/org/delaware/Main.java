@@ -222,13 +222,20 @@ public class Main extends JavaPlugin {
         return faction2.getName ( );
     }
 
+    public String getTopLandFaction () {
+        return FactionColl.get ( ).getAll ( ).stream ( ).reduce ( ( a, b ) -> {
+            if (a.getLandCount ( ) > b.getLandCount ( )) return a;
+            else return b;
+        } ).orElse ( new Faction ( ) ).getName ( );
+    }
+
     public boolean hasAccessFaction ( String name ) {
         Player player = Bukkit.getPlayer ( name );
         MPlayer mPlayer = MPlayer.get ( player );
         Faction faction = mPlayer.getFaction ( );
-        long alliesCount = FactionColl.get().getAll().stream()
-                .filter(e -> e.getRelationTo(faction) == Rel.ALLY)
-                .count();
+        long alliesCount = FactionColl.get ( ).getAll ( ).stream ( )
+                .filter ( e -> e.getRelationTo ( faction ) == Rel.ALLY )
+                .count ( );
 
         if (faction == null) return false;
         Faction faction2 = BoardColl.get ( ).getFactionAt ( PS.valueOf ( player.getLocation ( ) ) );
