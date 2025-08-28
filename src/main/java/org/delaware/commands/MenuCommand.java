@@ -4,6 +4,8 @@ import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
+import fr.minuskube.inv.content.Pagination;
+import fr.minuskube.inv.content.SlotIterator;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MenuCommand extends BaseCommand {
-    @Command(name = "zenkai", aliases = {"zenkai", "zenkai"})
+    @Command(name = "menu", aliases = {"menu"})
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
         SmartInventory INVENTORY = SmartInventory.builder ( )
@@ -85,9 +87,9 @@ public class MenuCommand extends BaseCommand {
                                                                         if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
                                                                             continue;
                                                                         }
-                                                                        inventoryContents.set(row, col, ClickableItem.empty(
-                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
-                                                                        ));
+                                                                        inventoryContents.set ( row, col, ClickableItem.empty (
+                                                                                new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) )
+                                                                        ) );
                                                                     }
                                                                 }
                                                                 ItemStack t1 = new ItemStack ( 4977 );
@@ -130,9 +132,9 @@ public class MenuCommand extends BaseCommand {
                                                                         if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
                                                                             continue;
                                                                         }
-                                                                        inventoryContents.set(row, col, ClickableItem.empty(
-                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
-                                                                        ));
+                                                                        inventoryContents.set ( row, col, ClickableItem.empty (
+                                                                                new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) )
+                                                                        ) );
                                                                     }
                                                                 }
                                                             }
@@ -156,9 +158,9 @@ public class MenuCommand extends BaseCommand {
                                                                         if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
                                                                             continue;
                                                                         }
-                                                                        inventoryContents.set(row, col, ClickableItem.empty(
-                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
-                                                                        ));
+                                                                        inventoryContents.set ( row, col, ClickableItem.empty (
+                                                                                new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) )
+                                                                        ) );
                                                                     }
                                                                 }
                                                                 ItemStack t1 = new ItemStack ( 4977 );
@@ -201,9 +203,9 @@ public class MenuCommand extends BaseCommand {
                                                                         if (row == 2 && col == 2 || row == 2 && col == 4 || row == 2 && col == 6 || row == 4 && col == 4) {
                                                                             continue;
                                                                         }
-                                                                        inventoryContents.set(row, col, ClickableItem.empty(
-                                                                                new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData())
-                                                                        ));
+                                                                        inventoryContents.set ( row, col, ClickableItem.empty (
+                                                                                new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData ( ) )
+                                                                        ) );
                                                                     }
                                                                 }
                                                             }
@@ -234,107 +236,231 @@ public class MenuCommand extends BaseCommand {
                                     .provider ( new InventoryProvider ( ) {
                                         @Override
                                         public void init ( Player player, InventoryContents inventoryContents ) {
-                                            inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) ) ) );
-                                            ItemStack eventos = new ItemStack ( 4427 );
-                                            ItemMeta eventosItemMeta = eventos.getItemMeta ( );
-                                            eventosItemMeta.setDisplayName ( CC.translate ( "&6Eventos" ) );
-                                            eventos.setItemMeta ( eventosItemMeta );
-                                            inventoryContents.set ( 1, 2, ClickableItem.of ( eventos, e -> {
-                                                player.performCommand ( "warp eventos" );
-                                            } ) );
-                                            ItemStack factions = new ItemStack ( 4144 );
-                                            ItemMeta factionsItemMeta = factions.getItemMeta ( );
-                                            factionsItemMeta.setDisplayName ( CC.translate ( "&cFactions" ) );
-                                            factions.setItemMeta ( factionsItemMeta );
-                                            inventoryContents.set ( 1, 4, ClickableItem.of ( factions, e -> {
-                                                player.performCommand ( "warp factions" );
-
-                                            } ) );
-                                            ItemStack planetaVegeta = new ItemStack ( 4422 );
-                                            ItemMeta planetaVegetaItemMeta = planetaVegeta.getItemMeta ( );
-                                            planetaVegetaItemMeta.setDisplayName ( CC.translate ( "&4Planeta Vegeta" ) );
-                                            planetaVegeta.setItemMeta ( planetaVegetaItemMeta );
-                                            inventoryContents.set ( 1, 6, ClickableItem.of ( planetaVegeta, e -> {
-                                                player.performCommand ( "warp planetavegeta" );
-                                            } ) );
-                                            ItemStack tienda = new ItemStack ( 4444 );
-                                            ItemMeta tiendaItemMeta = tienda.getItemMeta ( );
-                                            tiendaItemMeta.setDisplayName ( CC.translate ( "&2Tienda" ) );
-                                            tienda.setItemMeta ( tiendaItemMeta );
-                                            inventoryContents.set ( 2, 2, ClickableItem.of ( tienda, e -> {
-                                                player.performCommand ( "warp tienda" );
-
-                                            } ) );
-                                            ItemStack talubias = new ItemStack ( 4461 );
-                                            ItemMeta talubiasItemMeta = talubias.getItemMeta ( );
-                                            talubiasItemMeta.setDisplayName ( CC.translate ( "&eTraining Alubias" ) );
-                                            talubias.setItemMeta ( talubiasItemMeta );
-                                            inventoryContents.set ( 2, 4, ClickableItem.of ( talubias, e -> {
-                                                player.performCommand ( "warp talubias" );
-
-                                            } ) );
-                                            ItemStack parcelas = new ItemStack ( 44 );
-                                            ItemMeta parcelasItemMeta = parcelas.getItemMeta ( );
-                                            parcelasItemMeta.setDisplayName ( CC.translate ( "&fCapital del Oeste" ) );
-                                            parcelas.setItemMeta ( parcelasItemMeta );
-                                            inventoryContents.set ( 2, 6, ClickableItem.of ( parcelas, e -> {
-                                                player.performCommand ( "warp capital" );
+                                            ItemStack humanos = new ItemStack ( 6207 );
+                                            ItemMeta humanosMeta = humanos.getItemMeta ( );
+                                            humanosMeta.setDisplayName ( CC.translate ( "&6Templo de tenshinhan" ) );
+                                            humanos.setItemMeta ( humanosMeta );
+                                            inventoryContents.set ( 1, 1, ClickableItem.of ( humanos, ( event ) -> {
+                                                player.performCommand ( "warp humanos" );
                                             } ) );
 
-
-                                            ItemStack banco = new ItemStack ( 4407 );
-                                            ItemMeta bancoItemMeta = banco.getItemMeta ( );
-                                            bancoItemMeta.setDisplayName ( CC.translate ( "&bBanco" ) );
-                                            banco.setItemMeta ( bancoItemMeta );
-                                            inventoryContents.set ( 3, 2, ClickableItem.of ( banco, e -> {
-                                                player.performCommand ( "warp banco" );
-
-                                            } ) );
-                                            ItemStack recursos = new ItemStack ( 4687 );
-                                            ItemMeta recursosItemMeta = recursos.getItemMeta ( );
-                                            recursosItemMeta.setDisplayName ( CC.translate ( "&dRecursos" ) );
-                                            recursos.setItemMeta ( recursosItemMeta );
-                                            inventoryContents.set ( 3, 4, ClickableItem.of ( recursos, e -> {
-                                                player.performCommand ( "warp recursos" );
-
-                                            } ) );
-                                            ItemStack ritual = new ItemStack ( 4142 );
-                                            ItemMeta ritualItemMeta = ritual.getItemMeta ( );
-                                            ritualItemMeta.setDisplayName ( CC.translate ( "&eRitual &cSSG" ) );
-                                            ritual.setItemMeta ( ritualItemMeta );
-                                            inventoryContents.set ( 3, 6, ClickableItem.of ( ritual, e -> {
-                                                player.performCommand ( "warp ritual" );
+                                            ItemStack arcosianos = new ItemStack ( 6219 );
+                                            ItemMeta arcosianosMeta = arcosianos.getItemMeta ( );
+                                            arcosianosMeta.setDisplayName ( CC.translate ( "&5Nave de Freezer" ) );
+                                            arcosianos.setItemMeta ( arcosianosMeta );
+                                            inventoryContents.set ( 1, 3, ClickableItem.of ( arcosianos, ( event ) -> {
+                                                player.performCommand ( "warp arcosianos" );
                                             } ) );
 
-
-                                            ItemStack torneo = new ItemStack ( 4419 );
-                                            ItemMeta torneoItemMeta = torneo.getItemMeta ( );
-                                            torneoItemMeta.setDisplayName ( CC.translate ( "&cTorneo" ) );
-                                            torneo.setItemMeta ( torneoItemMeta );
-                                            inventoryContents.set ( 4, 2, ClickableItem.of ( torneo, e -> {
+                                            ItemStack saiyans = new ItemStack ( 6208 );
+                                            ItemMeta saiyansMeta = saiyans.getItemMeta ( );
+                                            saiyansMeta.setDisplayName ( CC.translate ( "&eTorneo" ) );
+                                            saiyans.setItemMeta ( saiyansMeta );
+                                            inventoryContents.set ( 3, 1, ClickableItem.of ( saiyans, ( event ) -> {
                                                 player.performCommand ( "warp torneo" );
+                                            } ) );
+
+                                            ItemStack Majin = new ItemStack ( 6190 );
+                                            ItemMeta MajinMeta = Majin.getItemMeta ( );
+                                            MajinMeta.setDisplayName ( CC.translate ( "&dMajin" ) );
+                                            Majin.setItemMeta ( MajinMeta );
+                                            inventoryContents.set ( 3, 3, ClickableItem.of ( Majin, ( event ) -> {
+                                                player.performCommand ( "warp CiudadSatan" );
+                                            } ) );
+
+                                            ItemStack Namekianos = new ItemStack ( 6187 );
+                                            ItemMeta NamekianosMeta = Namekianos.getItemMeta ( );
+                                            NamekianosMeta.setDisplayName ( CC.translate ( "&2Corporacion capsula" ) );
+                                            Namekianos.setItemMeta ( NamekianosMeta );
+                                            inventoryContents.set ( 2, 5, ClickableItem.of ( Namekianos, ( event ) -> {
+                                                player.performCommand ( "warp corporacionCapsula" );
+                                            } ) );
+
+                                            ItemStack Kaioken = new ItemStack ( 6192 );
+                                            ItemMeta KaiokenMeta = Kaioken.getItemMeta ( );
+                                            KaiokenMeta.setDisplayName ( CC.translate ( "&8[&4Kaioken&8]" ) );
+                                            Kaioken.setItemMeta ( KaiokenMeta );
+                                            inventoryContents.set ( 1, 7, ClickableItem.of ( Kaioken, ( event ) -> {
+                                                player.performCommand ( "warp kaioken" );
 
                                             } ) );
-                                            ItemStack reglas = new ItemStack ( 4411 );
-                                            ItemMeta reglasItemMeta = reglas.getItemMeta ( );
-                                            reglasItemMeta.setDisplayName ( CC.translate ( "&7Reglas" ) );
-                                            reglas.setItemMeta ( reglasItemMeta );
-                                            inventoryContents.set ( 4, 4, ClickableItem.of ( reglas, e -> {
-                                                player.performCommand ( "warp reglas" );
+
+                                            ItemStack Mistico = new ItemStack ( 6210 );
+                                            ItemMeta MisticoMeta = Mistico.getItemMeta ( );
+                                            MisticoMeta.setDisplayName ( CC.translate ( "&8[&7Raciales&8]" ) );
+                                            Mistico.setItemMeta ( MisticoMeta );
+                                            inventoryContents.set ( 3, 7, ClickableItem.of ( Mistico, ( event ) -> {
+                                                player.performCommand ( "warp raciales" );
 
                                             } ) );
-                                            ItemStack staffs = new ItemStack ( 4108 );
-                                            ItemMeta staffsItemMeta = staffs.getItemMeta ( );
-                                            staffsItemMeta.setDisplayName ( CC.translate ( "&4Staffs" ) );
-                                            staffs.setItemMeta ( staffsItemMeta );
-                                            inventoryContents.set ( 4, 6, ClickableItem.of ( staffs, e -> {
-                                                player.performCommand ( "warp staffs" );
+
+                                            ItemStack Salir = new ItemStack ( 331 );
+                                            ItemMeta SalirMeta = Salir.getItemMeta ( );
+                                            SalirMeta.setDisplayName ( CC.translate ( "&4Salir" ) );
+                                            Salir.setItemMeta ( SalirMeta );
+                                            inventoryContents.set ( 5, 0, ClickableItem.of ( Salir, ( event ) -> {
+                                                player.closeInventory ( );
                                             } ) );
+
+                                            ItemStack siguientePagina = new ItemStack ( 4460 );
+                                            ItemMeta siguientePaginaMeta = siguientePagina.getItemMeta ( );
+                                            siguientePaginaMeta.setDisplayName ( CC.translate ( "&aSiguiente pagina" ) );
+                                            siguientePagina.setItemMeta ( siguientePaginaMeta );
+                                            inventoryContents.set ( 5, 8, ClickableItem.of ( siguientePagina, ( event ) -> {
+                                                SmartInventory nextPage = SmartInventory.builder ( ).title ( CC.translate ( "&eZonas del Servidor" ) )
+                                                        .type ( InventoryType.CHEST )
+                                                        .size ( 6, 9 )
+                                                        .id ( "zonaszenkai" )
+                                                        .provider ( new InventoryProvider ( ) {
+                                                            @Override
+                                                            public void init ( Player player, InventoryContents inventoryContents ) {
+                                                                ItemStack factions = new ItemStack ( 2 );
+                                                                ItemMeta factionsMeta = factions.getItemMeta ( );
+                                                                factionsMeta.setDisplayName ( CC.translate ( "&aFactions" ) );
+                                                                factions.setItemMeta ( factionsMeta );
+                                                                inventoryContents.set ( 1, 1, ClickableItem.of ( factions, ( event ) -> {
+                                                                    player.performCommand ( "warp factions" );
+
+                                                                } ) );
+
+
+                                                                ItemStack staff = new ItemStack ( 4389 );
+                                                                ItemMeta staffMeta = staff.getItemMeta ( );
+                                                                staffMeta.setDisplayName ( CC.translate ( "&bStaff" ) );
+                                                                staff.setItemMeta ( staffMeta );
+                                                                inventoryContents.set ( 1, 3, ClickableItem.of ( staff, ( event ) -> {
+                                                                    player.performCommand ( "warp staff" );
+
+                                                                } ) );
+
+
+                                                                ItemStack sagas = new ItemStack ( 6216 );
+                                                                ItemMeta sagasMeta = sagas.getItemMeta ( );
+                                                                sagasMeta.setDisplayName ( CC.translate ( "&6Sagas" ) );
+                                                                sagas.setItemMeta ( sagasMeta );
+                                                                inventoryContents.set ( 1, 5, ClickableItem.of ( sagas, ( event ) -> {
+                                                                    player.performCommand ( "warp sagas" );
+
+                                                                } ) );
+
+
+                                                                ItemStack eventos = new ItemStack ( 6214 );
+                                                                ItemMeta eventosMeta = eventos.getItemMeta ( );
+                                                                eventosMeta.setDisplayName ( CC.translate ( "&eEventos" ) );
+                                                                eventos.setItemMeta ( eventosMeta );
+                                                                inventoryContents.set ( 1, 7, ClickableItem.of ( eventos, ( event ) -> {
+                                                                    player.performCommand ( "warp eventos" );
+
+                                                                } ) );
+
+
+                                                                ItemStack Recursos = new ItemStack ( 17 );
+                                                                ItemMeta recursosMeta = Recursos.getItemMeta ( );
+                                                                recursosMeta.setDisplayName ( CC.translate ( "&eRecursos" ) );
+                                                                Recursos.setItemMeta ( recursosMeta );
+                                                                inventoryContents.set ( 3, 1, ClickableItem.of ( Recursos, ( event ) -> {
+                                                                    player.performCommand ( "warp recursos" );
+                                                                } ) );
+
+                                                                ItemStack Reglas = new ItemStack ( 690 );
+                                                                ItemMeta ReglasMeta = Reglas.getItemMeta ( );
+                                                                ReglasMeta.setDisplayName ( CC.translate ( "&4Reglas" ) );
+                                                                Reglas.setItemMeta ( ReglasMeta );
+                                                                inventoryContents.set ( 3, 3, ClickableItem.of ( Reglas, ( event ) -> {
+                                                                    player.performCommand ( "warp reglas" );
+                                                                } ) );
+
+                                                                ItemStack Mercado = new ItemStack ( 6200 );
+                                                                ItemMeta MercadoMeta = Mercado.getItemMeta ( );
+                                                                MercadoMeta.setDisplayName ( CC.translate ( "&6Mercado" ) );
+                                                                Mercado.setItemMeta ( MercadoMeta );
+                                                                inventoryContents.set ( 3, 5, ClickableItem.of ( Mercado, ( event ) -> {
+                                                                    player.performCommand ( "warp mercado" );
+                                                                } ) );
+
+                                                                ItemStack Banco = new ItemStack ( 6080 );
+                                                                ItemMeta BancoMeta = Banco.getItemMeta ( );
+                                                                BancoMeta.setDisplayName ( CC.translate ( "&8[&fBanco&8]" ) );
+                                                                Banco.setItemMeta ( BancoMeta );
+                                                                inventoryContents.set ( 3, 7, ClickableItem.of ( Banco, ( event ) -> {
+                                                                    player.performCommand ( "warp banco" );
+                                                                } ) );
+
+                                                                ItemStack Salir = new ItemStack ( 331 );
+                                                                ItemMeta SalirMeta = Salir.getItemMeta ( );
+                                                                SalirMeta.setDisplayName ( CC.translate ( "&4Salir" ) );
+                                                                Salir.setItemMeta ( SalirMeta );
+                                                                inventoryContents.set ( 5, 0, ClickableItem.of ( Salir, ( event ) -> {
+                                                                    player.closeInventory ( );
+                                                                } ) );
+
+                                                                ItemStack siguientePagina = new ItemStack ( 4460 );
+                                                                ItemMeta siguientePaginaMeta = siguientePagina.getItemMeta ( );
+                                                                siguientePaginaMeta.setDisplayName ( CC.translate ( "&aSiguiente pagina" ) );
+                                                                siguientePagina.setItemMeta ( siguientePaginaMeta );
+                                                                inventoryContents.set ( 5, 8, ClickableItem.of ( siguientePagina, ( event ) -> {
+                                                                } ) );
+                                                                ItemStack panel = new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) );
+                                                                ItemMeta panelMeta = panel.getItemMeta ( );
+                                                                panelMeta.setDisplayName ( " " );
+                                                                panel.setItemMeta ( panelMeta );
+
+                                                                for (int row = 0; row < inventoryContents.inventory ( ).getRows ( ); row++) {
+                                                                    for (int col = 0; col < 9; col++) {
+                                                                        if (!inventoryContents.get ( row, col ).isPresent ( )) {
+                                                                            inventoryContents.set ( row, col, ClickableItem.empty ( panel ) );
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void update ( Player player, InventoryContents inventoryContents ) {
+                                                                ItemStack panel = new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) );
+                                                                ItemMeta panelMeta = panel.getItemMeta ( );
+                                                                panelMeta.setDisplayName ( " " );
+                                                                panel.setItemMeta ( panelMeta );
+
+                                                                for (int row = 0; row < inventoryContents.inventory ( ).getRows ( ); row++) {
+                                                                    for (int col = 0; col < 9; col++) {
+                                                                        if (!inventoryContents.get ( row, col ).isPresent ( )) {
+                                                                            inventoryContents.set ( row, col, ClickableItem.empty ( panel ) );
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        } )
+                                                        .build ( );
+                                                nextPage.open ( player );
+                                            } ) );
+                                            ItemStack panel = new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) );
+                                            ItemMeta panelMeta = panel.getItemMeta ( );
+                                            panelMeta.setDisplayName ( " " );
+                                            panel.setItemMeta ( panelMeta );
+
+                                            for (int row = 0; row < inventoryContents.inventory ( ).getRows ( ); row++) {
+                                                for (int col = 0; col < 9; col++) {
+                                                    if (!inventoryContents.get ( row, col ).isPresent ( )) {
+                                                        inventoryContents.set ( row, col, ClickableItem.empty ( panel ) );
+                                                    }
+                                                }
+                                            }
+
                                         }
 
                                         @Override
                                         public void update ( Player player, InventoryContents inventoryContents ) {
-                                            inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) ) ) );
+                                            ItemStack panel = new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) );
+                                            ItemMeta panelMeta = panel.getItemMeta ( );
+                                            panelMeta.setDisplayName ( " " );
+                                            panel.setItemMeta ( panelMeta );
+                                            for (int row = 0; row < inventoryContents.inventory ( ).getRows ( ); row++) {
+                                                for (int col = 0; col < 9; col++) {
+                                                    if (!inventoryContents.get ( row, col ).isPresent ( )) {
+                                                        inventoryContents.set ( row, col, ClickableItem.empty ( panel ) );
+                                                    }
+                                                }
+                                            }
                                         }
                                     } )
                                     .build ( );
@@ -352,137 +478,121 @@ public class MenuCommand extends BaseCommand {
                                     .provider ( new InventoryProvider ( ) {
                                         @Override
                                         public void init ( Player player, InventoryContents inventoryContents ) {
-                                            inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.CYAN.getData ( ) ) ) );
-                                            ItemStack patriarca = new ItemStack ( 724 );
-                                            ItemMeta patriarcaItemMeta = patriarca.getItemMeta ( );
-                                            patriarcaItemMeta.setDisplayName ( CC.translate ( "&aGran Patriarca" ) );
-                                            patriarca.setItemMeta ( patriarcaItemMeta );
-                                            inventoryContents.set ( 1, 2, ClickableItem.of ( patriarca, e -> {
-                                                player.performCommand ( "warp patriarca" );
-                                            } ) );
-                                            ItemStack vegeta = new ItemStack ( 720 );
-                                            ItemMeta vegetaM = vegeta.getItemMeta ( );
-                                            vegetaM.setDisplayName ( CC.translate ( "&bVegeta" ) );
-                                            vegeta.setItemMeta ( vegetaM );
-                                            inventoryContents.set ( 1, 4, ClickableItem.of ( vegeta, e -> {
-                                                player.performCommand ( "warp vegeta" );
-
-                                            } ) );
-                                            ItemStack kami = new ItemStack ( 4460 );
-                                            ItemMeta kamiItemMeta = kami.getItemMeta ( );
-                                            kamiItemMeta.setDisplayName ( CC.translate ( "&2Kami sama" ) );
-                                            kami.setItemMeta ( kamiItemMeta );
-                                            inventoryContents.set ( 1, 6, ClickableItem.of ( kami, e -> {
-                                                player.performCommand ( "warp kami" );
-
-                                            } ) );
-                                            ItemStack kaio = new ItemStack ( 4457 );
-                                            ItemMeta kaioItemMeta = kaio.getItemMeta ( );
-                                            kaioItemMeta.setDisplayName ( CC.translate ( "&eKaio" ) );
-                                            kaio.setItemMeta ( kaioItemMeta );
-                                            inventoryContents.set ( 2, 2, ClickableItem.of ( kaio, e -> {
+                                            ItemStack kaio = new ItemStack ( 6180 );
+                                            ItemMeta kaioMeta = kaio.getItemMeta ( );
+                                            kaioMeta.setDisplayName ( CC.translate ( "&aKaio" ) );
+                                            kaio.setItemMeta ( kaioMeta );
+                                            inventoryContents.set ( 1, 1, ClickableItem.of ( kaio, ( event ) -> {
                                                 player.performCommand ( "warp kaio" );
-
                                             } ) );
-                                            ItemStack freezer = new ItemStack ( 4695 );
-                                            ItemMeta freezerItemMeta = freezer.getItemMeta ( );
-                                            freezerItemMeta.setDisplayName ( CC.translate ( "&4Freezer" ) );
-                                            freezer.setItemMeta ( freezerItemMeta );
-                                            inventoryContents.set ( 2, 4, ClickableItem.of ( freezer, e -> {
-                                                player.performCommand ( "warp freezer" );
 
+                                            ItemStack whis = new ItemStack ( 4629 );
+                                            ItemMeta whisMeta = whis.getItemMeta ( );
+                                            whisMeta.setDisplayName ( CC.translate ( "&bWhis" ) );
+                                            whis.setItemMeta ( whisMeta );
+                                            inventoryContents.set ( 1, 3, ClickableItem.of ( whis, ( event ) -> {
+                                                player.performCommand ( "warp whis" );
                                             } ) );
-                                            ItemStack goku = new ItemStack ( 4456 );
-                                            ItemMeta gokuItemMeta = goku.getItemMeta ( );
-                                            gokuItemMeta.setDisplayName ( CC.translate ( "&6Goku" ) );
-                                            goku.setItemMeta ( gokuItemMeta );
-                                            inventoryContents.set ( 2, 6, ClickableItem.of ( goku, e -> {
+
+                                            ItemStack Goku = new ItemStack ( 5936 );
+                                            ItemMeta GokuMeta = Goku.getItemMeta ( );
+                                            GokuMeta.setDisplayName ( CC.translate ( "&6Goku" ) );
+                                            Goku.setItemMeta ( GokuMeta );
+                                            inventoryContents.set ( 1, 5, ClickableItem.of ( Goku, ( event ) -> {
                                                 player.performCommand ( "warp goku" );
                                             } ) );
 
+                                            ItemStack Freezer = new ItemStack ( 5256 );
+                                            ItemMeta FreezerMeta = Freezer.getItemMeta ( );
+                                            FreezerMeta.setDisplayName ( CC.translate ( "&5Freezer" ) );
+                                            Freezer.setItemMeta ( FreezerMeta );
+                                            inventoryContents.set ( 1, 7, ClickableItem.of ( Freezer, ( event ) -> {
+                                                player.performCommand ( "warp Freezer" );
+                                            } ) );
 
-                                            ItemStack babidi = new ItemStack ( 4458 );
-                                            ItemMeta babidiItemMeta = babidi.getItemMeta ( );
-                                            babidiItemMeta.setDisplayName ( CC.translate ( "&9Babidi" ) );
-                                            babidi.setItemMeta ( babidiItemMeta );
-                                            inventoryContents.set ( 3, 2, ClickableItem.of ( babidi, e -> {
+                                            ItemStack Babidi = new ItemStack ( 4529 );
+                                            ItemMeta BabidiMeta = Babidi.getItemMeta ( );
+                                            BabidiMeta.setDisplayName ( CC.translate ( "&dBabidi" ) );
+                                            Babidi.setItemMeta ( BabidiMeta );
+                                            inventoryContents.set ( 3, 1, ClickableItem.of ( Babidi, ( event ) -> {
                                                 player.performCommand ( "warp babidi" );
-
                                             } ) );
-                                            ItemStack cell = new ItemStack ( 4462 );
-                                            ItemMeta cellItemMeta = cell.getItemMeta ( );
-                                            cellItemMeta.setDisplayName ( CC.translate ( "&2Cell" ) );
-                                            cell.setItemMeta ( cellItemMeta );
-                                            inventoryContents.set ( 3, 4, ClickableItem.of ( cell, e -> {
-                                                player.performCommand ( "warp cell" );
 
+
+                                            ItemStack Kami = new ItemStack ( 4696 );
+                                            ItemMeta KamiMeta = Kami.getItemMeta ( );
+                                            KamiMeta.setDisplayName ( CC.translate ( "&eKami" ) );
+                                            Kami.setItemMeta ( KamiMeta );
+                                            inventoryContents.set ( 3, 3, ClickableItem.of ( Kami, ( event ) -> {
+                                                player.performCommand ( "warp kami" );
                                             } ) );
-                                            ItemStack roshi = new ItemStack ( 4463 );
-                                            ItemMeta roshiItemMeta = roshi.getItemMeta ( );
-                                            roshiItemMeta.setDisplayName ( CC.translate ( "&dRoshi" ) );
-                                            roshi.setItemMeta ( roshiItemMeta );
-                                            inventoryContents.set ( 3, 6, ClickableItem.of ( roshi, e -> {
+
+                                            ItemStack Roshi = new ItemStack ( 5774 );
+                                            ItemMeta RoshiMeta = Roshi.getItemMeta ( );
+                                            RoshiMeta.setDisplayName ( CC.translate ( "&dRoshi" ) );
+                                            Roshi.setItemMeta ( RoshiMeta );
+                                            inventoryContents.set ( 3, 5, ClickableItem.of ( Roshi, ( event ) -> {
                                                 player.performCommand ( "warp roshi" );
                                             } ) );
 
-
-                                            ItemStack rocky = new ItemStack ( 696 );
-                                            ItemMeta rockyItemMeta = rocky.getItemMeta ( );
-                                            rockyItemMeta.setDisplayName ( CC.translate ( "&6Rocky" ) );
-                                            rocky.setItemMeta ( rockyItemMeta );
-                                            inventoryContents.set ( 4, 2, ClickableItem.of ( rocky, e -> {
-                                                player.performCommand ( "warp rocky" );
-
+                                            ItemStack Cell = new ItemStack ( 5235 );
+                                            ItemMeta CellMeta = Cell.getItemMeta ( );
+                                            CellMeta.setDisplayName ( CC.translate ( "&2Cell" ) );
+                                            Cell.setItemMeta ( CellMeta );
+                                            inventoryContents.set ( 3, 7, ClickableItem.of ( Cell, ( event ) -> {
+                                                player.performCommand ( "warp cell" );
                                             } ) );
-                                            ItemStack enma = new ItemStack ( 759 );
-                                            ItemMeta enmaItemMeta = enma.getItemMeta ( );
-                                            enmaItemMeta.setDisplayName ( CC.translate ( "&5Enma" ) );
-                                            enma.setItemMeta ( enmaItemMeta );
-                                            inventoryContents.set ( 4, 4, ClickableItem.of ( enma, e -> {
-                                                player.performCommand ( "warp enma" );
-
+                                            ItemStack Guru = new ItemStack ( 724 );
+                                            ItemMeta GuruMeta = Guru.getItemMeta ( );
+                                            GuruMeta.setDisplayName ( CC.translate ( "&2Guru" ) );
+                                            Guru.setItemMeta ( GuruMeta );
+                                            inventoryContents.set ( 5, 0, ClickableItem.of ( Guru, ( event ) -> {
+                                                player.performCommand ( "warp guru" );
                                             } ) );
-                                            ItemStack whis = new ItemStack ( 4629 );
-                                            ItemMeta whisItemMeta = whis.getItemMeta ( );
-                                            whisItemMeta.setDisplayName ( CC.translate ( "&fWhis" ) );
-                                            whis.setItemMeta ( whisItemMeta );
-                                            inventoryContents.set ( 4, 6, ClickableItem.of ( whis, e -> {
-                                                player.performCommand ( "warp whis" );
+                                            ItemStack JinRyuu = new ItemStack ( 4748 );
+                                            ItemMeta JinryuuMeta = JinRyuu.getItemMeta ( );
+                                            JinryuuMeta.setDisplayName ( CC.translate ( "&bJin Ryuu" ) );
+                                            JinRyuu.setItemMeta ( JinryuuMeta );
+                                            inventoryContents.set ( 5, 8, ClickableItem.of ( JinRyuu, ( event ) -> {
+                                                player.performCommand ( "warp jinryuu" );
                                             } ) );
+                                            ItemStack panel = new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) );
+                                            ItemMeta panelMeta = panel.getItemMeta ( );
+                                            panelMeta.setDisplayName ( " " );
+                                            panel.setItemMeta ( panelMeta );
+                                            for (int row = 0; row < inventoryContents.inventory ( ).getRows ( ); row++) {
+                                                for (int col = 0; col < 9; col++) {
+                                                    if (!inventoryContents.get ( row, col ).isPresent ( )) {
+                                                        inventoryContents.set ( row, col, ClickableItem.empty ( panel ) );
+                                                    }
+                                                }
+                                            }
                                         }
 
                                         @Override
                                         public void update ( Player player, InventoryContents inventoryContents ) {
-                                            inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.CYAN.getData ( ) ) ) );
-                                            for (int col = 0; col <= 8; col++) {
-                                                inventoryContents.set ( 0, col, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
+                                            ItemStack panel = new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) );
+                                            ItemMeta panelMeta = panel.getItemMeta ( );
+                                            panelMeta.setDisplayName ( " " );
+                                            panel.setItemMeta ( panelMeta );
+                                            for (int row = 0; row < inventoryContents.inventory ( ).getRows ( ); row++) {
+                                                for (int col = 0; col < 9; col++) {
+                                                    if (!inventoryContents.get ( row, col ).isPresent ( )) {
+                                                        inventoryContents.set ( row, col, ClickableItem.empty ( panel ) );
+                                                    }
+                                                }
                                             }
-                                            inventoryContents.set ( 1, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 1, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 2, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 2, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 3, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 3, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 4, 0, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            inventoryContents.set ( 4, 8, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            for (int col = 0; col <= 8; col++) {
-                                                inventoryContents.set ( 5, col, ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            }
-
                                         }
                                     } )
                                     .build ( );
                             dbcInventory.open ( player );
                         } ) );
-                        ArrayList<String> loreTienda = new ArrayList<> ( );
-                        loreTienda.add ( CC.translate ( "&cProximamente" ) );
                         ItemStack tienda = new ItemStack ( 4407, 1 );
                         ItemMeta tiendaMeta = tienda.getItemMeta ( );
-                        tiendaMeta.setLore ( loreTienda );
                         tiendaMeta.setDisplayName ( CC.translate ( "&6&lTienda" ) );
                         tienda.setItemMeta ( tiendaMeta );
                         inventoryContents.set ( 2, 6, ClickableItem.of ( tienda, e -> {
-                            player.sendMessage ( CC.translate ( "&cEstamos trabajando en eso..." ) );
+                            player.sendMessage ( CC.translate ( "&e[&bTienda&e]  &chttps://dbzenkai.tip4serv.com/" ) );
                         } ) );
                         ArrayList<String> loreVIP = new ArrayList<> ( );
                         loreVIP.add ( CC.translate ( "&b¡Compra rango &c&lVIP &ben nuestra tienda!" ) );
@@ -494,6 +604,7 @@ public class MenuCommand extends BaseCommand {
                         vipMeta.setDisplayName ( CC.translate ( "&6&l&k::&c&lVIP&6&l&k::" ) );
                         vip.setItemMeta ( vipMeta );
                         inventoryContents.set ( 3, 5, ClickableItem.of ( vip, e -> {
+                            player.performCommand ( "vip" );
                         } ) );
                     }
 

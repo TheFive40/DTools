@@ -15,27 +15,35 @@ public class CommandFrooze extends BaseCommand {
     public static ArrayList<Player> playersFrooze = new ArrayList<> ( );
 
     @Command(name = "frooze", aliases = {"frooze", "congelar"}, permission = "dtools.frooze",
-    inGameOnly = false)
+            inGameOnly = false)
     @Override
     public void onCommand ( CommandArgs command ) throws IOException {
-        Player sender = command.getPlayer();
-        if (command.getArgs().length == 0) {
-            sender.sendMessage(CC.translate("&cUsage: /frooze <player>"));
-            sender.sendMessage(CC.translate("&7This command allows you to freeze a player, preventing them from moving."));
+        Player sender = command.getPlayer ( );
+
+        // Comprobar que el comando lo ejecute un jugador
+        if (sender == null) {
+            command.getSender ( ).sendMessage ( CC.translate ( "&cSolo los jugadores pueden usar este comando." ) );
+            return;
+        }
+
+        if (command.getArgs ( ).length == 0) {
+            sender.sendMessage ( CC.translate ( "&cUsage: /frooze <player>" ) );
+            sender.sendMessage ( CC.translate ( "&7This command allows you to freeze a player, preventing them from moving." ) );
             return;
         }
         OfflinePlayer player = Bukkit.getOfflinePlayer ( command.getArgs ( 0 ) );
         Player froozePlayer = player.getPlayer ( );
         if (froozePlayer == null) {
-            sender.sendMessage( CC.translate("&cThe player is not online or does not exist."));
+            sender.sendMessage ( CC.translate ( "&cThe player is not online or does not exist." ) );
             return;
         }
-        if (playersFrooze.contains(froozePlayer)) {
-            sender.sendMessage(CC.translate("&e" + froozePlayer.getName() + " &cis already frozen."));
+        if (playersFrooze.contains ( froozePlayer )) {
+            sender.sendMessage ( CC.translate ( "&e" + froozePlayer.getName ( ) + " &cis already frozen." ) );
             return;
         }
-        playersFrooze.add ( froozePlayer);
-        sender.sendMessage(CC.translate("&aYou have successfully frozen &e" + froozePlayer.getName() + "&a."));
-        froozePlayer.sendMessage(CC.translate("&cYou have been frozen! You cannot move until an administrator unfreezes you."));
+        playersFrooze.add ( froozePlayer );
+        sender.sendMessage ( CC.translate ( "&aYou have successfully frozen &e" + froozePlayer.getName ( ) + "&a." ) );
+        froozePlayer.sendMessage ( CC.translate ( "&cYou have been frozen! You cannot move until an administrator unfreezes you." ) );
     }
 }
+

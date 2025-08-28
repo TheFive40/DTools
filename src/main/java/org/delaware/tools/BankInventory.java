@@ -5,47 +5,72 @@ import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.delaware.Main;
 import org.delaware.events.PlayerChatEvent;
 
-import java.util.Arrays;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class BankInventory implements InventoryProvider {
+    private static final Map<String, Long> cooldownMap = new HashMap<> ();
+    private static final long COOLDOWN_TIME = 2 * 60 * 1000; // 2 minutos en milisegundos
+
+    private boolean isOnCooldown(Player player) {
+        long currentTime = System.currentTimeMillis();
+        return cooldownMap.containsKey(player.getName()) &&
+                (currentTime - cooldownMap.get(player.getName()) < COOLDOWN_TIME);
+    }
+
+    private void setCooldown(Player player) {
+        cooldownMap.put(player.getName(), System.currentTimeMillis());
+    }
     public static void openTrader(Player player) {
         BankInventory.getInventory().open(player);
     }
     @Override
     public void init ( Player player, InventoryContents inventoryContents ) {
         ItemStack border = new ItemStack( Material.STAINED_GLASS_PANE, 1, (short) 10);
-        inventoryContents.fillBorders ( ClickableItem.empty (  new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData ( ) )  ) );
-        inventoryContents.set ( 1,1,ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData ( ) )  ) );
-        inventoryContents.set ( 1,7,ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData ( ) )  ) );
+        inventoryContents.fillBorders ( ClickableItem.empty (  new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) )  ) );
+        inventoryContents.set ( 1,1,ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) )  ) );
+        inventoryContents.set ( 1,7,ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.LIME.getData ( ) )  ) );
         ItemStack depositar = new ItemStack ( 6078 );
         ItemMeta depositarMeta = depositar.getItemMeta ( );
         depositarMeta.setDisplayName ( CC.translate ( "&eDepositar" ) );
         depositar.setItemMeta ( depositarMeta );
         inventoryContents.set ( 2, 2, ClickableItem.of ( depositar, e -> {
+            if (isOnCooldown(player)) {
+                player.sendMessage(CC.translate("&cDebes esperar 2 minutos antes de usar esta opción otra vez."));
+                return;
+            }
+            setCooldown(player);
             player.sendMessage ( CC.translate ( "&aEscriba la cantidad a depositar" ) );
             PlayerChatEvent.waitForDeposit(player.getName());
         } ) );
-        ItemStack retirar = new ItemStack ( 6078 );
+        ItemStack retirar = new ItemStack ( 4444 );
         ItemMeta retirarMeta = retirar.getItemMeta ( );
         retirarMeta.setDisplayName ( CC.translate ( "&aRetirar" ) );
         retirar.setItemMeta ( retirarMeta );
-        inventoryContents.set ( 2, 2, ClickableItem.of ( retirar, e -> {
+        inventoryContents.set ( 2, 4, ClickableItem.of ( retirar, e -> {
+            if (isOnCooldown(player)) {
+                player.sendMessage(CC.translate("&cDebes esperar antes de usar esta opción nuevamente. Tiempo de espera: 2 minutos."));
+                return;
+            }
+            setCooldown(player);
             player.sendMessage ( CC.translate ( "&aEscriba la cantidad a retirar" ) );
             PlayerChatEvent.waitForWithdraw(player.getName());
         } ) );
-        ItemStack subirNivel = new ItemStack ( 6078 );
+        ItemStack subirNivel = new ItemStack ( 4427 );
         ItemMeta subirNivelMeta = subirNivel.getItemMeta ( );
         subirNivelMeta.setDisplayName ( CC.translate ( "&6Subir de nivel" ) );
         subirNivel.setItemMeta ( subirNivelMeta );
-        inventoryContents.set ( 2, 2, ClickableItem.of ( subirNivel, e -> {
+        inventoryContents.set ( 2, 6, ClickableItem.of ( subirNivel, e -> {
             SmartInventory lvlear = SmartInventory.builder ( ).title ( CC.translate ( "&c&lSubir de Nivel" ) )
                     .size ( 3,9 )
                     .id ( "bank_lvl" )
@@ -74,16 +99,18 @@ public class BankInventory implements InventoryProvider {
     private void addBankUpgradeButton(InventoryContents inventoryContents, Player player, int slotRow, int slotCol, int targetLevel, int itemId) {
         ItemStack item = new ItemStack(itemId);
         ItemMeta meta = item.getItemMeta();
-
+        DecimalFormat formatter = new DecimalFormat ("#,###");
+        item.setAmount ( targetLevel );
         long levelLimit = BankManager.levelLimits.get(targetLevel);
-        long cost = (long) (levelLimit * 0.35); // 35% del límite como costo
+        long cost = (long) (levelLimit * 0.35);
 
         meta.setDisplayName(CC.translate("&bNivel " + targetLevel));
-        meta.setLore( Arrays.asList(
+        meta.setLore(Arrays.asList(
                 CC.translate("&7Mejora tu banco al nivel &a" + targetLevel),
-                CC.translate("&7Capacidad máxima: &f" + levelLimit + " TPS"),
-                CC.translate("&7Costo de mejora: &c" + cost + " TPS")
+                CC.translate("&7Capacidad máxima: &f" + formatter.format(levelLimit) + " TPS"),
+                CC.translate("&7Costo de mejora: &c" + formatter.format(cost) + " TPS")
         ));
+
 
         item.setItemMeta(meta);
 
@@ -120,8 +147,8 @@ public class BankInventory implements InventoryProvider {
         return SmartInventory.builder()
                 .id("banco")
                 .provider(new BankInventory ())
-                .size(3, 9)
-                .title("§d☼ Banco ☼")
+                .size(5, 9)
+                .title("§2☼ Banco de TPS ☼")
                 .build();
     }
 }

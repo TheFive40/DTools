@@ -20,86 +20,88 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.delaware.commands.GlobalBoosterCommand.boosterActive;
 import static org.delaware.commands.GlobalBoosterCommand.boosterMultiplier;
+import static org.delaware.events.PersonalBoosterEvent.boosterPlayer;
 
 public class CommandGiveTPS extends BaseCommand {
-    private BoosterDataHandler boosterHandler = new BoosterDataHandler();
+    private BoosterDataHandler boosterHandler = new BoosterDataHandler ( );
 
     @Command(name = "dartps", inGameOnly = false, permission = "dtools.dartps")
     @Override
-    public void onCommand(CommandArgs command) throws IOException {
+    public void onCommand ( CommandArgs command ) throws IOException {
         try {
-            if (command.getArgs ().length < 2) {
-                command.getSender().sendMessage(CC.translate("&cUso correcto: &e/dartps <jugador> <cantidad>"));
+            if (command.getArgs ( ).length < 2) {
+                command.getSender ( ).sendMessage ( CC.translate ( "&cUso correcto: &e/dartps <jugador> <cantidad>" ) );
                 return;
             }
 
-            String username = command.getArgs(0);
-            Player player = Bukkit.getPlayerExact(username);
+            String username = command.getArgs ( 0 );
+            Player player = Bukkit.getPlayerExact ( username );
 
-            if (player == null || !player.isOnline()) {
-                command.getSender().sendMessage(CC.translate("&cEl jugador &e" + username + " &cno está en línea o no existe."));
+            if (player == null || !player.isOnline ( )) {
+                command.getSender ( ).sendMessage ( CC.translate ( "&cEl jugador &e" + username + " &cno está en línea o no existe." ) );
                 return;
             }
 
             int amount;
             try {
-                amount = Integer.parseInt(command.getArgs(1));
+                amount = Integer.parseInt ( command.getArgs ( 1 ) );
                 if (amount <= 0) {
-                    command.getSender().sendMessage(CC.translate("&cLa cantidad debe ser un número positivo."));
+                    command.getSender ( ).sendMessage ( CC.translate ( "&cLa cantidad debe ser un número positivo." ) );
                     return;
                 }
             } catch (NumberFormatException ex) {
-                command.getSender().sendMessage(CC.translate("&cLa cantidad debe ser un número válido."));
+                command.getSender ( ).sendMessage ( CC.translate ( "&cLa cantidad debe ser un número válido." ) );
                 return;
             }
 
-            IDBCPlayer idbcPlayer = NpcAPI.Instance().getPlayer(username).getDBCPlayer();
+            IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( username ).getDBCPlayer ( );
             boolean hasBooster = false;
-            DecimalFormat formatter = new DecimalFormat("#,###");
+            DecimalFormat formatter = new DecimalFormat ( "#,###" );
 
             // Booster global
             if (boosterActive) {
-                int boosterGain = (int) (amount * boosterMultiplier);
+                int boosterGain = (int) (amount * (boosterMultiplier - 1.0));
                 int reward = boosterGain + amount;
-                idbcPlayer.setTP(reward + idbcPlayer.getTP());
-                idbcPlayer.sendMessage(CC.translate("&e+ &6" + formatter.format(boosterGain) + " (Booster Global)"));
+                idbcPlayer.setTP ( reward + idbcPlayer.getTP ( ) );
+                player.sendMessage ( CC.translate ( "&e+ &6" + formatter.format ( boosterGain ) + " &a(Booster Global x" + (boosterMultiplier - 1.0) + ")" ) );
                 hasBooster = true;
             }
 
             // Booster VIP
-            VIPBooster booster = boosterHandler.findBooster(player.getUniqueId());
-            if (booster != null && booster.isActive()) {
-                int bonus = (int) (amount * booster.getMultiplier());
-                int reward = bonus + amount;
-                idbcPlayer.setTP(idbcPlayer.getTP() + reward);
-                idbcPlayer.sendMessage(CC.translate("&e+ &6" + formatter.format(bonus) + " (Booster VIP)"));
+            VIPBooster booster = boosterHandler.findBooster ( player.getUniqueId ( ) );
+            if (booster != null && booster.isActive ( )) {
+                int bonus = (int) (amount * booster.getMultiplier ( )) + amount;
+                idbcPlayer.setTP ( idbcPlayer.getTP ( ) + bonus );
+                idbcPlayer.sendMessage ( CC.translate ( "&e+ &6" + formatter.format ( (int) (amount * booster.getMultiplier ( )) ) + " (Booster VIP)" ) );
                 hasBooster = true;
             }
-
-            // Booster personalizado (PBooster)
-            ConcurrentHashMap<UUID, PBooster> pMultiplier = BoosterDataHandler.getBoosterPMultiplier();
-            if (pMultiplier.containsKey(player.getUniqueId())) {
-                double multiplier = pMultiplier.get(player.getUniqueId()).getMultiplier();
+            if (boosterPlayer.containsKey ( player.getUniqueId ( ) )) {
+                double multiplier = boosterPlayer.get ( player.getUniqueId ( ) );
                 int bonus = (int) (amount * multiplier);
                 int reward = bonus + amount;
-                idbcPlayer.setTP(idbcPlayer.getTP() + reward);
-                idbcPlayer.sendMessage(CC.translate("&e+ &6" + formatter.format(bonus) + " (Booster Personalizado)"));
+                idbcPlayer.setTP ( idbcPlayer.getTP ( ) + reward );
+                idbcPlayer.sendMessage ( CC.translate ( "&e+ &6" + formatter.format ( bonus ) + " (Booster Personalizado)" ) );
                 hasBooster = true;
             }
-
-            if (!hasBooster) {
-                idbcPlayer.setTP(idbcPlayer.getTP() + amount);
+            // Booster personalizado (PBooster)
+            ConcurrentHashMap<UUID, PBooster> pMultiplier = BoosterDataHandler.getBoosterPMultiplier ( );
+            if (pMultiplier.containsKey ( player.getUniqueId ( ) )) {
+                double multiplier = pMultiplier.get ( player.getUniqueId ( ) ).getMultiplier ( );
+                int bonus = (int) (amount * multiplier);
+                int reward = bonus + amount;
+                idbcPlayer.setTP ( idbcPlayer.getTP ( ) + reward );
+                idbcPlayer.sendMessage ( CC.translate ( "&e+ &6" + formatter.format ( bonus ) + " (Booster Personalizado)" ) );
+                hasBooster = true;
             }
-
-            idbcPlayer.sendMessage(CC.translate("&e+ &6" + formatter.format(amount) + " TP recibido."));
-
-            player.playSound(player.getLocation(), "random.orb", 1.0f, 1.0f);
-
-            command.getSender().sendMessage(CC.translate("&aLe diste &e" + formatter.format(amount) + " TP &aal jugador &e" + username + "&a."));
-
+            if (!hasBooster) {
+                idbcPlayer.setTP ( idbcPlayer.getTP ( ) + amount );
+            }
+            idbcPlayer.sendMessage ( CC.translate ( "&e+ &6" + formatter.format ( amount ) + " TP recibido." ) );
+            player.playSound ( player.getLocation ( ), "random.orb", 1.0f, 1.0f );
+            command.getSender ( ).sendMessage ( CC.translate ( "&aLe diste &e" + formatter.format ( amount ) + " TP &aal jugador &e" + username + "&a." ) );
         } catch (Exception ex) {
-            command.getSender().sendMessage(CC.translate("&cHa ocurrido un error al ejecutar el comando. Revisa la consola para más detalles."));
-            ex.printStackTrace();
+            command.getSender ( ).sendMessage ( CC.translate ( "&cHa ocurrido un error al ejecutar el comando. Revisa la consola para más detalles." ) );
+            ex.printStackTrace ( );
         }
     }
 }

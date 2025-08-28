@@ -1,8 +1,8 @@
 main: org.delaware.Main
 version: 1.8.0
-name: DBZenkai
+name: DBFuture
 author: DelawareX
-depend: [WorldEdit,WorldGuard]
+depend: [WorldEdit,WorldGuard,Factions,MassiveCore]
 softdepend:
   - Essentials
 

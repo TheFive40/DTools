@@ -11,23 +11,23 @@ import org.delaware.Main;
 import org.delaware.commands.GlobalBoosterCommand;
 import org.delaware.tools.BankManager;
 import org.delaware.tools.General;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+
+import static net.minecraftforge.oredict.RecipeSorter.getCategory;
 
 public class ZenkaiExpansion extends PlaceholderExpansion {
     @Override
-    public @NotNull String getIdentifier () {
+    public  String getIdentifier () {
         return "zenkai";
     }
 
     @Override
-    public @NotNull String getAuthor () {
+    public  String getAuthor () {
         return "DelawareX";
     }
 
     @Override
-    public @NotNull String getVersion () {
+    public  String getVersion () {
         return "1.0";
     }
 
@@ -42,33 +42,36 @@ public class ZenkaiExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest ( OfflinePlayer offline, @NotNull String params ) {
+    public String onRequest(OfflinePlayer offline, String params) {
         if (offline == null) return "";
 
-        Player player = offline.getPlayer ( );
-        if (player == null && !params.equals ( "online" ) && !params.startsWith ( "booster" )) {
+        Player player = offline.getPlayer();
+        if (player == null && !params.equals("online") && !params.startsWith("booster")) {
             return "";
         }
 
         switch (params) {
             case "level":
-                return String.valueOf ( getLevel ( player ) );
+                return String.valueOf(getLevel(player));
             case "tps":
-                return String.valueOf ( getTps ( player ) );
+                return String.valueOf(getTps(player));
             case "bank_balance":
-                return String.valueOf ( getBankBalance ( player ) );
+                return String.valueOf(getBankBalance(player));
             case "online":
-                return Bukkit.getServer ( ).getOnlinePlayers ( ).length + "";
+                return Bukkit.getServer().getOnlinePlayers().length + "";
             case "booster-global-multiplier":
-                return getGlobalBoosterMultiplier ( );
+                return getGlobalBoosterMultiplier();
             case "booster-global-remaining":
-                return getBoosterRemainingTime ( );
+                return getBoosterRemainingTime();
             case "race":
-                return getRace ( player );
+                return getRace(player);
+            case "category":
+                return General.getRankColorCode (player);
             default:
                 return null;
         }
     }
+
 
     private String getRace ( Player player ) {
         IDBCPlayer dbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );

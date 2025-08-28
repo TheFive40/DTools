@@ -53,14 +53,14 @@ public class CommandVIP extends BaseCommand {
                                         @Override
                                         public void init ( Player player, InventoryContents inventoryContents ) {
                                             inventoryContents.fillBorders ( ClickableItem.empty ( new ItemStack ( Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData ( ) ) ) );
-                                            ItemStack Divino = new ItemStack ( 5016 );
+                                            ItemStack Divino = new ItemStack ( 6183 );
                                             ItemMeta divinoItemMeta = Divino.getItemMeta ( );
                                             divinoItemMeta.setDisplayName ( CC.translate ( "&d&lDivino" ) );
                                             Divino.setItemMeta ( divinoItemMeta );
                                             inventoryContents.set ( 1, 3, ClickableItem.of ( Divino, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set Divine -1 " + player.getName ( ) );
                                             } ) );
-                                            ItemStack legendario = new ItemStack ( 4962 );
+                                            ItemStack legendario = new ItemStack ( 6211 );
                                             ItemMeta legendarioItemMeta = legendario.getItemMeta ( );
                                             legendarioItemMeta.setDisplayName ( CC.translate ( "&a&lLegendario" ) );
                                             legendario.setItemMeta ( legendarioItemMeta );
@@ -68,28 +68,28 @@ public class CommandVIP extends BaseCommand {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set Legendary -1 " + player.getName ( ) );
 
                                             } ) );
-                                            ItemStack Majin = new ItemStack ( 4990 );
+                                            ItemStack Majin = new ItemStack ( 6190 );
                                             ItemMeta majinItemMeta = Majin.getItemMeta ( );
                                             majinItemMeta.setDisplayName ( CC.translate ( "&5&lMajin" ) );
                                             Majin.setItemMeta ( majinItemMeta );
                                             inventoryContents.set ( 1, 5, ClickableItem.of ( Majin, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set Majin -1 " + player.getName ( ) );
                                             } ) );
-                                            ItemStack KO = new ItemStack ( 4959 );
+                                            ItemStack KO = new ItemStack ( 6205 );
                                             ItemMeta koItemMeta = KO.getItemMeta ( );
                                             koItemMeta.setDisplayName ( CC.translate ( "&6&lK.O" ) );
                                             KO.setItemMeta ( koItemMeta );
                                             inventoryContents.set ( 2, 3, ClickableItem.of ( KO, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set KO 0 " + player.getName ( ) );
                                             } ) );
-                                            ItemStack NoFuse = new ItemStack ( 5019 );
+                                            ItemStack NoFuse = new ItemStack ( 6201 );
                                             ItemMeta noFuseItemMeta = NoFuse.getItemMeta ( );
                                             noFuseItemMeta.setDisplayName ( CC.translate ( "&4&lNo Fuse" ) );
                                             NoFuse.setItemMeta ( noFuseItemMeta );
                                             inventoryContents.set ( 2, 4, ClickableItem.of ( NoFuse, e -> {
                                                 Bukkit.getServer ( ).dispatchCommand ( Bukkit.getConsoleSender ( ), "jrmcse set NoFuse 0 " + player.getName ( ) );
                                             } ) );
-                                            ItemStack fatigue = new ItemStack ( 4941 );
+                                            ItemStack fatigue = new ItemStack ( 6212 );
                                             ItemMeta fatigueItemMeta = fatigue.getItemMeta ( );
                                             fatigueItemMeta.setDisplayName ( CC.translate ( "&e&lFatigue" ) );
                                             fatigue.setItemMeta ( fatigueItemMeta );

@@ -119,7 +119,6 @@ public class GlobalBoosterCommand extends BaseCommand {
             getServer().broadcastMessage(CC.translate("&8[&6DBZ&8] &c&l¡El Booster Global ha terminado!"));
             getServer().broadcastMessage(CC.translate("&8&m--------------------------------------"));
             playGlobalSound(Sound.ANVIL_BREAK, 1f, 1f);
-
             return "0s";
         }
 
@@ -134,21 +133,19 @@ public class GlobalBoosterCommand extends BaseCommand {
 
         long totalSeconds = remainingMillis / 1000;
         long days = totalSeconds / (24 * 60 * 60);
-        long remainder = totalSeconds % (24 * 60 * 60);
-        long minutes = (remainder / 60) % 60;
-        long seconds = remainder % 60;
+        long hours = (totalSeconds % (24 * 60 * 60)) / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
 
         StringBuilder sb = new StringBuilder();
-        if (days > 0) {
-            sb.append(days).append("d ");
-        }
-        if (minutes > 0 || days > 0) {
-            sb.append(minutes).append("m ");
-        }
+        if (days > 0) sb.append(days).append("d ");
+        if (hours > 0) sb.append(hours).append("h ");
+        if (minutes > 0 || days > 0 || hours > 0) sb.append(minutes).append("m ");
         sb.append(seconds).append("s");
 
         return sb.toString().trim();
     }
+
 
 
     public static String getBoosterMultiplierPercent() {

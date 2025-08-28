@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.delaware.tools.CC;
+import org.delaware.tools.General;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ public class CommandCancel implements Listener {
         if(player.isOp()) return;
         if(TagListener.isTagged(player)) {
             String command = event.getMessage().substring(1).split(" ")[0].toLowerCase();
-            if(!allowedCommands.contains(command)) {
+            if(!allowedCommands.contains(command) && !General.hasStaffParent ( player)) {
                 player.sendMessage(CC.translate("&cNo puedes usar este comando en PvP!"));
                 event.setCancelled(true);
             }

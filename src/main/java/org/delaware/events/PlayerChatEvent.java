@@ -66,13 +66,18 @@ public class PlayerChatEvent implements Listener {
             event.setCancelled(true);
             return;
         }
-
         // Withdraw
         if (awaitingWithdraw.contains(name)) {
             event.setCancelled(true);
+            awaitingWithdraw.remove(name);
             try {
+                if (!message.matches("^\\d+(\\.\\d+)?$")) {
+                    throw new NumberFormatException();
+                }
+
                 double amount = Double.parseDouble(message);
                 if (amount <= 0) throw new NumberFormatException();
+
                 boolean success = BankManager.withdraw(name, amount);
                 if (success) {
                     player.sendMessage(CC.translate("&a✔ Retiraste &f" + amount + " TPS &adel banco."));
@@ -80,21 +85,27 @@ public class PlayerChatEvent implements Listener {
             } catch (NumberFormatException e) {
                 player.sendMessage(CC.translate("&cIngrese un número válido."));
             }
-            awaitingWithdraw.remove(name);
             return;
         }
 
         // Deposit
         if (awaitingDeposit.contains(name)) {
             event.setCancelled(true);
+            awaitingDeposit.remove(name);
             try {
+                if (!message.matches("^\\d+(\\.\\d+)?$")) {
+                    throw new NumberFormatException();
+                }
+
                 double amount = Double.parseDouble(message);
                 if (amount <= 0) throw new NumberFormatException();
+
                 IDBCPlayer dbcPlayer = NpcAPI.Instance().getPlayer(name).getDBCPlayer();
                 if (dbcPlayer.getTP() < amount) {
                     player.sendMessage(CC.translate("&cNo tienes suficientes TPs para depositar esa cantidad."));
                     return;
                 }
+
                 boolean success = BankManager.deposit(name, amount);
                 if (success) {
                     dbcPlayer.setTP((int) (dbcPlayer.getTP() - amount));
@@ -103,7 +114,7 @@ public class PlayerChatEvent implements Listener {
             } catch (NumberFormatException e) {
                 player.sendMessage(CC.translate("&cIngrese un número válido."));
             }
-            awaitingDeposit.remove(name);
+            return;
         }
     }
 }

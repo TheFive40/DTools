@@ -1,8 +1,12 @@
 package org.delaware.tools;
 
 import JinRyuu.JRMCore.JRMCoreH;
-import io.github.facuu16.gohan.dbc.model.DbcPlayer;
-import io.github.facuu16.gohan.dbc.model.Stat;
+import com.gmail.filoghost.holograms.api.Hologram;
+import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
+import kamkeel.npcdbc.constants.DBCClass;
+import kamkeel.npcdbc.constants.DBCRace;
+import kamkeel.npcdbc.data.PlayerBonus;
+import kamkeel.npcdbc.scripted.DBCAPI;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
@@ -10,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.NPC;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,7 +30,7 @@ public class General {
 
 
     public static final String[] ranks = {"founder", "developer", "manager", "admin", "moderador", "quester", "helper", "constructor", "programador", "dev"
-    ,"staff","moderador-manager","dueño","owner","admin-plus"};
+            , "staff", "moderador-manager", "dueño", "owner", "admin-plus", "ayudante", "helper", "builder", "builder-manager"};
     public static String DEX = "jrmcDexI";
     public static String SPI = "jrmcCncI";
     public static String CON = "jrmcCnsI";
@@ -74,7 +79,7 @@ public class General {
     }
 
     public static int getSTAT ( String stat, Player entity ) {
-        return JRMCoreH.getInt ( toPlayerMP ( entity ) ,STATS_MAP.get ( stat.toUpperCase () ) );
+        return JRMCoreH.getInt ( toPlayerMP ( entity ), STATS_MAP.get ( stat.toUpperCase ( ) ) );
     }
 
     public static EntityPlayerMP toPlayerMP ( Player player ) {
@@ -91,6 +96,370 @@ public class General {
         int spi = JRMCoreH.getInt ( toPlayerMP ( player ), SPI );
         int lvl = (str + dex + con + wil + mnd + spi) / 5 - 11;
         return lvl;
+    }
+
+    public static void spawnHologram ( Player player, String text ) {
+        Location loc = player.getLocation ( );
+        loc.setY ( loc.getY ( ) + 1.5 );
+        loc.setZ ( loc.getZ ( ) + 1.0 );
+        Hologram hologram = HolographicDisplaysAPI.createHologram ( Main.instance, loc, org.delaware.tools.CC.translate ( text ) );
+        Bukkit.getScheduler ( ).runTaskLater ( Main.instance, hologram::delete, 20L );
+    }
+
+    public static void spawnHologramKI ( Player player, String text ) {
+        Location loc = player.getLocation ( );
+        loc.setY ( loc.getY ( ) + 1.0 );
+        loc.setZ ( loc.getZ ( ) + 1.0 );
+        Hologram hologram = HolographicDisplaysAPI.createHologram ( Main.instance, loc, org.delaware.tools.CC.translate ( text ) );
+        Bukkit.getScheduler ( ).runTaskLater ( Main.instance, hologram::delete, 20L );
+    }
+
+    public static void spawnHologramSTAM ( Player player, String text ) {
+        Location loc = player.getLocation ( );
+        loc.setY ( loc.getY ( ) + 1.5 );
+        loc.setZ ( loc.getZ ( ) - 1.0 );
+        Hologram hologram = HolographicDisplaysAPI.createHologram ( Main.instance, loc, org.delaware.tools.CC.translate ( text ) );
+        Bukkit.getScheduler ( ).runTaskLater ( Main.instance, hologram::delete, 20L );
+    }
+
+    public static void spawnHologramCON ( Player player, String text ) {
+        Location loc = player.getLocation ( );
+        loc.setY ( loc.getY ( ) + 0.4 );
+        loc.setZ ( loc.getZ ( ) + 1.0 );
+        Hologram hologram = HolographicDisplaysAPI.createHologram ( Main.instance, loc, org.delaware.tools.CC.translate ( text ) );
+        Bukkit.getScheduler ( ).runTaskLater ( Main.instance, hologram::delete, 20L );
+    }
+
+    public static String getRankColorCode ( Player player ) {
+        int level = getLVL ( player );
+        if (level >= 300 && level <= 1000) {
+            return "&8[&fF&8]";
+        } else if (level >= 1001 && level <= 3000) {
+            return "&8[&fE&8]";
+        } else if (level >= 3001 && level <= 6000) {
+            return "&8[&fD&8]";
+        } else if (level >= 6001 && level <= 10000) {
+            return "&8[&2C&8]";
+        } else if (level >= 10001 && level <= 14000) {
+            return "&8[&2B&8]";
+        } else if (level >= 14001 && level <= 18000) {
+            return "&8[&aA&8]";
+        } else if (level >= 18001 && level <= 28000) {
+            return "&8[&aA&c+&8]";
+        } else if (level >= 28001 && level <= 38000) {
+            return "&8[&5S&8]";
+        } else if (level >= 38001 && level <= 50000) {
+            return "&8[&5S&c+&8]";
+        } else if (level >= 50001 && level <= 70000) {
+            return "&8[&cZ&8]";
+        } else if (level >= 70001) {
+            return "&8[&cZ&4+&8]";
+        } else {
+            return "&8[?]";
+        }
+    }
+
+    public static int getMaxHealth ( IDBCPlayer idbcPlayer, double level ) {
+        int race = idbcPlayer.getRace ( );
+        int dbcclass = idbcPlayer.getDBCClass ( );
+        int kiMax = 0;
+        int lvlWIL = General.getSTAT ( "CON", Main.instance.getServer ( ).getPlayer ( idbcPlayer.getName ( ) ) );
+        String[] skills = idbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" )
+                .getString ( "jrmcSSlts" ).split ( "," );
+        int lvl = 0;
+        for (String sk : skills) {
+            sk = sk.trim ( );
+            if (sk.startsWith ( "DF" )) {
+                try {
+                    int num = Integer.parseInt ( sk.substring ( 2 ) );
+                    lvl = Math.max ( lvl, num + 1 );
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        int outputExtra = 0;
+        switch (race) {
+            case DBCRace.HUMAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 24;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 25.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 25;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.SAIYAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 23.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 24.5;
+                    outputExtra = (int) (lvlWIL * multiplo) * (lvl / 100);
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 24;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.HALFSAIYAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 23.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 24.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 24.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.NAMEKIAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 24;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 25.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 24.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.ARCOSIAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 23;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 23.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 23.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.MAJIN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 25.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 27.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 26.5;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo);
+                    return (int) (previousMax * level);
+                }
+        }
+        return kiMax;
+    }
+
+
+    public static int getKiMax ( IDBCPlayer idbcPlayer, double level ) {
+        int race = idbcPlayer.getRace ( );
+        int dbcclass = idbcPlayer.getDBCClass ( );
+        int kiMax = 0;
+        int lvlWIL = General.getSTAT ( "SPI", Main.instance.getServer ( ).getPlayer ( idbcPlayer.getName ( ) ) );
+        String[] skills = idbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" )
+                .getString ( "jrmcSSlts" ).split ( "," );
+        int lvl = 0;
+        for (String sk : skills) {
+            sk = sk.trim ( );
+            if (sk.startsWith ( "KB" )) {
+                try {
+                    int num = Integer.parseInt ( sk.substring ( 2 ) );
+                    lvl = Math.max ( lvl, num + 1 );
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        int outputExtra = 0;
+        switch (race) {
+            case DBCRace.HUMAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 42;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 39;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 38;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.SAIYAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 41;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 38;
+                    outputExtra = (int) (lvlWIL * multiplo) * (lvl / 100);
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 42;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.HALFSAIYAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 42;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 39;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 40;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.NAMEKIAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 45;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 40;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 44;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.ARCOSIAN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 50;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 44;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 46;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                }
+            case DBCRace.MAJIN:
+                if (DBCClass.Spiritualist == dbcclass) {
+                    double multiplo = 40;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else if (dbcclass == DBCClass.Warrior) {
+                    double multiplo = 36;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                } else {
+                    double multiplo = 36;
+                    outputExtra = (int) ((lvlWIL * multiplo) * (lvl / 100.0));
+                    int previousMax = (int) (lvlWIL * multiplo) + outputExtra;
+                    ;
+                    return (int) (previousMax * level);
+                }
+        }
+        return kiMax;
+    }
+
+    public static String getRank ( Player player ) {
+        int level = getLVL ( player );
+
+        if (level >= 300 && level <= 1000) {
+            return "F";
+        } else if (level >= 1001 && level <= 3000) {
+            return "E";
+        } else if (level >= 3001 && level <= 6000) {
+            return "D";
+        } else if (level >= 6001 && level <= 10000) {
+            return "C";
+        } else if (level >= 10001 && level <= 14000) {
+            return "B";
+        } else if (level >= 14001 && level <= 18000) {
+            return "A";
+        } else if (level >= 18001 && level <= 28000) {
+            return "A+";
+        } else if (level >= 28001 && level <= 38000) {
+            return "S";
+        } else if (level >= 38001 && level <= 50000) {
+            return "S+";
+        } else if (level >= 50001 && level <= 70000) {
+            return "Z";
+        } else if (level >= 70001) {
+            return "Z+";
+        } else {
+            return "?";
+        }
     }
 
     public static boolean hasStaffParent ( Player player ) {

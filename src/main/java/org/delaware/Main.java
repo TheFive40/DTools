@@ -1,5 +1,9 @@
 package org.delaware;
-
+import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.entity.BoardColl;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import kamkeel.npcdbc.api.event.IDBCEvent;
@@ -15,6 +19,7 @@ import noppes.npcs.api.entity.IDBCPlayer;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -30,17 +35,23 @@ import org.delaware.DBCEvents.DBCDamageEvent;
 import org.delaware.DBCEvents.DBCKnockoutEvent;
 import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.DBCEvents.Listeners.KnockoutEvent;
+import org.delaware.commands.BlockItemCommand;
 import org.delaware.commands.CommandAddGift;
+import org.delaware.events.BlockedItemEvent;
 import org.delaware.events.InteractWithGiftsEvent;
+import org.delaware.events.PersonalBoosterEvent;
 import org.delaware.tools.*;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.BoosterHandler.BoosterManager;
+import org.delaware.tools.Boosters.BonusAttributes;
 import org.delaware.tools.Boosters.ZenkaiExpansion;
 import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.CustomItems.CustomItemsRunnable;
 import org.delaware.tools.CustomItems.PlayerBonusesData;
 import org.delaware.tools.CustomItems.Scythe.ScytheRunnable;
 import org.delaware.tools.CustomItems.WriteRunnable;
+import org.delaware.tools.Kits.KitClaimTracker;
+import org.delaware.tools.Kits.KitStorage;
 import org.delaware.tools.Permissions.PermissionsManager;
 import org.delaware.tools.RegionTools.PlayerAccessManager;
 import org.delaware.tools.RegionTools.Runnable.RegionCheckRunnable;
@@ -51,13 +62,13 @@ import org.delaware.tools.model.entities.TP;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import static kamkeel.npcdbc.constants.DBCRace.*;
 import static org.delaware.commands.CommandTransform.playerStats;
+import static org.delaware.events.BlockedItemEvent.startAsyncCheck;
 import static org.delaware.tools.CustomItems.CustomItems.items;
 import static org.delaware.tools.CustomItems.PlayerBonusesData.bonusData;
 import static org.delaware.commands.TPSCommand.tps;
@@ -72,7 +83,6 @@ public class Main extends JavaPlugin {
     CommandCancel commandEvent;
     PlayerLeaveEvent leaveEvent;
     public static HashMap<String, Integer> scytheConfig = new HashMap<> ( );
-    public static HashMap<String, Integer> playersTPS = new HashMap<> ( );
     public static LuckPerms luckPermsAPI;
 
     static {
@@ -82,7 +92,6 @@ public class Main extends JavaPlugin {
         String ruta2 = System.getProperty ( "user.dir" ) + File.separator + "plugins" + File.separator + "DTools";
         File file2 = new File ( ruta2, "data" );
         file2.mkdir ( );
-
     }
 
     private final CommandFramework commandFramework = new CommandFramework ( this );
@@ -159,7 +168,12 @@ public class Main extends JavaPlugin {
         RegionCheckRunnable.regionCheckRunnable.runTaskTimer ( this, 60, 60 );
         TagListener.clearExpireTagsTask.runTaskTimer ( this, 20L, 20L );
         //Spacey
-        arcosianTask();
+        arcosianTask ( );
+        startAsyncCheck ( );
+        KitClaimTracker.load ( this );
+        KitStorage.load ( this );
+        PersonalBoosterEvent.boosterTask ( );
+        BlockItemCommand.cargarLista ( this );
     }
 
     public void writeData () {
@@ -186,6 +200,68 @@ public class Main extends JavaPlugin {
         }
 
     }
+    public String getPlayerFactionName ( Player player ) {
+        MPlayer mPlayer = MPlayer.get ( player );
+        Faction faction = mPlayer.getFaction ( );
+        if (faction == null) return null;
+        return faction.getName ( );
+    }
+
+    public String getPlayerAtFactionLoc ( Player player ) {
+        Faction faction2 = BoardColl.get ( ).getFactionAt ( PS.valueOf ( player.getLocation ( ) ) );
+        if (faction2 == null) return null;
+        return faction2.getName ( );
+    }
+
+    public boolean hasAccessFaction ( String name ) {
+        Player player = Bukkit.getPlayer ( name );
+        MPlayer mPlayer = MPlayer.get ( player );
+        Faction faction = mPlayer.getFaction ( );
+        if (faction == null) return false;
+        Faction faction2 = BoardColl.get ( ).getFactionAt ( PS.valueOf ( player.getLocation ( ) ) );
+        if (faction2 != null) {
+            if (faction.getName ( ).equalsIgnoreCase ( faction2.getName ( ) )
+                    && !faction.getName ( ).contains ( "Wilderness" )) {
+                return true;
+            } else if (faction.getRelationTo ( faction2 ).getValue ( ) == Rel.ALLY.getValue ( )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public String getPlayerRacialTop(String race) {
+        Player topPlayer = null;
+        int highestLevel = -1;
+        for (Player player : Main.instance.getServer().getOnlinePlayers()) {
+            IDBCPlayer idbcPlayer = NpcAPI.Instance().getPlayer(player.getName()).getDBCPlayer();
+            if (race.equalsIgnoreCase("SAIYAN") && idbcPlayer.getRace() == DBCRace.SAIYAN ||
+                    race.equalsIgnoreCase("HALFSAIYAN") && idbcPlayer.getRace() == DBCRace.HALFSAIYAN ||
+                    race.equalsIgnoreCase("ARCOSIAN") && idbcPlayer.getRace() == DBCRace.ARCOSIAN ||
+                    race.equalsIgnoreCase("NAMEKIAN") && idbcPlayer.getRace() == DBCRace.NAMEKIAN ||
+                    race.equalsIgnoreCase("MAJIN") && idbcPlayer.getRace() == DBCRace.MAJIN ||
+                    race.equalsIgnoreCase("HUMAN") && idbcPlayer.getRace() == DBCRace.HUMAN) {
+                int lvl = General.getLVL(player);
+                if (lvl > highestLevel) {
+                    highestLevel = lvl;
+                    topPlayer = player;
+                }
+            }
+        }
+        return topPlayer != null ? topPlayer.getName() : null;
+    }
+    public String getTopGlobalPlayer() {
+        Player topPlayer = null;
+        int highestLevel = -1;
+
+        for (OfflinePlayer player : Main.instance.getServer().getOfflinePlayers ()) {
+            int lvl = General.getLVL(player.getPlayer ());
+            if (lvl > highestLevel) {
+                highestLevel = lvl;
+                topPlayer = player.getPlayer ();
+            }
+        }
+        return topPlayer != null ? topPlayer.getName() : null;
+    }
 
     public void loadGifts () {
         File rootDir = new File ( getDataFolder ( ), "DTools" );
@@ -199,7 +275,6 @@ public class Main extends JavaPlugin {
                 return;
             }
         }
-
         if (!file.exists ( )) {
             System.out.println ( "No hay datos previos de regalos para cargar." );
             return;
@@ -212,8 +287,6 @@ public class Main extends JavaPlugin {
             InteractWithGiftsEvent.contadorRegalos = gift.getContadorRegalos ( );
             InteractWithGiftsEvent.misionCompletada = gift.getMisionCompletada ( );
             InteractWithGiftsEvent.regalosEncontrados = gift.getRegalosEncontrados ( );
-
-            // Restaurar los regalos en el menú
             for (Localizaciones localizaciones : CommandAddGift.itemStackHashMap) {
                 ItemStack regalo = new ItemStack ( Material.SKULL_ITEM, 1, (short) 3 );
                 SkullMeta skullMeta = (SkullMeta) regalo.getItemMeta ( );
@@ -287,6 +360,9 @@ public class Main extends JavaPlugin {
             idbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( General.MND, v.getMND ( ) );
             idbcPlayer.getNbt ( ).getCompound ( "PlayerPersisted" ).setInteger ( General.SPI, v.getSPI ( ) );
         } );
+        KitStorage.save ( this );
+        KitClaimTracker.save ( this );
+        BlockItemCommand.guardarLista ( this );
     }
 
 
@@ -300,7 +376,8 @@ public class Main extends JavaPlugin {
 
     //Spacey
     private void loadCustomItems () {
-        CustomItemsRunnable.getBukkitRunnable ( ).runTaskTimer ( instance, (20 * 5), (20 * 5) );
+        //CustomItemsRunnable.getBukkitRunnable ( ).runTaskTimer ( instance, (20 * 5), (20 * 5) );
+        CustomItemsRunnable.getBukkitRunnable ( ).runTaskTimer ( instance, 20, 20 );
         WriteRunnable.getRunnable ( ).runTaskTimer ( instance, 100, (20 * 300) );
         try {
             File rootDir = new File ( getDataFolder ( ), "DTools" );
@@ -325,12 +402,12 @@ public class Main extends JavaPlugin {
             public void run () {
                 for (Player player : Main.instance.getServer ( ).getOnlinePlayers ( )) {
                     IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
-                    if (idbcPlayer.getRace ( ) == DBCRace.ARCOSIAN) {
-                        if (DBCForm.ThirdForm == idbcPlayer.getForm ( ) && !idbcPlayer.hasFinishedQuest ( 319 )) {
+                    if (idbcPlayer.getRace ( ) == ARCOSIAN) {
+                        if (DBCForm.ThirdForm == idbcPlayer.getForm ( ) && !idbcPlayer.hasFinishedQuest ( 327 )) {
                             idbcPlayer.setForm ( (byte) DBCForm.FirstForm );
                             player.sendMessage ( CC.translate ( "&cNecesitas desbloquear la tercera forma" ) );
                         }
-                        if (DBCForm.FinalForm == idbcPlayer.getForm ( ) && !idbcPlayer.hasFinishedQuest ( 320 )) {
+                        if (DBCForm.FinalForm == idbcPlayer.getForm ( ) && !idbcPlayer.hasFinishedQuest ( 328 )) {
                             idbcPlayer.setForm ( (byte) DBCForm.FirstForm );
                             player.sendMessage ( CC.translate ( "&cNecesitas desbloquear la cuarta forma" ) );
                         }

@@ -42,13 +42,13 @@ public class PlayerJoinEvent implements Listener {
                 }
             }
         } else if(General.isHakaishin ( player )){
-            Main.instance.getServer().broadcastMessage(CC.translate("&5&l&m---------------------------------------------"));
+            Main.instance.getServer().broadcastMessage(CC.translate("&6&l&m---------------------------------------------"));
             Main.instance.getServer().broadcastMessage("");
-            Main.instance.getServer().broadcastMessage(CC.translate("&d⚡ &5&l¡UN DIOS HA DESCENDIDO! &d⚡"));
-            Main.instance.getServer().broadcastMessage(CC.translate("&dEl poderoso &5&lHakaishin &d" + player.getName() + " ha ingresado al servidor."));
-            Main.instance.getServer().broadcastMessage(CC.translate("&d¡Inclínense ante su presencia y sientan su poder divino!"));
+            Main.instance.getServer().broadcastMessage(CC.translate("&e⚡ &5&l¡UN DIOS SAIYAJIN HA DESCENDIDO! &d⚡"));
+            Main.instance.getServer().broadcastMessage(CC.translate("&eEl poderoso &6&lRey &e" + player.getName() + " ha ingresado al servidor."));
+            Main.instance.getServer().broadcastMessage(CC.translate("&e¡Inclínense ante su presencia y sientan su poder divino!"));
             Main.instance.getServer().broadcastMessage("");
-            Main.instance.getServer().broadcastMessage(CC.translate("&5&l&m---------------------------------------------"));
+            Main.instance.getServer().broadcastMessage(CC.translate("&6&l&m---------------------------------------------"));
             for(Player playerOnline : player.getServer().getOnlinePlayers()){
                 playerOnline.playSound(playerOnline.getLocation(), "random.levelup",0.7F,0.7F);
             }
