@@ -1,8 +1,14 @@
 package org.delaware;
+
+import com.massivecraft.factions.FactionListComparator;
+import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.massivecore.MassiveCore;
+import com.massivecraft.massivecore.MassiveCoreEngineMain;
 import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -16,6 +22,7 @@ import net.minecraft.util.com.google.gson.GsonBuilder;
 import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
 import noppes.npcs.api.entity.IDBCPlayer;
+import noppes.npcs.controllers.FactionController;
 import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -64,6 +71,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import static kamkeel.npcdbc.constants.DBCRace.*;
@@ -200,6 +208,7 @@ public class Main extends JavaPlugin {
         }
 
     }
+
     public String getPlayerFactionName ( Player player ) {
         MPlayer mPlayer = MPlayer.get ( player );
         Faction faction = mPlayer.getFaction ( );
@@ -217,50 +226,54 @@ public class Main extends JavaPlugin {
         Player player = Bukkit.getPlayer ( name );
         MPlayer mPlayer = MPlayer.get ( player );
         Faction faction = mPlayer.getFaction ( );
+        long alliesCount = FactionColl.get().getAll().stream()
+                .filter(e -> e.getRelationTo(faction) == Rel.ALLY)
+                .count();
+
         if (faction == null) return false;
         Faction faction2 = BoardColl.get ( ).getFactionAt ( PS.valueOf ( player.getLocation ( ) ) );
         if (faction2 != null) {
             if (faction.getName ( ).equalsIgnoreCase ( faction2.getName ( ) )
                     && !faction.getName ( ).contains ( "Wilderness" )) {
                 return true;
-            } else if (faction.getRelationTo ( faction2 ).getValue ( ) == Rel.ALLY.getValue ( )) {
-                return true;
             }
         }
         return false;
     }
-    public String getPlayerRacialTop(String race) {
+
+    public String getPlayerRacialTop ( String race ) {
         Player topPlayer = null;
         int highestLevel = -1;
-        for (Player player : Main.instance.getServer().getOnlinePlayers()) {
-            IDBCPlayer idbcPlayer = NpcAPI.Instance().getPlayer(player.getName()).getDBCPlayer();
-            if (race.equalsIgnoreCase("SAIYAN") && idbcPlayer.getRace() == DBCRace.SAIYAN ||
-                    race.equalsIgnoreCase("HALFSAIYAN") && idbcPlayer.getRace() == DBCRace.HALFSAIYAN ||
-                    race.equalsIgnoreCase("ARCOSIAN") && idbcPlayer.getRace() == DBCRace.ARCOSIAN ||
-                    race.equalsIgnoreCase("NAMEKIAN") && idbcPlayer.getRace() == DBCRace.NAMEKIAN ||
-                    race.equalsIgnoreCase("MAJIN") && idbcPlayer.getRace() == DBCRace.MAJIN ||
-                    race.equalsIgnoreCase("HUMAN") && idbcPlayer.getRace() == DBCRace.HUMAN) {
-                int lvl = General.getLVL(player);
+        for (Player player : Main.instance.getServer ( ).getOnlinePlayers ( )) {
+            IDBCPlayer idbcPlayer = NpcAPI.Instance ( ).getPlayer ( player.getName ( ) ).getDBCPlayer ( );
+            if (race.equalsIgnoreCase ( "SAIYAN" ) && idbcPlayer.getRace ( ) == DBCRace.SAIYAN ||
+                    race.equalsIgnoreCase ( "HALFSAIYAN" ) && idbcPlayer.getRace ( ) == DBCRace.HALFSAIYAN ||
+                    race.equalsIgnoreCase ( "ARCOSIAN" ) && idbcPlayer.getRace ( ) == DBCRace.ARCOSIAN ||
+                    race.equalsIgnoreCase ( "NAMEKIAN" ) && idbcPlayer.getRace ( ) == DBCRace.NAMEKIAN ||
+                    race.equalsIgnoreCase ( "MAJIN" ) && idbcPlayer.getRace ( ) == DBCRace.MAJIN ||
+                    race.equalsIgnoreCase ( "HUMAN" ) && idbcPlayer.getRace ( ) == DBCRace.HUMAN) {
+                int lvl = General.getLVL ( player );
                 if (lvl > highestLevel) {
                     highestLevel = lvl;
                     topPlayer = player;
                 }
             }
         }
-        return topPlayer != null ? topPlayer.getName() : null;
+        return topPlayer != null ? topPlayer.getName ( ) : null;
     }
-    public String getTopGlobalPlayer() {
+
+    public String getTopGlobalPlayer () {
         Player topPlayer = null;
         int highestLevel = -1;
 
-        for (OfflinePlayer player : Main.instance.getServer().getOfflinePlayers ()) {
-            int lvl = General.getLVL(player.getPlayer ());
+        for (OfflinePlayer player : Main.instance.getServer ( ).getOfflinePlayers ( )) {
+            int lvl = General.getLVL ( player.getPlayer ( ) );
             if (lvl > highestLevel) {
                 highestLevel = lvl;
-                topPlayer = player.getPlayer ();
+                topPlayer = player.getPlayer ( );
             }
         }
-        return topPlayer != null ? topPlayer.getName() : null;
+        return topPlayer != null ? topPlayer.getName ( ) : null;
     }
 
     public void loadGifts () {
