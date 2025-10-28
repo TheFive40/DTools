@@ -1,7 +1,4 @@
 package org.delaware.events;
-
-import noppes.npcs.api.entity.IDBCPlayer;
-import noppes.npcs.scripted.NpcAPI;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -14,7 +11,6 @@ import org.delaware.commands.CommandAddGift;
 import org.delaware.tools.CC;
 import org.delaware.tools.General;
 import org.delaware.tools.model.entities.Localizaciones;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
