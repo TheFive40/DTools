@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +21,7 @@ public class PacketHandler {
     public void sendBlockChange(Player player, Location location, int newBlockId, byte newBlockData) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         CraftWorld craftWorld = (CraftWorld) location.getWorld();
-        World world = craftWorld.getHandle();
+        World world = craftWorld.getHandle ();
         Material originalType = location.getBlock().getType();
         byte originalData = location.getBlock().getData();
 

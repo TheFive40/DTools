@@ -2,7 +2,7 @@ main: org.delaware.Main
 version: 1.8.0
 name: DBFuture
 author: DelawareX
-depend: [WorldEdit,WorldGuard,Factions,MassiveCore]
+depend: [WorldEdit,WorldGuard,Factions,MassiveCore,ProtocolLib]
 softdepend:
   - Essentials
 

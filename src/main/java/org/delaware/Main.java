@@ -3,12 +3,15 @@ package org.delaware;
 import com.massivecraft.factions.FactionListComparator;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.TerritoryAccess;
+import com.massivecraft.factions.cmd.FactionsCommand;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveCore;
 import com.massivecraft.massivecore.MassiveCoreEngineMain;
+import com.massivecraft.massivecore.cmd.MassiveCommand;
 import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -21,12 +24,13 @@ import net.minecraft.util.com.google.gson.Gson;
 import net.minecraft.util.com.google.gson.GsonBuilder;
 import net.minecraft.util.com.google.gson.JsonSyntaxException;
 import net.minecraft.util.com.google.gson.reflect.TypeToken;
+import noppes.npcs.api.entity.ICustomNpc;
 import noppes.npcs.api.entity.IDBCPlayer;
+import noppes.npcs.api.entity.IEntity;
 import noppes.npcs.controllers.FactionController;
 import noppes.npcs.scripted.NpcAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import noppes.npcs.scripted.event.player.FactionEvent;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -42,15 +46,14 @@ import org.delaware.DBCEvents.DBCDamageEvent;
 import org.delaware.DBCEvents.DBCKnockoutEvent;
 import org.delaware.DBCEvents.Listeners.DamageEvent;
 import org.delaware.DBCEvents.Listeners.KnockoutEvent;
+import org.delaware.FactionsCmd.CmdFactionZenkais;
 import org.delaware.commands.BlockItemCommand;
 import org.delaware.commands.CommandAddGift;
-import org.delaware.events.BlockedItemEvent;
 import org.delaware.events.InteractWithGiftsEvent;
 import org.delaware.events.PersonalBoosterEvent;
 import org.delaware.tools.*;
 import org.delaware.tools.BoosterHandler.BoosterDataHandler;
 import org.delaware.tools.BoosterHandler.BoosterManager;
-import org.delaware.tools.Boosters.BonusAttributes;
 import org.delaware.tools.Boosters.ZenkaiExpansion;
 import org.delaware.tools.CustomItems.CustomItems;
 import org.delaware.tools.CustomItems.CustomItemsRunnable;
@@ -71,7 +74,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import static kamkeel.npcdbc.constants.DBCRace.*;
@@ -182,6 +184,7 @@ public class Main extends JavaPlugin {
         KitStorage.load ( this );
         PersonalBoosterEvent.boosterTask ( );
         BlockItemCommand.cargarLista ( this );
+        //Factions.get ( ).getOuterCmdFactions ( ).addSubCommand ( new CmdFactionZenkais ( ) );
     }
 
     public void writeData () {
@@ -209,6 +212,52 @@ public class Main extends JavaPlugin {
 
     }
 
+    public void unclaim ( ICustomNpc<?> npc ) {
+        Location location = new Location ( Main.instance.getServer ( ).getWorld ( "world" ), npc.getX ( ), npc.getY ( ), npc.getZ ( ) );
+        Faction faction = BoardColl.get ( ).getFactionAt ( PS.valueOf ( location ) );
+        int chunkX = location.getChunk ( ).getX ( );
+        int chunkZ = location.getChunk ( ).getZ ( );
+        PS ps = PS.valueOf ( location.getWorld ( ).getName ( ), chunkX, chunkZ );
+        Bukkit.broadcastMessage ( "§cSe desclaimó el chunk en X:" + chunkX + " Z:" + chunkZ + " de la facción " + faction.getName ( ) );
+        Faction wilderness = FactionColl.get ( ).getNone ( );
+        BoardColl.get ( ).setFactionAt ( ps, wilderness );
+    }
+    public void unclaim(ICustomNpc<?> npc, int radio) {
+        World world = Main.instance.getServer().getWorld("world");
+        Location location = new Location(world, npc.getX(), npc.getY(), npc.getZ());
+
+        // Facción dueña del chunk actual
+        Faction faction = BoardColl.get().getFactionAt(PS.valueOf(location));
+        if (faction == null) return;
+
+        // Chunk central
+        int centerX = location.getChunk().getX();
+        int centerZ = location.getChunk().getZ();
+
+        // Wilderness (sin dueño)
+        Faction wilderness = FactionColl.get().getNone();
+
+        int unclaimed = 0;
+
+        for (int dx = -radio; dx <= radio; dx++) {
+            for (int dz = -radio; dz <= radio; dz++) {
+                if (dx * dx + dz * dz > radio * radio) continue;
+
+                int chunkX = centerX + dx;
+                int chunkZ = centerZ + dz;
+
+                PS ps = PS.valueOf(world.getName(), chunkX, chunkZ);
+                Faction current = BoardColl.get().getFactionAt(ps);
+
+                if (current != null && current.equals(faction)) {
+                    BoardColl.get().setFactionAt(ps, wilderness);
+                    unclaimed++;
+                }
+            }
+        }
+
+        Bukkit.broadcastMessage("§cSe desclaimaron §e" + unclaimed + " §cchunks en radio de " + radio + " de la facción " + faction.getName());
+    }
     public String getPlayerFactionName ( Player player ) {
         MPlayer mPlayer = MPlayer.get ( player );
         Faction faction = mPlayer.getFaction ( );

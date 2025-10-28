@@ -93,6 +93,11 @@ public class PersonalBoosterEvent implements Listener {
                             timeBoosterPlayer.remove ( player.getUniqueId () );
                             player.sendMessage ( CC.translate ( "&cBooster Personal &4expirado." ) );
                             player.playSound ( player.getLocation (), Sound.ANVIL_BREAK,1.0F,1.0F);
+                        }else if(multiplier == 0.4 && Duration.between (startTime,  endTime ).toMinutes () >= 15){
+                            boosterPlayer.remove ( player.getUniqueId () );
+                            timeBoosterPlayer.remove ( player.getUniqueId () );
+                            player.sendMessage ( CC.translate ( "&cBooster Personal &4expirado." ) );
+                            player.playSound ( player.getLocation (), Sound.ANVIL_BREAK,1.0F,1.0F);
                         }
                     }
                 }

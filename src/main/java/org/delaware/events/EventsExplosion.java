@@ -1,5 +1,4 @@
 package org.delaware.events;
-
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
